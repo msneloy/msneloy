@@ -1,1 +1,1 @@
-![Alt Text](https://static.zerochan.net/Gravity.Falls.full.2109794.gif)
+<img alt="Logo" src="https://static.zerochan.net/Gravity.Falls.full.2109794.gif">
