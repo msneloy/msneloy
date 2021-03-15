@@ -1,6 +1,6 @@
 ![trophy](https://github-profile-trophy.vercel.app/?username=sierra007117&theme=darkhub)
 ![Stat](https://github-readme-stats.vercel.app/api?username=sierra007117&count_private=true&show_icons=true&theme=dark&include_all_commits=yes&custom_title=Sierra117)
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=sierra007117&langs_count=10&hide=html,CSS&theme=dark&layout=compact&custom_title=SCM&exclude_repo=Scandia,Elysium)
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=sierra007117&langs_count=12&hide=html,CSS&theme=dark&layout=compact&custom_title=SCM&exclude_repo=Scandia,Elysium)
 <p float="left">
   <a href="https://wakatime.com"><img src="https://wakatime.com/share/@Sierra117/aaf83399-0c74-4c7d-b0df-84e386c3e750.png" width="400"/></a>
   <a href="https://wakatime.com"><img src="https://wakatime.com/share/@Sierra117/ec0628cc-5df4-4d0b-84ed-35d50cb2b9a0.png" width="400"/></a>
