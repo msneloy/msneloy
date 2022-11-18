@@ -3,5 +3,5 @@
 
 <a href=""><img align="center" src="https://activity-graph.herokuapp.com/graph?username=sierra007117&theme=xcode" /></a>
 
-| <a href="https://wakatime.com"><img src="https://wakatime.com/share/@Sierra117/4df77501-8818-42c3-8291-efc8255b3203.png" /></a> | <a href="https://wakatime.com"><img src="https://wakatime.com/share/@Sierra117/4272bc86-518c-4a6d-9382-f8e4ea2161ca.png" /></a> |
+| <a href="https://wakatime.com"><img src="https://wakatime.com/share/@Sierra117/531705f6-6741-4577-82e2-eb0a1d0cc742.png" /></a> | <a href="https://wakatime.com"><img src="https://wakatime.com/share/@Sierra117/3e820a53-067c-4ed7-b78d-b5b2f870544d.png" /></a> |
 | ------------- | ------------- |
