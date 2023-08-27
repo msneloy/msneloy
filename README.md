@@ -1,4 +1,3 @@
-
 <a href="https://wakatime.com"><img src="https://wakatime.com/share/@Sierra117/c332d51b-3ceb-4810-a11c-c54a83de8176.png" /></a>
 
 <a href="https://wakatime.com"><img src="https://wakatime.com/share/@Sierra117/a639bf0e-2624-4817-b74a-098c12def1b8.png" /></a>
