@@ -29,10 +29,24 @@ jobs:
               summary: 'https://wakatime.com/share/@Sierra117/ca964aaa-fcd3-4f9b-ad9b-855b90cb5ae4.json',
             };
 
+            const icons = {
+              languages: '💻', editors: '🖥️', os: '🐧', categories: '📊',
+              total: '⏱️', daily: '📅', best: '🏆', since: '🚀', days: '📆',
+              python: '🐍', java: '☕', javascript: '📜', html: '🌐', css: '🎨',
+              c: '⚙️', 'c++': '⚙️', go: '🔵', rust: '🦀', bash: '🐚',
+              linux: '🐧', windows: '🪟', mac: '🍎', firefox: '🦊', 'vs code': '💙',
+              chrome: '🌐', 'android studio': '🤖', coding: '💻', browsing: '🌐',
+              'ai coding': '🤖', meeting: '📹', 'writing docs': '📝', debugging: '🐛',
+            };
+
+            function getIcon(name) {
+              const lower = name.toLowerCase();
+              return icons[lower] || '•';
+            }
+
             async function fetchJSON(url) {
               const res = await fetch(url);
               const text = await res.text();
-              // WakaTime returns JSONP-wrapped JSON; strip callback wrapper
               const jsonStr = text.replace(/^[^{[{]*/, '').replace(/[^}\]]*$/, '');
               const parsed = JSON.parse(jsonStr);
               if (parsed.error) {
@@ -42,45 +56,77 @@ jobs:
               return parsed;
             }
 
-            function progressBar(percent, width = 20) {
-              const filled = Math.round((percent / 100) * width);
-              const empty = width - filled;
-              return '█'.repeat(filled) + '░'.repeat(empty);
-            }
+            function pieChartUrl(title, data, width = 400, height = 200) {
+              const top = data.slice(0, 8);
+              const rest = data.slice(8);
+              const labels = top.map(d => d.name);
+              const values = top.map(d => parseFloat(d.percent.toFixed(1)));
+              const colors = top.map(d => d.color.replace('#', ''));
 
-            function buildTable(title, data) {
-              const items = data;
-
-              let md = `<details>\n<summary><h3>${title} (${items.length})</h3></summary>\n\n`;
-              md += `| Name | Hours | Progress |\n`;
-              md += `|-----:|------:|----------|\n`;
-
-              for (const item of items) {
-                const pct = item.percent.toFixed(1);
-                const bar = progressBar(item.percent);
-                md += `| **${item.name}** | ${item.text} | \`${bar}\` ${pct}% |\n`;
+              if (rest.length > 0) {
+                const otherPct = rest.reduce((s, d) => s + d.percent, 0);
+                labels.push(`Other (${rest.length})`);
+                values.push(parseFloat(otherPct.toFixed(1)));
+                colors.push('808080');
               }
 
-              md += `\n</details>\n`;
-              return md;
+              const config = {
+                type: 'doughnut',
+                data: {
+                  labels: labels,
+                  datasets: [{
+                    data: values,
+                    backgroundColor: colors.map(c => '#' + c),
+                    borderColor: 'ffffff',
+                    borderWidth: 2,
+                  }]
+                },
+                options: {
+                  plugins: {
+                    title: { display: true, text: title, color: 'ffffff', font: { size: 16 } },
+                    legend: { position: 'right', labels: { color: 'ffffff', padding: 8, font: { size: 11 } } },
+                  },
+                  layout: { padding: 10 },
+                }
+              };
+
+              return 'https://quickchart.io/chart?c=' + encodeURIComponent(JSON.stringify(config)) + `&w=${width}&h=${height}&bkg=0d1117`;
             }
 
-            function buildSummaryTable(data) {
+            function buildSummary(data) {
               const gt = data.grand_total;
               const best = data.best_day;
               const range = data.range;
+              const since = range.start.split('T')[0];
 
-              let md = `### Coding Activity\n\n`;
-              md += `| Metric | Value |\n`;
-              md += `| ------ | ----- |\n`;
-              md += `| **Total Coding Time** | ${gt.human_readable_total} |\n`;
-              md += `| **Total (incl. other)** | ${gt.human_readable_total_including_other_language} |\n`;
-              md += `| **Daily Average** | ${gt.human_readable_daily_average} |\n`;
-              md += `| **Daily Average (incl. other)** | ${gt.human_readable_daily_average_including_other_language} |\n`;
-              md += `| **Best Day** | ${best.date} — ${best.text} |\n`;
-              md += `| **Tracking Since** | ${range.start.split('T')[0]} |\n`;
-              md += `| **Days Tracked** | ${range.days_including_holidays} |\n`;
+              let md = `### ⏱️ Coding Activity\n\n`;
+              md += `<p align="center">\n\n`;
+              md += `![Total](https://img.shields.io/badge/⏱️_Total-${encodeURIComponent(gt.human_readable_total)}-blue?style=for-the-badge) `;
+              md += `![Daily](https://img.shields.io/badge/📅_Daily_Avg-${encodeURIComponent(gt.human_readable_daily_average)}-green?style=for-the-badge) `;
+              md += `![Best](https://img.shields.io/badge/🏆_Best_Day-${encodeURIComponent(best.text)}-gold?style=for-the-badge)\n\n`;
+              md += `![Since](https://img.shields.io/badge/🚀_Since-${since}-purple?style=for-the-badge) `;
+              md += `![Days](https://img.shields.io/badge/📆_Days-${range.days_including_holidays}-orange?style=for-the-badge)\n\n`;
+              md += `</p>\n`;
+              return md;
+            }
 
+            function buildPieSection(title, emoji, data) {
+              const chartUrl = pieChartUrl(`${emoji} ${title}`, data);
+              let md = `### ${emoji} ${title}\n\n`;
+              md += `<p align="center">\n\n`;
+              md += `![${title} Chart](${chartUrl})\n\n`;
+              md += `</p>\n\n`;
+              md += `<details>\n<summary>📋 Full ${title} Breakdown</summary>\n\n`;
+              md += `| | Name | Hours | Percent |\n`;
+              md += `|---|-----:|------:|--------:|\n`;
+
+              for (const item of data) {
+                const icon = getIcon(item.name);
+                const pct = item.percent.toFixed(1);
+                md += `| ${icon} | **${item.name}** | ${item.text} | ${pct}% |\n`;
+              }
+
+              md += `\n</details>\n`;
               return md;
             }
 
@@ -94,11 +140,11 @@ jobs:
               ]);
 
               const sections = [];
-              if (summaryData && summaryData.data) sections.push(buildSummaryTable(summaryData.data));
-              if (langData && langData.data) sections.push(buildTable('Languages', langData.data));
-              if (editorData && editorData.data) sections.push(buildTable('Editors', editorData.data));
-              if (osData && osData.data) sections.push(buildTable('Operating Systems', osData.data));
-              if (catData && catData.data) sections.push(buildTable('Categories', catData.data));
+              if (summaryData && summaryData.data) sections.push(buildSummary(summaryData.data));
+              if (langData && langData.data) sections.push(buildPieSection('Languages', '💻', langData.data));
+              if (editorData && editorData.data) sections.push(buildPieSection('Editors', '🖥️', editorData.data));
+              if (osData && osData.data) sections.push(buildPieSection('Operating Systems', '🐧', osData.data));
+              if (catData && catData.data) sections.push(buildPieSection('Categories', '📊', catData.data));
 
               if (sections.length === 0) {
                 core.setFailed('All WakaTime endpoints returned errors. No data to write.');
@@ -109,7 +155,6 @@ jobs:
 
               let readme = fs.readFileSync('README.md', 'utf8');
 
-              // Replace content between markers, or prepend if markers don't exist
               const startMarker = '<!-- WAKATIME:START -->';
               const endMarker = '<!-- WAKATIME:END -->';
 
