@@ -42,20 +42,26 @@ jobs:
               return parsed;
             }
 
-            function buildTable(title, data, limit = 10) {
-              const items = data.slice(0, limit);
-              const maxName = Math.max(title.length, ...items.map(i => i.name.length));
-              const maxHours = Math.max(5, ...items.map(i => i.text.length));
+            function progressBar(percent, width = 20) {
+              const filled = Math.round((percent / 100) * width);
+              const empty = width - filled;
+              return '█'.repeat(filled) + '░'.repeat(empty);
+            }
 
-              let md = `### ${title}\n\n`;
-              md += `| ${'Language'.padEnd(maxName)} | ${'Hours'.padStart(maxHours)} | Badge |\n`;
-              md += `| ${'-'.repeat(maxName)} | ${'-'.repeat(maxHours)}: | ----- |\n`;
+            function buildTable(title, data) {
+              const items = data;
+
+              let md = `<details>\n<summary><h3>${title} (${items.length})</h3></summary>\n\n`;
+              md += `| Name | Hours | Progress |\n`;
+              md += `|-----:|------:|----------|\n`;
 
               for (const item of items) {
-                const color = item.color.replace('#', '');
-                md += `| ${item.name.padEnd(maxName)} | ${item.text.padStart(maxHours)} | ![#${color}](https://via.placeholder.com/12/${color}/${color}.png) \`${item.percent}%\` |\n`;
+                const pct = item.percent.toFixed(1);
+                const bar = progressBar(item.percent);
+                md += `| **${item.name}** | ${item.text} | \`${bar}\` ${pct}% |\n`;
               }
 
+              md += `\n</details>\n`;
               return md;
             }
 
@@ -89,10 +95,10 @@ jobs:
 
               const sections = [];
               if (summaryData && summaryData.data) sections.push(buildSummaryTable(summaryData.data));
-              if (langData && langData.data) sections.push(buildTable('Languages', langData.data, 10));
-              if (editorData && editorData.data) sections.push(buildTable('Editors', editorData.data, 10));
-              if (osData && osData.data) sections.push(buildTable('Operating Systems', osData.data, 10));
-              if (catData && catData.data) sections.push(buildTable('Categories', catData.data, 10));
+              if (langData && langData.data) sections.push(buildTable('Languages', langData.data));
+              if (editorData && editorData.data) sections.push(buildTable('Editors', editorData.data));
+              if (osData && osData.data) sections.push(buildTable('Operating Systems', osData.data));
+              if (catData && catData.data) sections.push(buildTable('Categories', catData.data));
 
               if (sections.length === 0) {
                 core.setFailed('All WakaTime endpoints returned errors. No data to write.');
