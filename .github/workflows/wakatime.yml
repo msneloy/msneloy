@@ -1,0 +1,121 @@
+name: Update WakaTime Stats
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Runs daily at midnight UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch WakaTime data and update README
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            const endpoints = {
+              languages: 'https://wakatime.com/share/@Sierra117/54c22460-98ec-42fe-a6a7-70bac6ceaa93.json',
+              editors: 'https://wakatime.com/share/@Sierra117/39b8390d-511e-4679-b2f0-2ea9307573f4.json',
+              os: 'https://wakatime.com/share/@Sierra117/8bb890bb-0128-4bb0-adaa-def4d63aa689.json',
+              summary: 'https://wakatime.com/share/@Sierra117/ca964aaa-fcd3-4f9b-ad9b-855b90cb5ae4.json',
+            };
+
+            async function fetchJSON(url) {
+              const res = await fetch(url);
+              const text = await res.text();
+              // WakaTime returns JSONP-wrapped JSON; strip callback wrapper
+              const json = text.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
+              return JSON.parse(json);
+            }
+
+            function buildTable(title, data, limit = 10) {
+              const items = data.slice(0, limit);
+              const maxName = Math.max(title.length, ...items.map(i => i.name.length));
+              const maxHours = Math.max(5, ...items.map(i => i.text.length));
+
+              let md = `### ${title}\n\n`;
+              md += `| ${'Language'.padEnd(maxName)} | ${'Hours'.padStart(maxHours)} | Badge |\n`;
+              md += `| ${'-'.repeat(maxName)} | ${'-'.repeat(maxHours)}: | ----- |\n`;
+
+              for (const item of items) {
+                const color = item.color.replace('#', '');
+                md += `| ${item.name.padEnd(maxName)} | ${item.text.padStart(maxHours)} | ![#${color}](https://via.placeholder.com/12/${color}/${color}.png) \`${item.percent}%\` |\n`;
+              }
+
+              return md;
+            }
+
+            function buildSummaryTable(data) {
+              const gt = data.grand_total;
+              const best = data.best_day;
+              const range = data.range;
+
+              let md = `### Coding Activity\n\n`;
+              md += `| Metric | Value |\n`;
+              md += `| ------ | ----- |\n`;
+              md += `| **Total Coding Time** | ${gt.human_readable_total} |\n`;
+              md += `| **Total (incl. other)** | ${gt.human_readable_total_including_other_language} |\n`;
+              md += `| **Daily Average** | ${gt.human_readable_daily_average} |\n`;
+              md += `| **Daily Average (incl. other)** | ${gt.human_readable_daily_average_including_other_language} |\n`;
+              md += `| **Best Day** | ${best.date} — ${best.text} |\n`;
+              md += `| **Tracking Since** | ${range.start.split('T')[0]} |\n`;
+              md += `| **Days Tracked** | ${range.days_including_holidays} |\n`;
+
+              return md;
+            }
+
+            try {
+              const [langData, editorData, osData, summaryData] = await Promise.all([
+                fetchJSON(endpoints.languages),
+                fetchJSON(endpoints.editors),
+                fetchJSON(endpoints.os),
+                fetchJSON(endpoints.summary),
+              ]);
+
+              const sections = [
+                buildSummaryTable(summaryData.data),
+                buildTable('Languages', langData.data, 10),
+                buildTable('Editors', editorData.data, 10),
+                buildTable('Operating Systems', osData.data, 10),
+              ].join('\n');
+
+              let readme = fs.readFileSync('README.md', 'utf8');
+
+              // Replace content between markers, or prepend if markers don't exist
+              const startMarker = '<!-- WAKATIME:START -->';
+              const endMarker = '<!-- WAKATIME:END -->';
+
+              const block = `${startMarker}\n${sections}\n${endMarker}`;
+
+              if (readme.includes(startMarker) && readme.includes(endMarker)) {
+                readme = readme.replace(
+                  new RegExp(`${startMarker}[\\s\\S]*?${endMarker}`),
+                  block
+                );
+              } else {
+                readme = `${block}\n\n${readme}`;
+              }
+
+              fs.writeFileSync('README.md', readme);
+              console.log('README.md updated successfully.');
+            } catch (error) {
+              console.error('Failed to update README:', error);
+              core.setFailed(error.message);
+            }
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet README.md && echo "No changes to commit" && exit 0
+          git add README.md
+          git commit -m "docs(readme): auto-update WakaTime coding stats"
+          git push
