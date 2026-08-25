@@ -13,18 +13,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Fetch WakaTime data and update README
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
 
             const endpoints = {
-              languages: 'https://wakatime.com/share/@Sierra117/54c22460-98ec-42fe-a6a7-70bac6ceaa93.json',
-              editors: 'https://wakatime.com/share/@Sierra117/39b8390d-511e-4679-b2f0-2ea9307573f4.json',
+              languages: 'https://wakatime.com/share/@Sierra117/bb9729ad-9cb3-4d6c-b912-359e136ed48a.json',
+              editors: 'https://wakatime.com/share/@Sierra117/7cab5d5a-187a-4687-9e05-db05c975bf68.json',
               os: 'https://wakatime.com/share/@Sierra117/8bb890bb-0128-4bb0-adaa-def4d63aa689.json',
+              categories: 'https://wakatime.com/share/@Sierra117/bdfc68ea-2e02-4fef-8870-5f648645152a.json',
               summary: 'https://wakatime.com/share/@Sierra117/ca964aaa-fcd3-4f9b-ad9b-855b90cb5ae4.json',
             };
 
@@ -32,8 +33,13 @@ jobs:
               const res = await fetch(url);
               const text = await res.text();
               // WakaTime returns JSONP-wrapped JSON; strip callback wrapper
-              const json = text.replace(/^[^{]*/, '').replace(/[^}]*$/, '');
-              return JSON.parse(json);
+              const jsonStr = text.replace(/^[^{[{]*/, '').replace(/[^}\]]*$/, '');
+              const parsed = JSON.parse(jsonStr);
+              if (parsed.error) {
+                console.warn(`WakaTime endpoint returned error: ${parsed.error} (${url})`);
+                return null;
+              }
+              return parsed;
             }
 
             function buildTable(title, data, limit = 10) {
@@ -73,19 +79,27 @@ jobs:
             }
 
             try {
-              const [langData, editorData, osData, summaryData] = await Promise.all([
+              const [langData, editorData, osData, catData, summaryData] = await Promise.all([
                 fetchJSON(endpoints.languages),
                 fetchJSON(endpoints.editors),
                 fetchJSON(endpoints.os),
+                fetchJSON(endpoints.categories),
                 fetchJSON(endpoints.summary),
               ]);
 
-              const sections = [
-                buildSummaryTable(summaryData.data),
-                buildTable('Languages', langData.data, 10),
-                buildTable('Editors', editorData.data, 10),
-                buildTable('Operating Systems', osData.data, 10),
-              ].join('\n');
+              const sections = [];
+              if (summaryData && summaryData.data) sections.push(buildSummaryTable(summaryData.data));
+              if (langData && langData.data) sections.push(buildTable('Languages', langData.data, 10));
+              if (editorData && editorData.data) sections.push(buildTable('Editors', editorData.data, 10));
+              if (osData && osData.data) sections.push(buildTable('Operating Systems', osData.data, 10));
+              if (catData && catData.data) sections.push(buildTable('Categories', catData.data, 10));
+
+              if (sections.length === 0) {
+                core.setFailed('All WakaTime endpoints returned errors. No data to write.');
+                return;
+              }
+
+              const content = sections.join('\n');
 
               let readme = fs.readFileSync('README.md', 'utf8');
 
@@ -93,7 +107,7 @@ jobs:
               const startMarker = '<!-- WAKATIME:START -->';
               const endMarker = '<!-- WAKATIME:END -->';
 
-              const block = `${startMarker}\n${sections}\n${endMarker}`;
+              const block = `${startMarker}\n${content}\n${endMarker}`;
 
               if (readme.includes(startMarker) && readme.includes(endMarker)) {
                 readme = readme.replace(
