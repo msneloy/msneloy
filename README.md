@@ -11,56 +11,140 @@
 | **Tracking Since** | 2020-11-17 |
 | **Days Tracked** | 2106 |
 
-### Languages
+<details>
+<summary><h3>Languages (73)</h3></summary>
 
-| Language   |             Hours | Badge |
-| ---------- | -----------------: | ----- |
-| Other      | 2,241 hrs 21 mins | ![#16ce40](https://via.placeholder.com/12/16ce40/16ce40.png) `62.16%` |
-| Python     |   300 hrs 52 mins | ![#3572A5](https://via.placeholder.com/12/3572A5/3572A5.png) `8.34%` |
-| HTML       |   204 hrs 29 mins | ![#e34c26](https://via.placeholder.com/12/e34c26/e34c26.png) `5.67%` |
-| Java       |   155 hrs 22 mins | ![#b07219](https://via.placeholder.com/12/b07219/b07219.png) `4.31%` |
-| C          |    133 hrs 3 mins | ![#555555](https://via.placeholder.com/12/555555/555555.png) `3.69%` |
-| C++        |   110 hrs 23 mins | ![#f34b7d](https://via.placeholder.com/12/f34b7d/f34b7d.png) `3.06%` |
-| JavaScript |    94 hrs 54 mins | ![#f1e05a](https://via.placeholder.com/12/f1e05a/f1e05a.png) `2.63%` |
-| XML        |    54 hrs 14 mins | ![#0060ac](https://via.placeholder.com/12/0060ac/0060ac.png) `1.5%` |
-| Markdown   |    51 hrs 24 mins | ![#083fa1](https://via.placeholder.com/12/083fa1/083fa1.png) `1.43%` |
-| Arduino    |    39 hrs 59 mins | ![#dc9658](https://via.placeholder.com/12/dc9658/dc9658.png) `1.11%` |
+| Name | Hours | Progress |
+|-----:|------:|----------|
+| **Other** | 2,241 hrs 21 mins | `████████████░░░░░░░░` 62.2% |
+| **Python** | 300 hrs 52 mins | `██░░░░░░░░░░░░░░░░░░` 8.3% |
+| **HTML** | 204 hrs 29 mins | `█░░░░░░░░░░░░░░░░░░░` 5.7% |
+| **Java** | 155 hrs 22 mins | `█░░░░░░░░░░░░░░░░░░░` 4.3% |
+| **C** | 133 hrs 3 mins | `█░░░░░░░░░░░░░░░░░░░` 3.7% |
+| **C++** | 110 hrs 23 mins | `█░░░░░░░░░░░░░░░░░░░` 3.1% |
+| **JavaScript** | 94 hrs 54 mins | `█░░░░░░░░░░░░░░░░░░░` 2.6% |
+| **XML** | 54 hrs 14 mins | `░░░░░░░░░░░░░░░░░░░░` 1.5% |
+| **Markdown** | 51 hrs 24 mins | `░░░░░░░░░░░░░░░░░░░░` 1.4% |
+| **Arduino** | 39 hrs 59 mins | `░░░░░░░░░░░░░░░░░░░░` 1.1% |
+| **Go** | 38 hrs 24 mins | `░░░░░░░░░░░░░░░░░░░░` 1.1% |
+| **CSS** | 22 hrs 6 mins | `░░░░░░░░░░░░░░░░░░░░` 0.6% |
+| **NASM** | 20 hrs 42 mins | `░░░░░░░░░░░░░░░░░░░░` 0.6% |
+| **Text** | 19 hrs 28 mins | `░░░░░░░░░░░░░░░░░░░░` 0.5% |
+| **Bash** | 15 hrs 47 mins | `░░░░░░░░░░░░░░░░░░░░` 0.4% |
+| **Processing** | 13 hrs 53 mins | `░░░░░░░░░░░░░░░░░░░░` 0.4% |
+| **INI** | 13 hrs 15 mins | `░░░░░░░░░░░░░░░░░░░░` 0.4% |
+| **TypeScript** | 11 hrs 44 mins | `░░░░░░░░░░░░░░░░░░░░` 0.3% |
+| **JSON** | 10 hrs 57 mins | `░░░░░░░░░░░░░░░░░░░░` 0.3% |
+| **Brainfuck** | 8 hrs 57 mins | `░░░░░░░░░░░░░░░░░░░░` 0.3% |
+| **Objective-C** | 5 hrs 20 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **PowerShell** | 4 hrs 43 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Image (svg)** | 4 hrs 22 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **R** | 4 hrs 1 min | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Logos** | 3 hrs 57 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **JSX** | 2 hrs 23 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Scala** | 2 hrs 20 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Git Config** | 2 hrs 15 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Ruby** | 2 hrs 2 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **YAML** | 1 hr 43 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Dart** | 1 hr 37 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Git** | 1 hr 19 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Tcl** | 41 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Rust** | 40 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Prolog** | 38 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **TeX** | 35 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Makefile** | 34 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Perl** | 33 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **CSV** | 30 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Delphi** | 29 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Cuda** | 28 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Groovy** | 26 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **SQL** | 24 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Debian Control file** | 22 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Swift** | 19 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **TOML** | 15 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **VB.NET** | 12 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **CoffeeScript** | 11 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **jsonc** | 8 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **ReScript** | 7 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **PHP** | 5 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Shell** | 4 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Standard ML** | 4 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Properties** | 3 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Ignore List** | 3 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **GDScript** | 3 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **CMake** | 2 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Prisma** | 2 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **GitIgnore file** | 2 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **EJS** | 2 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **CLASS** | 1 min | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **IDEA_MODULE** | 1 min | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Java Properties** | 1 min | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Solidity** | 1 min | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **TSConfig** | 1 min | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Docker** | 0 secs | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Sublime Text Config** | 0 secs | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **JSON with Comments** | 0 secs | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Altium Designer** | 0 secs | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Dotenv** | 0 secs | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Batchfile** | 0 secs | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **ActionScript 3** | 0 secs | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Gradle** | 0 secs | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
 
-### Editors
+</details>
 
-| Language       |             Hours | Badge |
-| -------------- | -----------------: | ----- |
-| Firefox        | 1,815 hrs 44 mins | ![#d96527](https://via.placeholder.com/12/d96527/d96527.png) `50.35%` |
-| VS Code        |    941 hrs 4 mins | ![#027acd](https://via.placeholder.com/12/027acd/027acd.png) `26.1%` |
-| Chrome         |           351 hrs | ![#fdd308](https://via.placeholder.com/12/fdd308/fdd308.png) `9.73%` |
-| Android Studio |   109 hrs 47 mins | ![#99cd00](https://via.placeholder.com/12/99cd00/99cd00.png) `3.04%` |
-| Browser        |    93 hrs 17 mins | ![#16ce40](https://via.placeholder.com/12/16ce40/16ce40.png) `2.59%` |
-| Antigravity    |    81 hrs 54 mins | ![#3b8cec](https://via.placeholder.com/12/3b8cec/3b8cec.png) `2.27%` |
-| IntelliJ IDEA  |            61 hrs | ![#2876e1](https://via.placeholder.com/12/2876e1/2876e1.png) `1.69%` |
-| Atom           |    60 hrs 57 mins | ![#49b77e](https://via.placeholder.com/12/49b77e/49b77e.png) `1.69%` |
-| PyCharm        |    36 hrs 32 mins | ![#d2ee5c](https://via.placeholder.com/12/d2ee5c/d2ee5c.png) `1.01%` |
-| CLion          |    18 hrs 47 mins | ![#14c9a5](https://via.placeholder.com/12/14c9a5/14c9a5.png) `0.52%` |
+<details>
+<summary><h3>Editors (19)</h3></summary>
 
-### Operating Systems
+| Name | Hours | Progress |
+|-----:|------:|----------|
+| **Firefox** | 1,815 hrs 44 mins | `██████████░░░░░░░░░░` 50.4% |
+| **VS Code** | 941 hrs 4 mins | `█████░░░░░░░░░░░░░░░` 26.1% |
+| **Chrome** | 351 hrs | `██░░░░░░░░░░░░░░░░░░` 9.7% |
+| **Android Studio** | 109 hrs 47 mins | `█░░░░░░░░░░░░░░░░░░░` 3.0% |
+| **Browser** | 93 hrs 17 mins | `█░░░░░░░░░░░░░░░░░░░` 2.6% |
+| **Antigravity** | 81 hrs 54 mins | `░░░░░░░░░░░░░░░░░░░░` 2.3% |
+| **IntelliJ IDEA** | 61 hrs | `░░░░░░░░░░░░░░░░░░░░` 1.7% |
+| **Atom** | 60 hrs 57 mins | `░░░░░░░░░░░░░░░░░░░░` 1.7% |
+| **PyCharm** | 36 hrs 32 mins | `░░░░░░░░░░░░░░░░░░░░` 1.0% |
+| **CLion** | 18 hrs 47 mins | `░░░░░░░░░░░░░░░░░░░░` 0.5% |
+| **Sublime Text** | 18 hrs 17 mins | `░░░░░░░░░░░░░░░░░░░░` 0.5% |
+| **WebStorm** | 5 hrs 44 mins | `░░░░░░░░░░░░░░░░░░░░` 0.2% |
+| **Google Calendar** | 4 hrs 44 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Bash** | 2 hrs 24 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Zoom** | 2 hrs 4 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Eclipse** | 1 hr 58 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Histre** | 23 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Zed** | 11 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Unknown Editor** | 0 secs | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
 
-| Language          |            Hours | Badge |
-| ----------------- | ----------------: | ----- |
-| Linux             | 2,288 hrs 4 mins | ![#f0b912](https://via.placeholder.com/12/f0b912/f0b912.png) `63.45%` |
-| Windows           | 1,221 hrs 7 mins | ![#0379d4](https://via.placeholder.com/12/0379d4/0379d4.png) `33.86%` |
-| Unknown OS        |   85 hrs 56 mins | ![#1f9aef](https://via.placeholder.com/12/1f9aef/1f9aef.png) `2.38%` |
-| Mac               |   10 hrs 50 mins | ![#4d66cb](https://via.placeholder.com/12/4d66cb/4d66cb.png) `0.3%` |
+</details>
 
-### Categories
+<details>
+<summary><h3>Operating Systems (4)</h3></summary>
 
-| Language     |             Hours | Badge |
-| ------------ | -----------------: | ----- |
-| Browsing     |  2,258 hrs 8 mins | ![#e59215](https://via.placeholder.com/12/e59215/e59215.png) `62.62%` |
-| Coding       | 1,315 hrs 50 mins | ![#1f9aef](https://via.placeholder.com/12/1f9aef/1f9aef.png) `36.49%` |
-| AI Coding    |    16 hrs 30 mins | ![#4a4fff](https://via.placeholder.com/12/4a4fff/4a4fff.png) `0.46%` |
-| Meeting      |      9 hrs 6 mins | ![#fd1464](https://via.placeholder.com/12/fd1464/fd1464.png) `0.25%` |
-| Writing Docs |     4 hrs 47 mins | ![#36e3ff](https://via.placeholder.com/12/36e3ff/36e3ff.png) `0.13%` |
-| Building     |       1 hr 9 mins | ![#e8ce3d](https://via.placeholder.com/12/e8ce3d/e8ce3d.png) `0.03%` |
-| Debugging    |           22 mins | ![#c49af9](https://via.placeholder.com/12/c49af9/c49af9.png) `0.01%` |
-| Designing    |             1 min | ![#9061ca](https://via.placeholder.com/12/9061ca/9061ca.png) `0%` |
+| Name | Hours | Progress |
+|-----:|------:|----------|
+| **Linux** | 2,288 hrs 4 mins | `█████████████░░░░░░░` 63.5% |
+| **Windows** | 1,221 hrs 7 mins | `███████░░░░░░░░░░░░░` 33.9% |
+| **Unknown OS** | 85 hrs 56 mins | `░░░░░░░░░░░░░░░░░░░░` 2.4% |
+| **Mac** | 10 hrs 50 mins | `░░░░░░░░░░░░░░░░░░░░` 0.3% |
+
+</details>
+
+<details>
+<summary><h3>Categories (8)</h3></summary>
+
+| Name | Hours | Progress |
+|-----:|------:|----------|
+| **Browsing** | 2,258 hrs 8 mins | `█████████████░░░░░░░` 62.6% |
+| **Coding** | 1,315 hrs 50 mins | `███████░░░░░░░░░░░░░` 36.5% |
+| **AI Coding** | 16 hrs 30 mins | `░░░░░░░░░░░░░░░░░░░░` 0.5% |
+| **Meeting** | 9 hrs 6 mins | `░░░░░░░░░░░░░░░░░░░░` 0.3% |
+| **Writing Docs** | 4 hrs 47 mins | `░░░░░░░░░░░░░░░░░░░░` 0.1% |
+| **Building** | 1 hr 9 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Debugging** | 22 mins | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+| **Designing** | 1 min | `░░░░░░░░░░░░░░░░░░░░` 0.0% |
+
+</details>
 
 <!-- WAKATIME:END -->
