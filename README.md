@@ -1,10 +1,4 @@
 <!-- WAKATIME:START -->
-### ⏱️ Coding Activity
-
-| ⏱️ Total | 📅 Daily Average | 🏆 Best Day | 🚀 Since | 📆 Days |
-|:---------|:-----------------|:------------|:---------|:-------|
-| 3,605 hrs 58 mins | 4 hrs 17 mins | 2021-03-26 — 23 hrs 59 mins | 2020-11-17 | 2106 |
-
 ### 💻 Languages
 
 <table>
@@ -113,24 +107,10 @@
 
 <table>
 <tr><th></th><th align="left">Name</th><th align="right">Hours</th></tr>
-<tr><td>🐧</td><td><b>Linux</b></td><td align="right">2,288 hrs 4 mins</td></tr>
+<tr><td>🐧</td><td><b>Linux</b></td><td align="right">2,291 hrs 46 mins</td></tr>
 <tr><td>🪟</td><td><b>Windows</b></td><td align="right">1,221 hrs 7 mins</td></tr>
 <tr><td>❓</td><td><b>Unknown OS</b></td><td align="right">85 hrs 56 mins</td></tr>
 <tr><td>🍎</td><td><b>Mac</b></td><td align="right">10 hrs 50 mins</td></tr>
-</table>
-
-### 📊 Categories
-
-<table>
-<tr><th></th><th align="left">Name</th><th align="right">Hours</th></tr>
-<tr><td>🌐</td><td><b>Browsing</b></td><td align="right">2,258 hrs 8 mins</td></tr>
-<tr><td>💻</td><td><b>Coding</b></td><td align="right">1,315 hrs 50 mins</td></tr>
-<tr><td>🤖</td><td><b>AI Coding</b></td><td align="right">16 hrs 30 mins</td></tr>
-<tr><td>📹</td><td><b>Meeting</b></td><td align="right">9 hrs 6 mins</td></tr>
-<tr><td>📝</td><td><b>Writing Docs</b></td><td align="right">4 hrs 47 mins</td></tr>
-<tr><td>🔨</td><td><b>Building</b></td><td align="right">1 hr 9 mins</td></tr>
-<tr><td>🐛</td><td><b>Debugging</b></td><td align="right">22 mins</td></tr>
-<tr><td>🎨</td><td><b>Designing</b></td><td align="right">1 min</td></tr>
 </table>
 
 <!-- WAKATIME:END -->
