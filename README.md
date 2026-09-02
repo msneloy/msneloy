@@ -4,7 +4,7 @@
 <table>
 <tr><th></th><th align="left">Name</th><th align="right">Hours</th></tr>
 <tr><td>🦊</td><td><b>Firefox</b></td><td align="right">1,815 hrs 44 mins</td></tr>
-<tr><td>💙</td><td><b>VS Code</b></td><td align="right">947 hrs 3 mins</td></tr>
+<tr><td>💙</td><td><b>VS Code</b></td><td align="right">948 hrs 1 min</td></tr>
 <tr><td>🌐</td><td><b>Chrome</b></td><td align="right">351 hrs</td></tr>
 <tr><td>🤖</td><td><b>Android Studio</b></td><td align="right">109 hrs 47 mins</td></tr>
 <tr><td>🌐</td><td><b>Browser</b></td><td align="right">93 hrs 17 mins</td></tr>
@@ -28,7 +28,7 @@
 
 <table>
 <tr><th></th><th align="left">Name</th><th align="right">Hours</th></tr>
-<tr><td>🐧</td><td><b>Linux</b></td><td align="right">2,294 hrs 22 mins</td></tr>
+<tr><td>🐧</td><td><b>Linux</b></td><td align="right">2,295 hrs 19 mins</td></tr>
 <tr><td>🪟</td><td><b>Windows</b></td><td align="right">1,221 hrs 7 mins</td></tr>
 <tr><td>❓</td><td><b>Unknown OS</b></td><td align="right">85 hrs 56 mins</td></tr>
 <tr><td>🍎</td><td><b>Mac</b></td><td align="right">10 hrs 50 mins</td></tr>
