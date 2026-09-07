@@ -117,6 +117,8 @@ Systems Engineer.
 <tr><td style="width: 28px;"><span aria-label="Histre" title="Histre" style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:4px;background:#2f2f2f;color:#f3f3f3;font-size:10px;font-weight:700;vertical-align:middle;margin-right:6px;">H</span></td><td><b>Histre</b></td><td align="right">23 mins</td></tr>
 <tr><td style="width: 28px;"><img src="https://cdn.simpleicons.org/zed" alt="Zed" title="Zed" width="18" height="18" style="vertical-align: middle; margin-right: 6px;" /></td><td><b>Zed</b></td><td align="right">11 mins</td></tr>
 <tr><td style="width: 28px;"><span aria-label="Terminal" title="Terminal" style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:4px;background:#2f2f2f;color:#f3f3f3;font-size:10px;font-weight:700;vertical-align:middle;margin-right:6px;">U</span></td><td><b>Terminal</b></td><td align="right">0 secs</td></tr>
+<tr><td style="width: 28px;"><span aria-label="Unknown" title="Unknown Editor" style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:4px;background:#2f2f2f;color:#f3f3f3;font-size:10px;font-weight:700;vertical-align:middle;margin-right:6px;">?</span></td><td><b>Unknown Editor</b></td><td align="right">0 secs</td></tr>
+</table>
 </table>
 
 ### 🐧 Operating Systems
@@ -127,6 +129,7 @@ Systems Engineer.
 <tr><td style="width: 28px;"><img src="https://cdn.simpleicons.org/windows" alt="Windows" title="Windows" width="18" height="18" style="vertical-align: middle; margin-right: 6px;" /></td><td><b>Windows</b></td><td align="right">1,221 hrs 7 mins</td></tr>
 <tr><td style="width: 28px;"><img src="https://cdn.simpleicons.org/android" alt="Android" title="Android" width="18" height="18" style="vertical-align: middle; margin-right: 6px;" /></td><td><b>Android</b></td><td align="right">85 hrs 56 mins</td></tr>
 <tr><td style="width: 28px;"><img src="https://cdn.simpleicons.org/apple" alt="Mac" title="Mac" width="18" height="18" style="vertical-align: middle; margin-right: 6px;" /></td><td><b>Mac</b></td><td align="right">10 hrs 50 mins</td></tr>
+<tr><td style="width: 28px;"><span aria-label="Unknown OS" title="Unknown OS" style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:4px;background:#2f2f2f;color:#f3f3f3;font-size:10px;font-weight:700;vertical-align:middle;margin-right:6px;">?</span></td><td><b>Unknown OS</b></td><td align="right">85 hrs 56 mins</td></tr>
 </table>
 
 ### 📊 Categories
@@ -141,6 +144,7 @@ Systems Engineer.
 <tr><td style="width: 28px;"><span aria-label="Building" title="Building" style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:4px;background:#2f2f2f;color:#f3f3f3;font-size:10px;font-weight:700;vertical-align:middle;margin-right:6px;">B</span></td><td><b>Building</b></td><td align="right">1 hr 9 mins</td></tr>
 <tr><td style="width: 28px;"><span aria-label="Debugging" title="Debugging" style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:4px;background:#2f2f2f;color:#f3f3f3;font-size:10px;font-weight:700;vertical-align:middle;margin-right:6px;">D</span></td><td><b>Debugging</b></td><td align="right">22 mins</td></tr>
 <tr><td style="width: 28px;"><img src="https://cdn.simpleicons.org/figma" alt="Designing" title="Designing" width="18" height="18" style="vertical-align: middle; margin-right: 6px;" /></td><td><b>Designing</b></td><td align="right">1 min</td></tr>
+</table>
 </table>
 
 <!-- WAKATIME:END -->
