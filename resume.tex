@@ -1,10 +1,9 @@
 %-------------------------
-% Resume in LaTeX
 % Author : Mahadi Sajjad Neloy
 % License : MIT
 %-------------------------
 
-\documentclass[letterpaper,11pt]{article}
+\documentclass[a4paper,11pt]{article}
 
 \usepackage{latexsym}
 \usepackage[empty]{fullpage}
@@ -15,12 +14,23 @@
 \usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{pagecolor}
 
 \pagestyle{fancy}
-\fancyhf{} % clear all header and footer fields
+\fancyhf{}
 \fancyfoot{}
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
+
+% Colors
+\definecolor{background}{HTML}{1E1E1E}
+\definecolor{textcolor}{HTML}{D4D4D4}
+\definecolor{accentcolor}{HTML}{C9A96E}
+\definecolor{rulecolor}{HTML}{C9A96E}
+
+\pagecolor{background}
+\color{textcolor}
 
 % Adjust margins
 \addtolength{\oddsidemargin}{-0.5in}
@@ -37,28 +47,37 @@
 
 % Sections formatting
 \titleformat{\section}{
-  \vspace{-4pt}\scshape\raggedright\large
-}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+  \vspace{-4pt}\scshape\raggedright\large\color{accentcolor}
+}{}{0em}{}[\color{rulecolor}\titlerule \vspace{-5pt}]
 
 %-------------------------
 % Custom commands
 %-------------------------
 
-\newcommand{\resumeItem}[2]{
-  \item\small{
-    \textbf{#1}{: #2 \vspace{-2pt}}
-  }
+\newcommand{\resumeItem}[1]{
+  \item\small{#1 \vspace{-2pt}}
 }
 
 \newcommand{\resumeSubheading}[4]{
   \vspace{-1pt}\item
     \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \textbf{#1} & #2 \\
-      \textit{\small#3} & \textit{\small #4} \\
+      \textbf{\color{textcolor}#1} & \color{textcolor}#2 \\
+      \textit{\small\color{accentcolor}#3} & \textit{\small\color{textcolor}#4} \\
     \end{tabular*}\vspace{-5pt}
 }
 
-\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
+\newcommand{\resumeProjectHeading}[2]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textbf{\color{textcolor}#1} & \color{textcolor}#2 \\
+    \end{tabular*}\vspace{-5pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\newcommand{\techBadge}[2]{%
+  \colorbox{#1!18}{\textcolor{#1}{\small\bfseries #2}}%
+}
 
 \renewcommand{\labelitemii}{$\circ$}
 
@@ -74,101 +93,112 @@
 
 %----------HEADING-----------
 \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
-  \textbf{\href{https://github.com/msneloy}{\Large Mahadi Sajjad Neloy}} & Email: \href{mailto:neloy@youthnotion.org}{neloy@youthnotion.org}\\
-  \href{https://github.com/msneloy}{Embedded Systems Engineer} & Mobile: +880~1945~521324 \\
-  & GitHub: \href{https://github.com/msneloy}{github.com/msneloy} \\
+  \textbf{\href{https://github.com/msneloy}{\Large\color{accentcolor} Mahadi Sajjad Neloy}} & 
+  {\small\color{accentcolor}\Email\ }\href{mailto:mahadi.s.neloy@gmail.com}{\color{accentcolor}mahadi.s.neloy@gmail.com}\\
+  {\small\color{textcolor}Systems Engineer} & 
+  {\small\color{accentcolor}\Telefon\ }\color{textcolor}+880~1945~521324 \\
+  & {\small\color{accentcolor}\ComputerMouse\ }\href{https://github.com/msneloy}{\color{accentcolor}github.com/msneloy} \\
 \end{tabular*}
 
+\vspace{4pt}
+\textit{\small\color{textcolor} Systems Engineer specialising in embedded systems, IoT architecture, and network infrastructure, with a track record of building operational technical environments from nothing and a simple policy — problems get solved, or I find somewhere that lets me solve them.}
+\vspace{4pt}
+
 %-----------EXPERIENCE-----------
-\section{Work Experience}
+\section{Experience}
   \resumeSubHeadingListStart
 
     \resumeSubheading
       {Head of Engineering}{Noakhali, Bangladesh}
-      {Mentors' Noakhali Branch}{Jun 2025 -- Present}
-
-    \resumeSubheading
-      {Embedded Systems Engineer [Onsite]}{Noakhali, Bangladesh}
-      {Youth Notion}{Aug 2023 -- May 2025}
+      {Mentors' Noakhali Branch}{Jun 2025 -- August 2026}
       \resumeItemListStart
-        \resumeItem{Project ASTRA}
-          {Principal Systems Engineer}
-        \resumeItem{Project CIPHER}
-          {Engineering Coordinator}
-        \resumeItem{Project RAPID}
-          {Principal Systems Engineer}
-        \resumeItem{Project ARROW}
-          {Principal Engineer}
-        \resumeItem{Project BUTTERFLY}
-          {Systems Architect}
-        \resumeItem{Project BLADE}
-          {Principal Systems Engineer}
+        \resumeItem{Architected complete technical infrastructure for a two-floor facility from bare construction — three-phase electrical load distribution, structured Cat6 cabling with RJ45 ports in every room, custom network rack fabrication, UPS power segmentation across critical and non-critical systems, and dual-band access point placement.}
+        \resumeItem{Specified, procured, and deployed 30+ purpose-built Linux workstations across all departments, including a high-performance multimedia production station, eliminating Windows attack surface across the fleet.}
+        \resumeItem{Designed and hardened a multi-floor enterprise network via internal penetration assessment encompassing DDoS simulation and unauthorized access vector testing, resulting in full port closure and firewall hardening on branch routing infrastructure.}
+        \resumeItem{Diagnosed and resolved a Path MTU blackhole caused by PPPoE frame limitation silently dropping TLS handshake packets — independently, without ISP support following provider acquisition and engineering staff replacement.}
+        \resumeItem{Developed BIFROST, a proprietary screen broadcasting platform supporting multi-client connectivity, real-time audio transmission, and live connection monitoring — sole engineer from concept to deployment.}
+        \resumeItem{Designed and deployed Cerberus, a full-stack IELTS preparation platform with AI-assisted evaluation, real-time answer saving, and mock test infrastructure, developed iteratively against a structured feature request pipeline.}
+        \resumeItem{Built and maintained the branch website including data-driven architecture migration, SEO implementation across 1,000 keywords, and dynamic content systems.}
+        \resumeItem{Deployed iPBX call centre infrastructure with 10 extensions, call recording, and bulk SMS capability registered across all four national telecommunications providers via BTCL.}
+        \resumeItem{Established branch-wide cloud data infrastructure, access control, and documentation standards — migrating all operations from ad hoc file sharing to a structured, centralised repository.}
+        \resumeItem{Trained and mentored two junior technical staff in hardware assembly, Linux administration, networking fundamentals, and electrical systems.}
       \resumeItemListEnd
 
     \resumeSubheading
-      {Systems Engineer [Remote]}{Zhengzhou, Henan, China}
+      {Embedded Systems Engineer}{Noakhali, Bangladesh}
+      {Youth Notion}{Aug 2023 -- May 2025}
+      \resumeItemListStart
+        \resumeItem{Lead Hardware \& Software Engineer on TERRA — real-time flood monitoring network featuring ESP8266 nodes, multi-sensor array (ultrasonic, DHT22, MQ135), tri-mode connectivity (WiFi/GSM/LoRaWAN), solar and battery power management, and a centralised geographic dashboard — prototype competition-validated and reviewed by Bangladesh ICT Ministry.}
+        \resumeItem{Embedded Systems Engineer on BLADE — IoT aquaculture management system featuring ESP32-based embedded hardware, REST API cloud infrastructure, real-time multi-sensor biofloc telemetry, and automated electromechanical control — validated against traditional recirculating systems with a 10\% improvement in survival rate and 3.2\% improvement in growth rate.}
+        \resumeItem{Embedded Systems Engineer on ARROW — smart pen system for Bengali handwriting education featuring STM32F4 firmware, 6-axis IMU stroke capture with Kalman filtering, BLE 5.0 data transmission, and TensorFlow Lite neural network inference — feasibility validated against Bengali script requirements with manufacturing pipeline established.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Systems Engineer}{Zhengzhou, Henan, China}
       {Kuayue (Huzhou) Technology Co., Ltd.}{Dec 2022 -- Jul 2023}
+      \resumeItemListStart
+        \resumeItem{Recruited directly by CEO from university research laboratory to lead embedded systems prototyping for client-driven automation and AI projects — developed hardware and firmware prototypes through viability validation for handoff to mass production pipeline.}
+        \resumeItem{Principal engineer on autonomous vehicle and UAV development projects, working across embedded firmware, sensor integration, and system architecture.}
+      \resumeItemListEnd
 
     \resumeSubheading
-      {Applications Engineer [Remote]}{Huzhou, Zhejiang, China}
+      {Applications Engineer}{Huzhou, Zhejiang, China}
       {Kuayue (Huzhou) Technology Co., Ltd.}{Jul 2021 -- Dec 2022}
+      \resumeItemListStart
+        \resumeItem{Developed embedded application prototypes against client specifications, collaborating with senior engineers on system architecture and viability assessment prior to production handoff.}
+      \resumeItemListEnd
 
     \resumeSubheading
-      {Research Analyst [Remote]}{Huzhou, Zhejiang, China}
+      {Research Analyst}{Huzhou, Zhejiang, China}
       {Cyberspace Security Laboratory -- HUTC}{Jan 2020 -- Jul 2021}
+      \resumeItemListStart
+        \resumeItem{Conducted applied research in network security and embedded systems, contributing to laboratory publications and prototype development.}
+      \resumeItemListEnd
 
     \resumeSubheading
-      {Research Assistant [Onsite]}{Huzhou, Zhejiang, China}
+      {Research Assistant}{Huzhou, Zhejiang, China}
       {IoT Competition Laboratory -- HUTC}{Sep 2017 -- Dec 2019}
+      \resumeItemListStart
+        \resumeItem{Designed and built IoT prototypes for national and university level competitions, placing 1st in the 3rd Huzhou University IoT Application Innovation Competition (2018).}
+      \resumeItemListEnd
 
   \resumeSubHeadingListEnd
 
 %-----------EDUCATION-----------
 \section{Education}
   \resumeSubHeadingListStart
-
     \resumeSubheading
-      {Bachelor of Engineering}{Huzhou, Zhejiang, China}
-      {School of Information Engineering -- Huzhou University}{Sep 2017 -- Jul 2021}
+      {Bachelor of Engineering -- Computer Science}{Huzhou, Zhejiang, China}
+      {School of Information Engineering, Huzhou University}{Sep 2017 -- Jul 2021}
       \resumeItemListStart
-        \resumeItem{Field of Study}
-          {Computer Science}
-        \resumeItem{Thesis}
-          {Industrial Automation with ESP8266}
+        \resumeItem{Thesis: Industrial Automation with ESP8266}
+        \resumeItem{Zhejiang Provincial Government Scholarship (Class B), 2021}
+        \resumeItem{National College Student Innovation and Entrepreneurship Training Project Winner, 2019}
+        \resumeItem{1st Prize, 5th Huzhou University IoT Application Innovation Competition, 2020}
+        \resumeItem{1st Prize, 3rd Huzhou University IoT Application Innovation Competition, 2018}
+        \resumeItem{University Scholarship for International Students (Type A), 2017}
       \resumeItemListEnd
-
   \resumeSubHeadingListEnd
 
-%--------PROGRAMMING SKILLS--------
+%--------SKILLS--------
 \section{Skills}
- \begin{itemize}[leftmargin=*,label={}]
-    \small{\item{
-     \textbf{Languages}{: C, C++, Java, Python} \\
-     \textbf{Technologies}{: Embedded Systems, Linux, Git, IoT}
-    }}
- \end{itemize}
-
-%-----------CERTIFICATES-----------
-\section{Certificates}
+\begin{itemize}[leftmargin=*,label={}]
+  \small{\item{
+    \textbf{Languages}{: }C, C++, Python, Java, Bash \\
+    \textbf{Embedded}{: }ESP32, ESP8266, STM32, Arduino, ARM \\
+    \textbf{Systems}{: }Linux, Git, MQTT, REST, TLS, LoRaWAN \\
+    \textbf{Networking}{: }Architecture, Penetration Testing, VoIP, Firewall \\
+    \textbf{Platforms}{: }TensorFlow Lite, OpenCV, Firebase, Kafka
+  }}
+\end{itemize}
+%-----------CERTIFICATIONS-----------
+\section{Certifications}
   \begin{itemize}[leftmargin=*,label={}]
     \small{\item{
       \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-        \textbf{OSS Development, Linux and Git Specialization} & The Linux Foundation \\
-        \textit{Credential ID: DXLZHCPYVALL} & \\
-        \textbf{Google IT Automation Professional Certificate} & Google \\
-        \textit{Credential ID: V2VN7MZRSB79} & \\
-        \textbf{CNSS Certified Network Security Specialist} & ICSI, UK \\
-        \textit{Credential ID: 20379392} & \\
-        \textbf{Deep Learning Specialization} & deeplearning.ai \\
-        \textit{Credential ID: XHW5HLZ7888} & \\
-        \textbf{Applied Cryptography Specialization} & University of Colorado \\
-        \textit{Credential ID: 6CQCH48H23E8} & \\
-        \textbf{Machine Learning Specialization} & University of Washington \\
-        \textit{Credential ID: WUHVNW XQ97WS} & \\
-        \textbf{TensorFlow Developer Professional Certificate} & deeplearning.ai \\
-        \textit{Credential ID: 8SUSDYK6JBN2} & \\
-        \textbf{Reinforcement Learning Specialization} & Amii \\
-        \textit{Credential ID: ULGRB8J8DGHR} & \\
+        \textbf{CNSS Certified Network Security Specialist} & \textit{ICSI, UK -- 20379392} \\
+        \textbf{OSS Development, Linux and Git Specialization} & \textit{Linux Foundation -- DXLZHCPYVALL} \\
+        \textbf{Google IT Automation Professional Certificate} & \textit{Google -- V2VN7MZRSB79} \\
       \end{tabular*}
     }}
   \end{itemize}
@@ -177,74 +207,19 @@
 \section{Languages}
   \begin{itemize}[leftmargin=*,label={}]
     \small{\item{
-     \textbf{Bengali}{: Native} \hfill \textbf{Mandarin Chinese}{: HSK 2} \hfill \textbf{English}{: IELTS Band 8}
-    }}
+     \textbf{Bengali}{: Native} \hfill
+     \textbf{Mandarin Chinese}{: HSK 2} \hfill
+     \textbf{English}{: IELTS Band 8}    }}
   \end{itemize}
-
-%-----------AWARDS-----------
-\section{Awards}
-  \resumeSubHeadingListStart
-
-    \resumeSubheading
-      {University Scholarship for International Students (Type A)}{2017}
-      {Huzhou University}{}
-
-    \resumeSubheading
-      {1st Prize, 3rd Huzhou University IoT Application Innovation Competition}{2018}
-      {Huzhou University}{}
-
-    \resumeSubheading
-      {Winner, 2019 National College Student Innovation and Entrepreneurship Training Project}{2019}
-      {People's Republic of China}{}
-
-    \resumeSubheading
-      {1st Prize, 5th Huzhou University IoT Application Innovation Competition}{2020}
-      {Huzhou University}{}
-
-    \resumeSubheading
-      {Zhejiang Provincial Government Scholarship (Class B)}{2021}
-      {Zhejiang Provincial Government, People's Republic of China}{}
-
-  \resumeSubHeadingListEnd
-
-%-----------PROJECTS-----------
-\section{Projects}
-  \resumeSubHeadingListStart
-
-    \resumeSubheading
-      {Acidalia}{}
-      {Real-Time Face Mask Detection System}{}
-      \resumeItemListStart
-        \item \small{A real-time face mask detection system developed with Python and ported to run on x86 embedded systems running Arch Linux, equipped with 60FPS cameras. Capable of detecting multiple faces simultaneously and flagging individuals not wearing face masks.}
-        \item \small{Commissioned by the Vice President of the Faculty, Dr. Honghai, designed for installation in public places such as elevators as a Covid-prevention measure.}
-      \resumeItemListEnd
-
-    \resumeSubheading
-      {1211-Alastor}{}
-      {IEEE 802.11/802.15.1 Enabled Remote Inspection Vehicle}{}
-      \resumeItemListStart
-        \item \small{A wireless terrain-navigating vehicle with enhanced mobility, allowing the operator to pilot the platform via live video stream for safe, accurate, and frequent inspection and data capture.}
-        \item \small{Built with an AI Thinker ESP32-CAM, L298N Dual H-Bridge Motor Controller, toy car chassis, and 12V battery pack.}
-      \resumeItemListEnd
-
-    \resumeSubheading
-      {ARM-Slave}{}
-      {ESP-NOW Peer-to-Peer Communication Proof of Concept}{}
-      \resumeItemListStart
-        \item \small{A proof-of-concept project enabling instantaneous, isolated peer-to-peer communication between multiple embedded nodes in close proximity without requiring WLAN or internet connectivity.}
-        \item \small{Designed for edge network and edge computing applications, with the goal of deploying a sensor network that feeds data to an AI-powered embedded computer for real-time processing and feedback-driven task execution.}
-      \resumeItemListEnd
-
-  \resumeSubHeadingListEnd
 
 %-----------REFERENCES-----------
 \section{References}
-  \begin{itemize}[leftmargin=*,label={}]
+  \begin{itemize}[leftmargin=*,label={}] 
     \small{\item{
       \textbf{Dr. Zheng Bo}, Professor, School of Information Engineering, HUTC \\
-      \href{mailto:zhengbo@zjhu.edu.cn}{zhengbo@zjhu.edu.cn} \\[4pt]
+      \href{mailto:zhengbo@zjhu.edu.cn}{\color{accentcolor}zhengbo@zjhu.edu.cn} \\[4pt]
       \textbf{Dr. Chen Xiaohua}, Associate Professor, School of Information Engineering, HUTC \\
-      \href{mailto:97122046@zjhu.edu.cn}{97122046@zjhu.edu.cn}
+      \href{mailto:97122046@zjhu.edu.cn}{\color{accentcolor}97122046@zjhu.edu.cn}
     }}
   \end{itemize}
 

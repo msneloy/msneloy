@@ -29,24 +29,78 @@ jobs:
               summary: 'https://wakatime.com/share/@Sierra117/ca964aaa-fcd3-4f9b-ad9b-855b90cb5ae4.json',
             };
 
-            const icons = {
-              'python': '🐍', 'java': '☕', 'javascript': '📜', 'html': '🌐', 'css': '🎨',
-              'c': '⚙️', 'c++': '⚙️', 'go': '🔵', 'rust': '🦀', 'bash': '🐚',
-              'typescript': '📘', 'ruby': '💎', 'php': '🐘', 'swift': '🍎', 'kotlin': '🟣',
-              'r': '📊', 'scala': '🔴', 'perl': '🐪', 'lua': '🌙', 'dart': '🎯',
-              'markdown': '📝', 'xml': '📄', 'json': '📋', 'yaml': '📄', 'sql': '🗃️',
-              'arduino': '🔌', 'processing': '🎨', 'nasm': '🔧', 'brainfuck': '🧠',
-              'linux': '🐧', 'windows': '🪟', 'mac': '🍎', 'unknown os': '❓',
-              'firefox': '🦊', 'vs code': '💙', 'chrome': '🌐', 'android studio': '🤖',
-              'intellij idea': '🧠', 'atom': '⚛️', 'pycharm': '🐍', 'clion': '⚙️',
-              'sublime text': '📝', 'webstorm': '🌊', 'eclipse': '🌑', 'zed': '⚡',
-              'browser': '🌐', 'antigravity': '🚀', 'bash': '🐚', 'zoom': '📹',
-              'coding': '💻', 'browsing': '🌐', 'ai coding': '🤖', 'meeting': '📹',
-              'writing docs': '📝', 'building': '🔨', 'debugging': '🐛', 'designing': '🎨',
+            const logoSlugs = {
+              'python': 'python',
+              'java': 'java',
+              'javascript': 'javascript',
+              'html': 'html5',
+              'css': 'css3',
+              'c': 'c',
+              'c++': 'cplusplus',
+              'go': 'go',
+              'rust': 'rust',
+              'bash': 'bash',
+              'typescript': 'typescript',
+              'ruby': 'ruby',
+              'php': 'php',
+              'swift': 'swift',
+              'kotlin': 'kotlin',
+              'r': 'r',
+              'scala': 'scala',
+              'perl': 'perl',
+              'lua': 'lua',
+              'dart': 'dart',
+              'markdown': 'markdown',
+              'xml': 'xml',
+              'json': 'json',
+              'yaml': 'yaml',
+              'sql': 'mysql',
+              'arduino': 'arduino',
+              'processing': 'processingfoundation',
+              'nasm': 'nasm',
+              'brainfuck': 'brainfuck',
+              'linux': 'linux',
+              'windows': 'windows',
+              'mac': 'apple',
+              'firefox': 'firefoxbrowser',
+              'vs code': 'visualstudiocode',
+              'chrome': 'googlechrome',
+              'android studio': 'androidstudio',
+              'intellij idea': 'intellijidea',
+              'atom': 'atom',
+              'pycharm': 'pycharm',
+              'clion': 'clion',
+              'sublime text': 'sublimetext',
+              'webstorm': 'webstorm',
+              'eclipse': 'eclipseide',
+              'zed': 'zed',
+              'google calendar': 'googlecalendar',
+              'zoom': 'zoom',
+              'meeting': 'googlemeet',
+              'designing': 'figma'
             };
 
+            function normalizeName(name) {
+              if (name === 'Other') return 'Unclassified';
+              if (name === 'Unknown OS') return 'Android';
+              if (name === 'Unknown Editor') return 'Terminal';
+              return name;
+            }
+
             function getIcon(name) {
-              return icons[name.toLowerCase()] || '•';
+              const text = String(name || 'Unknown');
+              const slug = logoSlugs[text.toLowerCase()];
+
+              if (slug) {
+                return `<img src="https://cdn.simpleicons.org/${slug}" alt="${text}" title="${text}" width="18" height="18" style="vertical-align: middle; margin-right: 6px;" />`;
+              }
+
+              if (text === 'Unclassified') {
+                return `<img src="https://cdn.simpleicons.org/alien" alt="${text}" title="${text}" width="18" height="18" style="vertical-align: middle; margin-right: 6px;" />`;
+              }
+
+              const initial = (text.match(/[A-Za-z0-9]/) || ['?'])[0].toUpperCase();
+              return `<span aria-label="${text}" title="${text}" style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:4px;background:#2f2f2f;color:#f3f3f3;font-size:10px;font-weight:700;vertical-align:middle;margin-right:6px;">${initial}</span>`;
             }
 
             async function fetchJSON(url) {
@@ -69,21 +123,22 @@ jobs:
               let md = `### ⏱️ Coding Activity\n\n`;
               md += `| ⏱️ Total | 📅 Daily Average | 🏆 Best Day | 🚀 Since | 📆 Days |\n`;
               md += `|:---------|:-----------------|:------------|:---------|:-------|\n`;
-              md += `| ${gt.human_readable_total_including_other_language} | ${gt.human_readable_daily_average_including_other_language} | ${best.date} — ${best.text} | ${range.start.split('T')[0]} | ${range.days_including_holidays} |\n`;
+              md += `| ${gt.human_readable_total_including_other_language} | ${gt.human_readable_daily_average_including_other_language} | ${best.date} — ${best.text} | ${range.start.split('T')[0]} | ${range.days_including_holidays} |\n\n`;
               return md;
             }
 
             function buildTable(title, emoji, data) {
               let md = `### ${emoji} ${title}\n\n`;
-              md += `<table>\n`;
-              md += `<tr><th></th><th align="left">Name</th><th align="right">Hours</th></tr>\n`;
+              md += `<table style="width: 100%; table-layout: fixed; border-collapse: collapse; text-align: justify;">\n`;
+              md += `<tr><th style="width: 28px;"></th><th align="left" style="width: 60%;">Name</th><th align="right" style="width: 40%;">Hours</th></tr>\n`;
 
               for (const item of data) {
-                const icon = getIcon(item.name);
-                md += `<tr><td>${icon}</td><td><b>${item.name}</b></td><td align="right">${item.text}</td></tr>\n`;
+                const name = normalizeName(item.name);
+                const icon = getIcon(name);
+                md += `<tr><td style="width: 28px;">${icon}</td><td><b>${name}</b></td><td align="right">${item.text}</td></tr>\n`;
               }
 
-              md += `</table>\n`;
+              md += `</table>\n\n`;
               return md;
             }
 
