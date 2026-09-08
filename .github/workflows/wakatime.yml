@@ -87,22 +87,6 @@ jobs:
               return name;
             }
 
-            function getIcon(name) {
-              const text = String(name || 'Unknown');
-              const slug = logoSlugs[text.toLowerCase()];
-
-              if (slug) {
-                return `<img src="https://cdn.simpleicons.org/${slug}" alt="${text}" title="${text}" width="18" height="18" style="vertical-align: middle; margin-right: 6px;" />`;
-              }
-
-              if (text === 'Unclassified') {
-                return `<img src="https://cdn.simpleicons.org/alien" alt="${text}" title="${text}" width="18" height="18" style="vertical-align: middle; margin-right: 6px;" />`;
-              }
-
-              const initial = (text.match(/[A-Za-z0-9]/) || ['?'])[0].toUpperCase();
-              return `<span aria-label="${text}" title="${text}" style="display:inline-block;width:18px;height:18px;line-height:18px;text-align:center;border-radius:4px;background:#2f2f2f;color:#f3f3f3;font-size:10px;font-weight:700;vertical-align:middle;margin-right:6px;">${initial}</span>`;
-            }
-
             async function fetchJSON(url) {
               const res = await fetch(url);
               const text = await res.text();
@@ -129,13 +113,12 @@ jobs:
 
             function buildTable(title, emoji, data) {
               let md = `### ${emoji} ${title}\n\n`;
-              md += `<table style="width: 100%; table-layout: fixed; border-collapse: collapse; text-align: justify;">\n`;
-              md += `<tr><th style="width: 28px;"></th><th align="left" style="width: 60%;">Name</th><th align="right" style="width: 40%;">Hours</th></tr>\n`;
+              md += `<table style="width: 100%; border-collapse: collapse; table-layout: fixed; text-align: left;">\n`;
+              md += `<tr><th align="left">Name</th><th align="right" style="width: 180px;">Hours</th></tr>\n`;
 
               for (const item of data) {
                 const name = normalizeName(item.name);
-                const icon = getIcon(name);
-                md += `<tr><td style="width: 28px;">${icon}</td><td><b>${name}</b></td><td align="right">${item.text}</td></tr>\n`;
+                md += `<tr><td><b>${name}</b></td><td align="right">${item.text}</td></tr>\n`;
               }
 
               md += `</table>\n\n`;
