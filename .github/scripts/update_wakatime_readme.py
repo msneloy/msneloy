@@ -1,0 +1,388 @@
+#!/usr/bin/env python3
+
+from __future__ import annotations
+
+import json
+import re
+import urllib.request
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[2]
+README_PATH = ROOT / "README.md"
+CHART_DIR = ROOT / ".github" / "wakatime"
+CHART_DIR.mkdir(parents=True, exist_ok=True)
+
+BASE_URL = "https://wakatime.com/share/@Sierra117/"
+ENDPOINTS = {
+    "summary": "ca964aaa-fcd3-4f9b-ad9b-855b90cb5ae4.json",
+    "languages": "bb9729ad-9cb3-4d6c-b912-359e136ed48a.json",
+    "editors": "7cab5d5a-187a-4687-9e05-db05c975bf68.json",
+    "os": "8bb890bb-0128-4bb0-adaa-def4d63aa689.json",
+    "categories": "bdfc68ea-2e02-4fef-8870-5f648645152a.json",
+}
+IGNORED_ITEM_NAMES = {"Other", "Unknown", "Unknown Editor", "Browser"}
+LANGUAGE_COLORS = {
+    "python": "#3572A5",
+    "javascript": "#f1e05a",
+    "typescript": "#3178C6",
+    "html": "#e34c26",
+    "css": "#563d7c",
+    "java": "#b07219",
+    "c": "#555555",
+    "c++": "#f34b7d",
+    "go": "#00ADD8",
+    "markdown": "#083fa1",
+    "xml": "#0060ac",
+    "json": "#f0db4f",
+    "yaml": "#cb171e",
+    "bash": "#89e051",
+    "shell": "#89e051",
+    "ruby": "#701516",
+    "rust": "#dea584",
+    "swift": "#ffac45",
+    "php": "#4F5D95",
+    "kotlin": "#7F52FF",
+    "dart": "#00B4AB",
+    "csharp": "#178600",
+    "sql": "#e38c00",
+    "dockerfile": "#2496ED",
+    "makefile": "#427819",
+    "tex": "#5d87bf",
+    "jsx": "#61dafb",
+    "tsx": "#3178C6",
+    "vue": "#41B883",
+}
+EDITOR_COLORS = {
+    "vscode": "#007ACC",
+    "visual studio code": "#007ACC",
+    "firefox": "#FF7139",
+    "chrome": "#F7C948",
+    "android studio": "#3DDC84",
+    "intellij idea": "#7F5AF0",
+    "idea": "#7F5AF0",
+    "pycharm": "#21D789",
+    "clion": "#14C9A5",
+    "atom": "#49B77E",
+    "sublime text": "#FF9800",
+    "vim": "#019733",
+    "neovim": "#57A143",
+    "emacs": "#7F5AF0",
+    "terminal": "#1F2937",
+    "android": "#3DDC84",
+    "windows terminal": "#00AEEF",
+}
+
+
+def get_brand_color(name: str, fallback: str, palette: dict[str, str]) -> str:
+    key = name.strip().lower()
+    for candidate in (key, key.replace("-", " ")):
+        if candidate in palette:
+            return palette[candidate]
+    for candidate, value in palette.items():
+        if candidate in key or key in candidate:
+            return value
+    return fallback
+
+
+def clean_chart_items(items: list[dict[str, Any]], excluded_names: set[str] | None = None) -> list[dict[str, Any]]:
+    cleaned: list[dict[str, Any]] = []
+    excluded = excluded_names or set()
+    for item in items or []:
+        if not isinstance(item, dict):
+            continue
+        name = str(item.get("name", "")).strip()
+        if name in IGNORED_ITEM_NAMES or name in excluded or not name:
+            continue
+        if name.lower() == "unknown os":
+            name = "Android"
+        total_seconds = float(item.get("total_seconds", 0) or 0)
+        if total_seconds <= 0:
+            continue
+        cleaned.append({**item, "name": name, "total_seconds": total_seconds})
+    return sorted(cleaned, key=lambda item: str(item.get("name", "")).lower())
+
+
+def fetch_json(url: str) -> dict[str, Any] | None:
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=30) as response:
+        text = response.read().decode("utf-8", "replace")
+
+    cleaned = text
+    if cleaned.startswith("[") or cleaned.startswith("{"):
+        cleaned = re.sub(r"^[^{\[]*", "", cleaned)
+        cleaned = re.sub(r"[^}\]]*$", "", cleaned)
+
+    try:
+        data = json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"Invalid JSON from {url}: {exc}") from exc
+
+    if isinstance(data, dict) and data.get("error"):
+        return None
+    return data
+
+
+def format_metric(total: Any, average: Any, best_day: dict[str, Any], range_data: dict[str, Any]) -> tuple[str, str, str, str, str]:
+    total_text = total.get("human_readable_total_including_other_language", "—") if isinstance(total, dict) else str(total)
+    avg_text = average.get("human_readable_daily_average_including_other_language", "—") if isinstance(average, dict) else str(average)
+    best_date = best_day.get("date", "—") if isinstance(best_day, dict) else "—"
+    best_text = best_day.get("text", "—") if isinstance(best_day, dict) else "—"
+    start_date = range_data.get("start", "—").split("T")[0] if isinstance(range_data, dict) else "—"
+    days_count = range_data.get("days_including_holidays", "—") if isinstance(range_data, dict) else "—"
+    return total_text, avg_text, f"{best_date} — {best_text}", start_date, str(days_count)
+
+
+def save_svg(name: str, content: str) -> str:
+    target = CHART_DIR / f"{name}.svg"
+    target.write_text(content, encoding="utf-8")
+    return f"./.github/wakatime/{name}.svg"
+
+
+def create_pie_slice(cx: float, cy: float, r: float, start_angle: float, end_angle: float, color: str) -> str:
+    start_rad = start_angle * 3.141592653589793 / 180.0
+    end_rad = end_angle * 3.141592653589793 / 180.0
+    x1 = cx + r * __import__('math').cos(start_rad)
+    y1 = cy + r * __import__('math').sin(start_rad)
+    x2 = cx + r * __import__('math').cos(end_rad)
+    y2 = cy + r * __import__('math').sin(end_rad)
+    large_arc = 1 if end_angle - start_angle > 180 else 0
+    return (
+        f'<path d="M {cx} {cy} L {x1} {y1} A {r} {r} 0 {large_arc} 1 {x2} {y2} Z" '
+        f'fill="{color}" opacity="0.95" />'
+    )
+
+
+def make_pie_chart(title: str, items: list[dict[str, Any]], width: int = 760, height: int = 260) -> str:
+    filtered = items[:8]
+    total = sum(float(item.get("total_seconds", 0) or 0) for item in filtered)
+    colors = ["#38bdf8", "#a78bfa", "#f59e0b", "#34d399", "#f472b6", "#f87171", "#60a5fa", "#c084fc"]
+    cx, cy, r = 160, 125, 86
+    start = 0.0
+    slices = []
+    legend = []
+
+    for idx, item in enumerate(filtered):
+        value = float(item.get("total_seconds", 0) or 0)
+        ratio = value / total if total else 0
+        end = start + ratio * 360
+        slices.append(create_pie_slice(cx, cy, r, start, end, colors[idx % len(colors)]))
+        legend.append(
+            f'<g font-family="sans-serif">'
+            f'<rect x="{300}" y="{30 + idx * 22}" width="12" height="12" rx="3" fill="{colors[idx % len(colors)]}" />'
+            f'<text x="320" y="{40 + idx * 22}" fill="#e5e7eb" font-size="11">{item.get("name", "Unknown")} · {item.get("text", "")}</text>'
+            f'</g>'
+        )
+        start = end
+
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
+      <rect width="100%" height="100%" fill="#111827" rx="12"/>
+      <text x="24" y="26" fill="#f8fafc" font-size="16" font-family="sans-serif" font-weight="700">{title}</text>
+      <circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="#1f2937" stroke-width="28"/>
+      {''.join(slices)}
+      <circle cx="{cx}" cy="{cy}" r="42" fill="#111827"/>
+      <text x="{cx-28}" y="{cy+6}" fill="#f8fafc" font-size="18" font-family="sans-serif" font-weight="700">{len(filtered)}</text>
+      {''.join(legend)}
+    </svg>'''
+    return svg
+
+
+def make_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, height: int = 260, color: str = "#8ecae6", palette: dict[str, str] | None = None, excluded_names: set[str] | None = None) -> str:
+    data = clean_chart_items(items, excluded_names=excluded_names)
+    if not data:
+        return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="#0b1220" rx="12"/><text x="24" y="26" fill="#e5e7eb" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
+
+    max_hours = max(float(item.get("total_seconds", 0) or 0) / 3600.0 for item in data)
+    plot_left = 150
+    plot_right = 700
+    plot_top = 24
+    plot_bottom = 200
+    plot_height = plot_bottom - plot_top
+    row_gap = 18
+    row_height = 12
+
+    bars = []
+    labels = []
+    for idx, item in enumerate(data):
+        value_hours = float(item.get("total_seconds", 0) or 0) / 3600.0
+        bar_width = max(10, (value_hours / max_hours) * (plot_right - plot_left))
+        y = plot_top + idx * row_gap
+        item_color = get_brand_color(str(item.get("name", "")), color, palette or {}) if palette else color
+        bars.append(f'<rect x="{plot_left}" y="{y}" width="{bar_width}" height="{row_height}" fill="{item_color}" rx="4" />')
+        labels.append(f'<text x="{12}" y="{y + 10}" fill="#e2e8f0" font-size="10" font-family="sans-serif">{item.get("name", "")[:16]}</text>')
+        labels.append(f'<text x="{plot_right + 10}" y="{y + 10}" fill="#cbd5e1" font-size="10" font-family="sans-serif">{item.get("text", "")[:12]}</text>')
+
+    height = max(height, plot_top + len(data) * row_gap + 30)
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
+      <rect width="100%" height="100%" fill="#0b1220" rx="12"/>
+      {''.join(bars)}
+      {''.join(labels)}
+    </svg>'''
+    return svg
+
+
+def make_os_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, height: int = 220) -> str:
+    data = clean_chart_items(items)
+    if not data:
+        return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="#0b1220" rx="12"/><text x="24" y="26" fill="#f8fafc" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
+
+    total = sum(float(item.get("total_seconds", 0) or 0) for item in data)
+    colors = ["#8ecae6", "#b8d432", "#c9a227", "#f4b942", "#9ad1d4", "#d9d9d9"]
+    start_x = 120
+    start_y = 80
+    bar_width = 520
+    bar_height = 28
+    segments = []
+    current_x = start_x
+
+    for idx, item in enumerate(data):
+        ratio = (float(item.get("total_seconds", 0) or 0) / total) if total else 0
+        segment_width = ratio * bar_width
+        segments.append(f'<rect x="{current_x}" y="{start_y}" width="{segment_width}" height="{bar_height}" fill="{colors[idx % len(colors)]}" rx="6" />')
+        current_x += segment_width
+
+    legend = []
+    for idx, item in enumerate(data):
+        total_seconds = float(item.get("total_seconds", 0) or 0)
+        hours = int(total_seconds // 3600)
+        minutes = int((total_seconds % 3600) // 60)
+        label = f"{item.get('name', '')[:12]} · {hours}h {minutes}m" if hours or minutes else f"{item.get('name', '')[:12]} · 0h 0m"
+        legend.append(f'<rect x="{120 + (idx % 3) * 170}" y="{130 + (idx // 3) * 22}" width="12" height="12" rx="3" fill="{colors[idx % len(colors)]}" />')
+        legend.append(f'<text x="{136 + (idx % 3) * 170}" y="{140 + (idx // 3) * 22}" fill="#e2e8f0" font-size="10" font-family="sans-serif">{label}</text>')
+
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
+      <rect width="100%" height="100%" fill="#0b1220" rx="12"/>
+      <rect x="{start_x}" y="{start_y}" width="{bar_width}" height="{bar_height}" fill="#1e293b" rx="6" />
+      {''.join(segments)}
+      {''.join(legend)}
+    </svg>'''
+    return svg
+
+
+def make_horizontal_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, height: int = 240) -> str:
+    filtered = items[:8]
+    max_value = max((float(item.get("total_seconds", 0) or 0) for item in filtered), default=1)
+    rows = []
+    for idx, item in enumerate(filtered):
+        value = float(item.get("total_seconds", 0) or 0)
+        ratio = value / max_value if max_value else 0
+        row_y = 40 + idx * 22
+        bar_w = 350 * ratio
+        rows.append(
+            f'<g font-family="sans-serif">'
+            f'<text x="20" y="{row_y + 12}" fill="#e5e7eb" font-size="11">{item.get("name", "Unknown")}</text>'
+            f'<rect x="160" y="{row_y}" width="350" height="12" rx="6" fill="#1f2937" />'
+            f'<rect x="160" y="{row_y}" width="{bar_w}" height="12" rx="6" fill="#34d399" />'
+            f'<text x="525" y="{row_y + 12}" fill="#cbd5e1" font-size="11">{item.get("text", "")}</text>'
+            f'</g>'
+        )
+
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
+      <rect width="100%" height="100%" fill="#111827" rx="12"/>
+      <text x="24" y="26" fill="#f8fafc" font-size="16" font-family="sans-serif" font-weight="700">{title}</text>
+      {''.join(rows)}
+    </svg>'''
+    return svg
+
+
+def build_summary_svg(summary: dict[str, Any]) -> str:
+    gt = summary.get("grand_total", {})
+    av = gt.get("human_readable_daily_average_including_other_language", "—")
+    total = gt.get("human_readable_total_including_other_language", "—")
+    best = summary.get("best_day", {})
+    range_data = summary.get("range", {})
+    best_label = f"{best.get('date', '—')} — {best.get('text', '—')}"
+    since = range_data.get("start", "—").split("T")[0]
+    days = range_data.get("days_including_holidays", "—")
+
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="760" height="120" viewBox="0 0 760 120">
+  <rect width="100%" height="100%" fill="#111827" rx="12"/>
+  <g font-family="sans-serif" fill="#e5e7eb">
+    <text x="22" y="28" font-size="12" font-weight="600">Total</text>
+    <text x="22" y="52" font-size="22" font-weight="700">{total}</text>
+    <text x="200" y="28" font-size="12" font-weight="600">Daily Average</text>
+    <text x="200" y="52" font-size="22" font-weight="700">{av}</text>
+    <text x="420" y="28" font-size="12" font-weight="600">Best Day</text>
+    <text x="420" y="52" font-size="18" font-weight="700">{best_label}</text>
+    <text x="620" y="28" font-size="12" font-weight="600">Since</text>
+    <text x="620" y="52" font-size="18" font-weight="700">{since}</text>
+    <text x="620" y="90" font-size="12" font-weight="600">Days</text>
+    <text x="620" y="110" font-size="18" font-weight="700">{days}</text>
+  </g>
+</svg>'''
+    return svg
+
+
+def build_markdown_block(summary: dict[str, Any], language_data: list[dict[str, Any]], editor_data: list[dict[str, Any]], os_data: list[dict[str, Any]], category_data: list[dict[str, Any]]) -> str:
+    total_text, avg_text, best_line, since_date, days_count = format_metric(
+        summary.get("grand_total", {}),
+        summary.get("grand_total", {}),
+        summary.get("best_day", {}),
+        summary.get("range", {}),
+    )
+
+    language_svg = save_svg("languages", make_bar_chart("Languages", language_data, color="#8ecae6", palette=LANGUAGE_COLORS))
+    editor_svg = save_svg("editors", make_bar_chart("Editors", editor_data, color="#b8d432", palette=EDITOR_COLORS))
+    os_svg = save_svg("operating-systems", make_os_bar_chart("Operating Systems", os_data))
+    category_svg = save_svg("categories", make_pie_chart("Categories", category_data, width=760, height=220))
+
+    block = f'''<!-- WAKATIME:START -->
+| Total | Daily Average | Best Day | Since | Days |
+|:------|:--------------|:---------|:------|:-----|
+| {total_text} | {avg_text} | {best_line} | {since_date} | {days_count} |
+
+### Operating Systems
+
+![Operating Systems]({os_svg})
+
+### Languages
+
+![Languages]({language_svg})
+
+### Editors
+
+![Editors]({editor_svg})
+
+### Categories
+
+![Categories]({category_svg})
+
+<!-- WAKATIME:END -->'''
+    return block
+
+
+def main() -> None:
+    summary_payload = fetch_json(BASE_URL + ENDPOINTS["summary"])
+    if summary_payload is None:
+        raise RuntimeError("Summary endpoint failed")
+
+    language_payload = fetch_json(BASE_URL + ENDPOINTS["languages"])
+    editor_payload = fetch_json(BASE_URL + ENDPOINTS["editors"])
+    os_payload = fetch_json(BASE_URL + ENDPOINTS["os"])
+    category_payload = fetch_json(BASE_URL + ENDPOINTS["categories"])
+
+    summary_data = summary_payload.get("data", {}) if isinstance(summary_payload, dict) else {}
+    language_data = language_payload.get("data", []) if isinstance(language_payload, dict) else []
+    editor_data = editor_payload.get("data", []) if isinstance(editor_payload, dict) else []
+    os_data = os_payload.get("data", []) if isinstance(os_payload, dict) else []
+    category_data = category_payload.get("data", []) if isinstance(category_payload, dict) else []
+
+    block = build_markdown_block(summary_data, language_data, editor_data, os_data, category_data)
+
+    current = README_PATH.read_text(encoding="utf-8") if README_PATH.exists() else ""
+    start_marker = "<!-- WAKATIME:START -->"
+    end_marker = "<!-- WAKATIME:END -->"
+
+    if start_marker in current and end_marker in current:
+        before, _ = current.split(start_marker, 1)
+        _, after = current.split(end_marker, 1)
+        updated = before + block + after
+    else:
+        updated = current.rstrip() + "\n\n" + block + "\n"
+
+    README_PATH.write_text(updated, encoding="utf-8")
+    print("WakaTime data refreshed and README updated.")
+
+
+if __name__ == "__main__":
+    main()
