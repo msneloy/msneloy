@@ -85,6 +85,13 @@ def get_brand_color(name: str, fallback: str, palette: dict[str, str]) -> str:
     return fallback
 
 
+def format_duration(total_seconds: float) -> str:
+    total_seconds = max(0, int(total_seconds))
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    return f"{hours:04d}H {minutes:02d}M"
+
+
 def clean_chart_items(items: list[dict[str, Any]], excluded_names: set[str] | None = None) -> list[dict[str, Any]]:
     cleaned: list[dict[str, Any]] = []
     excluded = excluded_names or set()
@@ -167,21 +174,26 @@ def make_pie_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
         ratio = value / total if total else 0
         end = start + ratio * 360
         slices.append(create_pie_slice(cx, cy, r, start, end, colors[idx % len(colors)]))
+
+        row = idx
+        item_x = 300
+        time_x = 530
+        y = 40 + row * 20
         legend.append(
             f'<g font-family="sans-serif">'
-            f'<rect x="{300}" y="{30 + idx * 22}" width="12" height="12" rx="3" fill="{colors[idx % len(colors)]}" />'
-            f'<text x="320" y="{40 + idx * 22}" fill="#e5e7eb" font-size="11">{item.get("name", "Unknown")} · {item.get("text", "")}</text>'
+            f'<rect x="{item_x}" y="{y}" width="12" height="12" rx="3" fill="{colors[idx % len(colors)]}" />'
+            f'<text x="{item_x + 18}" y="{y + 10}" fill="#e5e7eb" font-size="11">{item.get("name", "Unknown")}</text>'
+            f'<text x="{time_x}" y="{y + 10}" fill="#cbd5e1" font-size="11">{format_duration(value)}</text>'
             f'</g>'
         )
         start = end
 
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
-      <rect width="100%" height="100%" fill="#111827" rx="12"/>
+      <rect width="100%" height="100%" fill="transparent"/>
       <text x="24" y="26" fill="#f8fafc" font-size="16" font-family="sans-serif" font-weight="700">{title}</text>
       <circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="#1f2937" stroke-width="28"/>
       {''.join(slices)}
-      <circle cx="{cx}" cy="{cy}" r="42" fill="#111827"/>
-      <text x="{cx-28}" y="{cy+6}" fill="#f8fafc" font-size="18" font-family="sans-serif" font-weight="700">{len(filtered)}</text>
+      <circle cx="{cx}" cy="{cy}" r="42" fill="transparent"/>
       {''.join(legend)}
     </svg>'''
     return svg
@@ -193,28 +205,29 @@ def make_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
         return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="#0b1220" rx="12"/><text x="24" y="26" fill="#e5e7eb" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
 
     max_hours = max(float(item.get("total_seconds", 0) or 0) / 3600.0 for item in data)
-    plot_left = 150
-    plot_right = 700
+    name_x = 12
+    time_x = 155
+    bar_left = 285
+    bar_right = 700
     plot_top = 24
-    plot_bottom = 200
-    plot_height = plot_bottom - plot_top
     row_gap = 18
     row_height = 12
 
     bars = []
     labels = []
     for idx, item in enumerate(data):
-        value_hours = float(item.get("total_seconds", 0) or 0) / 3600.0
-        bar_width = max(10, (value_hours / max_hours) * (plot_right - plot_left))
+        value_seconds = float(item.get("total_seconds", 0) or 0)
+        value_hours = value_seconds / 3600.0
+        bar_width = max(10, (value_hours / max_hours) * (bar_right - bar_left))
         y = plot_top + idx * row_gap
         item_color = get_brand_color(str(item.get("name", "")), color, palette or {}) if palette else color
-        bars.append(f'<rect x="{plot_left}" y="{y}" width="{bar_width}" height="{row_height}" fill="{item_color}" rx="4" />')
-        labels.append(f'<text x="{12}" y="{y + 10}" fill="#e2e8f0" font-size="10" font-family="sans-serif">{item.get("name", "")[:16]}</text>')
-        labels.append(f'<text x="{plot_right + 10}" y="{y + 10}" fill="#cbd5e1" font-size="10" font-family="sans-serif">{item.get("text", "")[:12]}</text>')
+        bars.append(f'<rect x="{bar_left}" y="{y}" width="{bar_width}" height="{row_height}" fill="{item_color}" rx="4" />')
+        labels.append(f'<text x="{name_x}" y="{y + 10}" fill="#e2e8f0" font-size="10" font-family="sans-serif">{item.get("name", "")[:18]}</text>')
+        labels.append(f'<text x="{time_x}" y="{y + 10}" fill="#cbd5e1" font-size="10" font-family="sans-serif">{format_duration(value_seconds)}</text>')
 
     height = max(height, plot_top + len(data) * row_gap + 30)
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
-      <rect width="100%" height="100%" fill="#0b1220" rx="12"/>
+      <rect width="100%" height="100%" fill="transparent"/>
       {''.join(bars)}
       {''.join(labels)}
     </svg>'''
@@ -244,14 +257,12 @@ def make_os_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760,
     legend = []
     for idx, item in enumerate(data):
         total_seconds = float(item.get("total_seconds", 0) or 0)
-        hours = int(total_seconds // 3600)
-        minutes = int((total_seconds % 3600) // 60)
-        label = f"{item.get('name', '')[:12]} · {hours}h {minutes}m" if hours or minutes else f"{item.get('name', '')[:12]} · 0h 0m"
+        label = f"{item.get('name', '')[:12]} · {format_duration(total_seconds)}"
         legend.append(f'<rect x="{120 + (idx % 3) * 170}" y="{130 + (idx // 3) * 22}" width="12" height="12" rx="3" fill="{colors[idx % len(colors)]}" />')
         legend.append(f'<text x="{136 + (idx % 3) * 170}" y="{140 + (idx // 3) * 22}" fill="#e2e8f0" font-size="10" font-family="sans-serif">{label}</text>')
 
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
-      <rect width="100%" height="100%" fill="#0b1220" rx="12"/>
+      <rect width="100%" height="100%" fill="transparent"/>
       <rect x="{start_x}" y="{start_y}" width="{bar_width}" height="{bar_height}" fill="#1e293b" rx="6" />
       {''.join(segments)}
       {''.join(legend)}
@@ -291,23 +302,30 @@ def build_summary_svg(summary: dict[str, Any]) -> str:
     total = gt.get("human_readable_total_including_other_language", "—")
     best = summary.get("best_day", {})
     range_data = summary.get("range", {})
-    best_label = f"{best.get('date', '—')} — {best.get('text', '—')}"
+    best_date = best.get("date", "—")
+    best_text = best.get("text", "—")
     since = range_data.get("start", "—").split("T")[0]
     days = range_data.get("days_including_holidays", "—")
 
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="760" height="120" viewBox="0 0 760 120">
-  <rect width="100%" height="100%" fill="#111827" rx="12"/>
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="760" height="200" viewBox="0 0 760 200">
+  <rect width="100%" height="100%" fill="transparent"/>
   <g font-family="sans-serif" fill="#e5e7eb">
-    <text x="22" y="28" font-size="12" font-weight="600">Total</text>
-    <text x="22" y="52" font-size="22" font-weight="700">{total}</text>
-    <text x="200" y="28" font-size="12" font-weight="600">Daily Average</text>
-    <text x="200" y="52" font-size="22" font-weight="700">{av}</text>
-    <text x="420" y="28" font-size="12" font-weight="600">Best Day</text>
-    <text x="420" y="52" font-size="18" font-weight="700">{best_label}</text>
-    <text x="620" y="28" font-size="12" font-weight="600">Since</text>
-    <text x="620" y="52" font-size="18" font-weight="700">{since}</text>
-    <text x="620" y="90" font-size="12" font-weight="600">Days</text>
-    <text x="620" y="110" font-size="18" font-weight="700">{days}</text>
+    <rect x="20" y="20" width="330" height="70" rx="10" fill="#1f2937"/>
+    <text x="40" y="45" font-size="12" font-weight="600" fill="#cbd5e1">Total</text>
+    <text x="40" y="72" font-size="22" font-weight="700">{total}</text>
+
+    <rect x="390" y="20" width="330" height="70" rx="10" fill="#1f2937"/>
+    <text x="410" y="45" font-size="12" font-weight="600" fill="#cbd5e1">Daily Average</text>
+    <text x="410" y="72" font-size="22" font-weight="700">{av}</text>
+
+    <rect x="20" y="110" width="330" height="70" rx="10" fill="#1f2937"/>
+    <text x="40" y="135" font-size="12" font-weight="600" fill="#cbd5e1">Best Day</text>
+    <text x="40" y="157" font-size="16" font-weight="700">{best_date} — {best_text}</text>
+
+    <rect x="390" y="110" width="330" height="70" rx="10" fill="#1f2937"/>
+    <text x="410" y="135" font-size="12" font-weight="600" fill="#cbd5e1">Since</text>
+    <text x="410" y="157" font-size="18" font-weight="700">{since}</text>
+    <text x="410" y="172" font-size="11" fill="#cbd5e1">Days: {days}</text>
   </g>
 </svg>'''
     return svg
@@ -321,15 +339,17 @@ def build_markdown_block(summary: dict[str, Any], language_data: list[dict[str, 
         summary.get("range", {}),
     )
 
+    summary_svg = save_svg("summary", build_summary_svg(summary))
     language_svg = save_svg("languages", make_bar_chart("Languages", language_data, color="#8ecae6", palette=LANGUAGE_COLORS))
     editor_svg = save_svg("editors", make_bar_chart("Editors", editor_data, color="#b8d432", palette=EDITOR_COLORS))
     os_svg = save_svg("operating-systems", make_os_bar_chart("Operating Systems", os_data))
     category_svg = save_svg("categories", make_pie_chart("Categories", category_data, width=760, height=220))
 
     block = f'''<!-- WAKATIME:START -->
-| Total | Daily Average | Best Day | Since | Days |
-|:------|:--------------|:---------|:------|:-----|
-| {total_text} | {avg_text} | {best_line} | {since_date} | {days_count} |
+
+### Summary
+
+![Summary]({summary_svg})
 
 ### Operating Systems
 
