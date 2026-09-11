@@ -21,7 +21,14 @@ ENDPOINTS = {
     "os": "8bb890bb-0128-4bb0-adaa-def4d63aa689.json",
     "categories": "bdfc68ea-2e02-4fef-8870-5f648645152a.json",
 }
-IGNORED_ITEM_NAMES = {"Other", "Unknown", "Unknown Editor", "Browser"}
+IGNORED_ITEM_NAMES = {"Other", "Unknown"}
+ALIASED_ITEM_NAMES = {
+    "Browser": "Brave",
+    "Unknown Editor": "Ghost Mode",
+    "Other": "Unmapped Runtime",
+    "Unknown": "Unmapped Runtime",
+    "Unknown Language": "Unmapped Runtime",
+}
 LANGUAGE_COLORS = {
     "python": "#3572A5",
     "javascript": "#f1e05a",
@@ -99,7 +106,11 @@ def clean_chart_items(items: list[dict[str, Any]], excluded_names: set[str] | No
         if not isinstance(item, dict):
             continue
         name = str(item.get("name", "")).strip()
-        if name in IGNORED_ITEM_NAMES or name in excluded or not name:
+        if name in excluded or not name:
+            continue
+        if name in ALIASED_ITEM_NAMES:
+            name = ALIASED_ITEM_NAMES[name]
+        if name in IGNORED_ITEM_NAMES:
             continue
         if name.lower() == "unknown os":
             name = "Android"
@@ -243,6 +254,53 @@ def make_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
     return svg
 
 
+def make_vertical_bar_legend_chart(title: str, items: list[dict[str, Any]], width: int = 760, height: int = 260, palette: dict[str, str] | None = None, excluded_names: set[str] | None = None) -> str:
+    data = clean_chart_items(items, excluded_names=excluded_names)
+    if not data:
+        return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="transparent"/><text x="24" y="26" fill="#e5e7eb" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
+
+    max_value = max(float(item.get("total_seconds", 0) or 0) for item in data)
+    chart_left = 90
+    chart_right = 660
+    plot_bottom = 160
+    bar_count = len(data)
+    step = (chart_right - chart_left) / max(bar_count, 1)
+    bar_width = max(10, min(24, step * 0.7))
+
+    bars = []
+    legend = []
+
+    for idx, item in enumerate(data):
+        value = float(item.get("total_seconds", 0) or 0)
+        ratio = value / max_value if max_value else 0
+        x = chart_left + idx * step + (step - bar_width) / 2
+        bar_height = 110 * ratio
+        y = plot_bottom - bar_height
+        item_color = get_brand_color(str(item.get("name", "")), "#8ecae6", palette or {}) if palette else "#8ecae6"
+        bars.append(f'<rect x="{x}" y="{y}" width="{bar_width}" height="{bar_height}" fill="{item_color}" rx="6" />')
+
+    legend_cols = 2
+    legend_rows = [data[i:i + legend_cols] for i in range(0, len(data), legend_cols)]
+    for row_idx, row in enumerate(legend_rows):
+        row_y = 185 + row_idx * 26
+        for col_idx, item in enumerate(row):
+            item_color = get_brand_color(str(item.get("name", "")), "#8ecae6", palette or {}) if palette else "#8ecae6"
+            x = 120 + col_idx * 310
+            label = item.get("name", "")[:15]
+            legend.append(f'<rect x="{x}" y="{row_y}" width="12" height="12" rx="3" fill="{item_color}" />')
+            legend.append(f'<text x="{x + 18}" y="{row_y + 10}" fill="#e5e7eb" font-size="10" font-family="sans-serif">{label}</text>')
+            legend.append(f'<text x="{x + 200}" y="{row_y + 10}" fill="#cbd5e1" font-size="10" font-family="sans-serif" text-anchor="end">{format_duration(float(item.get("total_seconds", 0) or 0))}</text>')
+
+    svg_height = max(height, 220 + len(legend_rows) * 28)
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{svg_height}" viewBox="0 0 {width} {svg_height}">
+      <rect width="100%" height="100%" fill="transparent"/>
+      <line x1="{chart_left}" y1="{plot_bottom}" x2="{chart_right}" y2="{plot_bottom}" stroke="#334155" stroke-width="1"/>
+      {''.join(bars)}
+      {''.join(legend)}
+    </svg>'''
+    return svg
+
+
 def make_os_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, height: int = 220) -> str:
     data = clean_chart_items(items)
     if not data:
@@ -350,7 +408,7 @@ def build_markdown_block(summary: dict[str, Any], language_data: list[dict[str, 
 
     summary_svg = save_svg("summary", build_summary_svg(summary))
     language_svg = save_svg("languages", make_bar_chart("Languages", language_data, color="#8ecae6", palette=LANGUAGE_COLORS))
-    editor_svg = save_svg("editors", make_bar_chart("Editors", editor_data, color="#b8d432", palette=EDITOR_COLORS))
+    editor_svg = save_svg("editors", make_vertical_bar_legend_chart("Editors", editor_data, palette=EDITOR_COLORS))
     os_svg = save_svg("operating-systems", make_os_bar_chart("Operating Systems", os_data))
     category_svg = save_svg("categories", make_pie_chart("Categories", category_data, width=760, height=220))
 
