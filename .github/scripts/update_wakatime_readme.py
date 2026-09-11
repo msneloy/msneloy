@@ -146,16 +146,26 @@ def save_svg(name: str, content: str) -> str:
     return f"./.github/wakatime/{name}.svg"
 
 
-def create_pie_slice(cx: float, cy: float, r: float, start_angle: float, end_angle: float, color: str) -> str:
+def create_pie_slice(cx: float, cy: float, outer_r: float, inner_r: float, start_angle: float, end_angle: float, color: str) -> str:
     start_rad = start_angle * 3.141592653589793 / 180.0
     end_rad = end_angle * 3.141592653589793 / 180.0
-    x1 = cx + r * __import__('math').cos(start_rad)
-    y1 = cy + r * __import__('math').sin(start_rad)
-    x2 = cx + r * __import__('math').cos(end_rad)
-    y2 = cy + r * __import__('math').sin(end_rad)
+
+    x1_outer = cx + outer_r * __import__('math').cos(start_rad)
+    y1_outer = cy + outer_r * __import__('math').sin(start_rad)
+    x2_outer = cx + outer_r * __import__('math').cos(end_rad)
+    y2_outer = cy + outer_r * __import__('math').sin(end_rad)
+
+    x1_inner = cx + inner_r * __import__('math').cos(end_rad)
+    y1_inner = cy + inner_r * __import__('math').sin(end_rad)
+    x2_inner = cx + inner_r * __import__('math').cos(start_rad)
+    y2_inner = cy + inner_r * __import__('math').sin(start_rad)
+
     large_arc = 1 if end_angle - start_angle > 180 else 0
     return (
-        f'<path d="M {cx} {cy} L {x1} {y1} A {r} {r} 0 {large_arc} 1 {x2} {y2} Z" '
+        f'<path d="M {x1_outer} {y1_outer} '
+        f'A {outer_r} {outer_r} 0 {large_arc} 1 {x2_outer} {y2_outer} '
+        f'L {x1_inner} {y1_inner} '
+        f'A {inner_r} {inner_r} 0 {large_arc} 0 {x2_inner} {y2_inner} Z" '
         f'fill="{color}" opacity="0.95" />'
     )
 
@@ -164,7 +174,7 @@ def make_pie_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
     filtered = items[:8]
     total = sum(float(item.get("total_seconds", 0) or 0) for item in filtered)
     colors = ["#38bdf8", "#a78bfa", "#f59e0b", "#34d399", "#f472b6", "#f87171", "#60a5fa", "#c084fc"]
-    cx, cy, r = 160, 125, 86
+    cx, cy, r, inner_r = 160, 125, 86, 42
     start = 0.0
     slices = []
     legend = []
@@ -173,7 +183,7 @@ def make_pie_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
         value = float(item.get("total_seconds", 0) or 0)
         ratio = value / total if total else 0
         end = start + ratio * 360
-        slices.append(create_pie_slice(cx, cy, r, start, end, colors[idx % len(colors)]))
+        slices.append(create_pie_slice(cx, cy, r, inner_r, start, end, colors[idx % len(colors)]))
 
         row = idx
         item_x = 300
@@ -190,7 +200,6 @@ def make_pie_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
 
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
       <rect width="100%" height="100%" fill="transparent"/>
-      <text x="24" y="26" fill="#f8fafc" font-size="16" font-family="sans-serif" font-weight="700">{title}</text>
       <circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="#1f2937" stroke-width="28"/>
       {''.join(slices)}
       <circle cx="{cx}" cy="{cy}" r="42" fill="transparent"/>
