@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import urllib.request
 from pathlib import Path
@@ -99,6 +100,66 @@ def format_duration(total_seconds: float) -> str:
     return f"{hours:04d}H {minutes:02d}M"
 
 
+NICE_MULTIPLIERS = (1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5)
+
+
+def log_axis_ceiling(max_value: float, fill_ratio: float = 0.92) -> float:
+    """Smallest 'nice' value for the axis top keeping the tallest bar within ``fill_ratio``.
+
+    Because the scale is logarithmic, a ceiling equal to the data max would make
+    the top bar touch the top gridline. This picks the smallest nice value whose
+    log position puts the tallest bar at or below ``fill_ratio`` of the plot,
+    leaving headroom and delaying overshoot as the data grows.
+    """
+    if max_value <= 0:
+        return 1.0
+    log_max = math.log10(1 + max_value)
+    base = 0.1
+    while True:
+        for mult in NICE_MULTIPLIERS:
+            ceiling = base * mult
+            if ceiling < max_value:
+                continue
+            fill = log_max / math.log10(1 + ceiling) if ceiling > 0 else 0
+            if fill <= fill_ratio:
+                return ceiling
+        base *= 10
+
+
+def log_scale_ticks(max_value: float, min_ratio_gap: float = 0.0) -> list[float]:
+    """Return 'nice' tick values (1/2/5 progression) spanning a log scale.
+
+    ``min_ratio_gap`` drops ticks that would land too close together once mapped
+    onto the log axis, keeping the axis labels readable. The axis ceiling
+    (``max_value``) is always included so the top of the scale is labelled.
+    """
+    if max_value <= 0:
+        return []
+    log_max = math.log10(1 + max_value)
+    ticks: list[float] = []
+    base = 0.1
+    while base <= max_value * 1.0001:
+        for mult in (1, 2, 5):
+            value = base * mult
+            if 0 < value <= max_value * 1.0001:
+                ticks.append(value)
+        base *= 10
+
+    if not ticks or ticks[-1] < max_value * 0.9999:
+        ticks.append(max_value)
+
+    filtered: list[float] = []
+    for value in ticks:
+        ratio = math.log10(1 + value) / log_max if log_max else 0
+        if not filtered:
+            filtered.append(value)
+            continue
+        prev_ratio = math.log10(1 + filtered[-1]) / log_max if log_max else 0
+        if ratio - prev_ratio >= min_ratio_gap:
+            filtered.append(value)
+    return filtered
+
+
 def clean_chart_items(items: list[dict[str, Any]], excluded_names: set[str] | None = None) -> list[dict[str, Any]]:
     cleaned: list[dict[str, Any]] = []
     excluded = excluded_names or set()
@@ -161,15 +222,15 @@ def create_pie_slice(cx: float, cy: float, outer_r: float, inner_r: float, start
     start_rad = start_angle * 3.141592653589793 / 180.0
     end_rad = end_angle * 3.141592653589793 / 180.0
 
-    x1_outer = cx + outer_r * __import__('math').cos(start_rad)
-    y1_outer = cy + outer_r * __import__('math').sin(start_rad)
-    x2_outer = cx + outer_r * __import__('math').cos(end_rad)
-    y2_outer = cy + outer_r * __import__('math').sin(end_rad)
+    x1_outer = cx + outer_r * math.cos(start_rad)
+    y1_outer = cy + outer_r * math.sin(start_rad)
+    x2_outer = cx + outer_r * math.cos(end_rad)
+    y2_outer = cy + outer_r * math.sin(end_rad)
 
-    x1_inner = cx + inner_r * __import__('math').cos(end_rad)
-    y1_inner = cy + inner_r * __import__('math').sin(end_rad)
-    x2_inner = cx + inner_r * __import__('math').cos(start_rad)
-    y2_inner = cy + inner_r * __import__('math').sin(start_rad)
+    x1_inner = cx + inner_r * math.cos(end_rad)
+    y1_inner = cy + inner_r * math.sin(end_rad)
+    x2_inner = cx + inner_r * math.cos(start_rad)
+    y2_inner = cy + inner_r * math.sin(start_rad)
 
     large_arc = 1 if end_angle - start_angle > 180 else 0
     return (
@@ -225,6 +286,8 @@ def make_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
         return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="#0b1220" rx="12"/><text x="24" y="26" fill="#e5e7eb" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
 
     max_hours = max(float(item.get("total_seconds", 0) or 0) / 3600.0 for item in data)
+    axis_hours = log_axis_ceiling(max_hours)
+    log_axis_hours = math.log10(1 + axis_hours)
     name_x = 12
     time_x = 155
     bar_left = 285
@@ -238,7 +301,8 @@ def make_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
     for idx, item in enumerate(data):
         value_seconds = float(item.get("total_seconds", 0) or 0)
         value_hours = value_seconds / 3600.0
-        bar_width = max(10, (value_hours / max_hours) * (bar_right - bar_left))
+        ratio = math.log10(1 + value_hours) / log_axis_hours if log_axis_hours else 0
+        bar_width = max(10, ratio * (bar_right - bar_left))
         y = plot_top + idx * row_gap
         item_color = get_brand_color(str(item.get("name", "")), color, palette or {}) if palette else color
         bars.append(f'<rect x="{bar_left}" y="{y}" width="{bar_width}" height="{row_height}" fill="{item_color}" rx="4" />')
@@ -246,10 +310,25 @@ def make_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
         labels.append(f'<text x="{time_x}" y="{y + 10}" fill="#cbd5e1" font-size="10" font-family="sans-serif">{format_duration(value_seconds)}</text>')
 
     height = max(height, plot_top + len(data) * row_gap + 30)
+
+    gridlines = []
+    axis_labels = []
+    plot_bottom = plot_top + len(data) * row_gap
+    for tick in log_scale_ticks(axis_hours, min_ratio_gap=0.08):
+        ratio = math.log10(1 + tick) / log_axis_hours if log_axis_hours else 0
+        x = bar_left + ratio * (bar_right - bar_left)
+        gridlines.append(f'<line x1="{x}" y1="{plot_top - 6}" x2="{x}" y2="{plot_bottom}" stroke="#1f2937" stroke-width="1" />')
+        axis_labels.append(f'<text x="{x}" y="{plot_bottom + 14}" fill="#94a3b8" font-size="9" font-family="sans-serif" text-anchor="middle">{tick:g}h</text>')
+        axis_labels.append(f'<text x="{x}" y="{plot_top - 12}" fill="#94a3b8" font-size="9" font-family="sans-serif" text-anchor="middle">{tick:g}h</text>')
+
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
       <rect width="100%" height="100%" fill="transparent"/>
+      {''.join(gridlines)}
+      <line x1="{bar_left}" y1="{plot_top - 6}" x2="{bar_right}" y2="{plot_top - 6}" stroke="#334155" stroke-width="1"/>
+      <line x1="{bar_left}" y1="{plot_bottom}" x2="{bar_right}" y2="{plot_bottom}" stroke="#334155" stroke-width="1"/>
       {''.join(bars)}
       {''.join(labels)}
+      {''.join(axis_labels)}
     </svg>'''
     return svg
 
@@ -259,7 +338,9 @@ def make_vertical_bar_legend_chart(title: str, items: list[dict[str, Any]], widt
     if not data:
         return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="transparent"/><text x="24" y="26" fill="#e5e7eb" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
 
-    max_value = max(float(item.get("total_seconds", 0) or 0) for item in data)
+    max_hours = max(float(item.get("total_seconds", 0) or 0) / 3600.0 for item in data)
+    axis_hours = log_axis_ceiling(max_hours)
+    log_axis_hours = math.log10(1 + axis_hours)
     chart_left = 90
     chart_right = 660
     plot_bottom = 160
@@ -271,8 +352,8 @@ def make_vertical_bar_legend_chart(title: str, items: list[dict[str, Any]], widt
     legend = []
 
     for idx, item in enumerate(data):
-        value = float(item.get("total_seconds", 0) or 0)
-        ratio = value / max_value if max_value else 0
+        value = float(item.get("total_seconds", 0) or 0) / 3600.0
+        ratio = math.log10(1 + value) / log_axis_hours if log_axis_hours else 0
         x = chart_left + idx * step + (step - bar_width) / 2
         bar_height = 110 * ratio
         y = plot_bottom - bar_height
@@ -292,11 +373,22 @@ def make_vertical_bar_legend_chart(title: str, items: list[dict[str, Any]], widt
             legend.append(f'<text x="{x + 200}" y="{row_y + 10}" fill="#cbd5e1" font-size="10" font-family="sans-serif" text-anchor="end">{format_duration(float(item.get("total_seconds", 0) or 0))}</text>')
 
     svg_height = max(height, 220 + len(legend_rows) * 28)
+
+    gridlines = []
+    axis_labels = []
+    for tick in log_scale_ticks(axis_hours, min_ratio_gap=0.12):
+        ratio = math.log10(1 + tick) / log_axis_hours if log_axis_hours else 0
+        y = plot_bottom - 110 * ratio
+        gridlines.append(f'<line x1="{chart_left}" y1="{y}" x2="{chart_right}" y2="{y}" stroke="#1f2937" stroke-width="1" />')
+        axis_labels.append(f'<text x="{chart_left - 6}" y="{y + 3}" fill="#94a3b8" font-size="9" font-family="sans-serif" text-anchor="end">{tick:g}h</text>')
+
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{svg_height}" viewBox="0 0 {width} {svg_height}">
       <rect width="100%" height="100%" fill="transparent"/>
+      {''.join(gridlines)}
       <line x1="{chart_left}" y1="{plot_bottom}" x2="{chart_right}" y2="{plot_bottom}" stroke="#334155" stroke-width="1"/>
       {''.join(bars)}
       {''.join(legend)}
+      {''.join(axis_labels)}
     </svg>'''
     return svg
 
