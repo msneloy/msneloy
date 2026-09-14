@@ -1,0 +1,22 @@
+[package]
+name = "portfolio"
+version = "0.1.0"
+edition = "2021"
+description = "Personal portfolio for Mahadi Sajjad Neloy, rendered from Rust with Leptos."
+publish = false
+
+[[bin]]
+name = "portfolio"
+path = "src/main.rs"
+
+[dependencies]
+# Only the `ssr` feature is enabled: the site is rendered to static HTML at
+# build time, so no WASM/hydration bundle or JavaScript runtime is produced.
+leptos = { version = "0.8", default-features = false, features = ["ssr"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
