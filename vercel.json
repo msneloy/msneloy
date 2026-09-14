@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable",
-  "buildCommand": ". \"$HOME/.cargo/env\" && cargo run --release",
+  "installCommand": "echo \"No dependency install step: Rust is provided by the build image.\"",
+  "buildCommand": "bash build.sh",
   "outputDirectory": "dist"
 }

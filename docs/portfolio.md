@@ -52,11 +52,22 @@ python3 -m http.server --directory dist
 
 `vercel.json` at the repository root performs three steps:
 
-| Setting           | Value                 | Purpose                                         |
-| ----------------- | --------------------- | ----------------------------------------------- |
-| `installCommand`  | installs rustup       | The build image ships Node tooling, not Rust.   |
-| `buildCommand`    | `cargo run --release` | Renders the site into `dist/`.                  |
-| `outputDirectory` | `dist`                | The static artifact Vercel serves from its CDN. |
+| Setting           | Value                          | Purpose                                          |
+| ----------------- | ------------------------------ | ------------------------------------------------ |
+| `installCommand`  | a no-op `echo`                 | There are no Node dependencies to install.       |
+| `buildCommand`    | `bash build.sh`                | Puts Rust on PATH, then renders into `dist/`.    |
+| `outputDirectory` | `dist`                         | The static artifact Vercel serves from its CDN.  |
+
+`build.sh` exists because Vercel's Amazon Linux 2023 build image **already ships
+Rust under `/rust`**:
+
+- The rustup one-liner is not used. It refuses to install when Rust is already
+  present ("cannot install while Rust is installed"), and it writes to
+  `$HOME/.cargo/env`, which resolves to `/vercel/.cargo/env` in the build
+  container and does not exist — so sourcing it fails the build.
+- The script sources `/rust/env`, falls back to `$HOME/.cargo/env`, and exports
+  `/rust/bin` on `PATH`. It refreshes the toolchain when rustup is available and
+  asserts the Rust version meets Leptos' MSRV of 1.88.
 
 ### Deploying
 
@@ -88,6 +99,7 @@ cargo run --release
 
 ```
 .
+├── build.sh          # Vercel entry point: configure Rust, then render
 ├── Cargo.toml        # leptos with only the `ssr` feature enabled
 ├── vercel.json       # build + output configuration
 ├── rust-toolchain.toml
