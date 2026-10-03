@@ -40,6 +40,14 @@ these as two distinct commands:
 | Build command | `bash build.sh` |
 | Deploy command | `npx wrangler pages deploy dist --project-name=msneloy` |
 
+For the custom deploy command, configure `CLOUDFLARE_API_TOKEN` with an API
+token scoped to the target account and the **Account → Cloudflare Pages →
+Edit** permission. Also set `CLOUDFLARE_ACCOUNT_ID` to that same account's ID.
+If Wrangler reports authentication error 10000, verify the token is active,
+has the Pages edit permission for this account, and both values are configured
+in the deployment environment. Do not put the token in the repository or share
+it in build logs.
+
 Do not use `npx wrangler deploy`: that command deploys a Worker, not a Pages
 site, and does not build or upload this static output. For Pages Git
 integration, set the build command and output directory in the Pages project
