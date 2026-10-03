@@ -18,4 +18,10 @@ if ! command -v cargo >/dev/null 2>&1; then
     . "$HOME/.cargo/env"
 fi
 
+if command -v rustup >/dev/null 2>&1 \
+    && ! rustup toolchain list | grep -q '^stable-'; then
+    echo "Installing the stable Rust toolchain required by rust-toolchain.toml."
+    rustup toolchain install stable --profile minimal
+fi
+
 cargo run --release --locked
