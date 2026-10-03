@@ -1,4 +1,4 @@
-//! Leptos components that describe the portfolio markup.
+//! Leptos components that describe the single-page profile.
 
 use leptos::prelude::*;
 
@@ -6,275 +6,99 @@ use crate::data;
 use crate::styles;
 
 #[component]
-pub fn Masthead() -> impl IntoView {
+pub fn Profile() -> impl IntoView {
     view! {
-        <header class="masthead">
-            <p class="eyebrow">"Systems Engineer"</p>
-            <h1>{data::NAME}</h1>
-            <p class="role">{data::TITLE}</p>
-            <div class="contact">
-                <a href=format!("mailto:{}", data::EMAIL)>{data::EMAIL}</a>
-                <span>{data::PHONE}</span>
-                <a href=data::GITHUB rel="noreferrer">
-                    {data::GITHUB_LABEL}
-                </a>
+        <main class="profile">
+            <div class="profile-mark" aria-hidden="true">
+                <span>"M"</span>
+                <span>"S"</span>
+                <span>"N"</span>
             </div>
-            <div class="thesis">
-                <p>{data::THESIS}</p>
+            <div class="orbit" aria-hidden="true">
+                <span class="orbit-core"></span>
+                <span class="orbit-ring orbit-ring-one"></span>
+                <span class="orbit-ring orbit-ring-two"></span>
+                <span class="orbit-line"></span>
+                <span class="orbit-node orbit-node-one"></span>
+                <span class="orbit-node orbit-node-two"></span>
+                <span class="orbit-node orbit-node-three"></span>
             </div>
-        </header>
-    }
-}
-
-#[component]
-pub fn About() -> impl IntoView {
-    view! {
-        <section id="about">
-            <h2>"About"</h2>
-            <p class="lede">{data::SUMMARY}</p>
-        </section>
-    }
-}
-
-#[component]
-pub fn ExperienceSection() -> impl IntoView {
-    view! {
-        <section id="experience">
-            <h2>"Experience"</h2>
-            <div class="timeline">
-                {data::EXPERIENCE
-                    .iter()
-                    .map(|job| {
-                        view! {
-                            <article class="entry">
-                                <h3>{job.role}</h3>
-                                <div class="meta">
-                                    <span class="org">{job.org}</span>
-                                    <span>{job.location}</span>
-                                    <span>{job.period}</span>
-                                </div>
-                                <ul class="ticks">
-                                    {job
-                                        .highlights
-                                        .iter()
-                                        .map(|point| view! { <li>{*point}</li> })
-                                        .collect_view()}
-                                </ul>
-                            </article>
-                        }
-                    })
-                    .collect_view()}
-            </div>
-        </section>
-    }
-}
-
-#[component]
-pub fn EducationSection() -> impl IntoView {
-    view! {
-        <section id="education">
-            <h2>"Education"</h2>
-            <div class="timeline">
-                {data::EDUCATION
-                    .iter()
-                    .map(|entry| {
-                        view! {
-                            <article class="entry">
-                                <h3>{entry.degree}</h3>
-                                <div class="meta">
-                                    <span class="org">{entry.school}</span>
-                                    <span>{entry.location}</span>
-                                    <span>{entry.period}</span>
-                                </div>
-                                <ul class="ticks">
-                                    {entry
-                                        .notes
-                                        .iter()
-                                        .map(|note| view! { <li>{*note}</li> })
-                                        .collect_view()}
-                                </ul>
-                            </article>
-                        }
-                    })
-                    .collect_view()}
-            </div>
-        </section>
-    }
-}
-
-#[component]
-pub fn Skills() -> impl IntoView {
-    view! {
-        <section id="skills">
-            <h2>"Skills"</h2>
-            <div class="grid">
-                {data::SKILLS
-                    .iter()
-                    .map(|group| {
-                        view! {
-                            <div class="card">
-                                <span class="label">{group.label}</span>
-                                <div class="tags">
-                                    {group
-                                        .items
-                                        .iter()
-                                        .map(|item| view! { <span class="tag">{*item}</span> })
-                                        .collect_view()}
-                                </div>
-                            </div>
-                        }
-                    })
-                    .collect_view()}
-            </div>
-        </section>
-    }
-}
-
-#[component]
-pub fn Certifications() -> impl IntoView {
-    view! {
-        <section id="certifications">
-            <h2>"Certifications"</h2>
-            <div class="card cert">
-                {data::CERTIFICATIONS
-                    .iter()
-                    .map(|cert| {
-                        view! {
-                            <div class="row">
-                                <span class="who">{cert.name}</span>
-                                <span class="id">
-                                    {format!("{} \u{00b7} {}", cert.issuer, cert.credential)}
-                                </span>
-                            </div>
-                        }
-                    })
-                    .collect_view()}
-            </div>
-        </section>
-    }
-}
-
-#[component]
-pub fn Languages() -> impl IntoView {
-    view! {
-        <section id="languages">
-            <h2>"Languages"</h2>
-            <div class="tags">
-                {data::LANGUAGES
-                    .iter()
-                    .map(|lang| {
-                        view! {
-                            <span class="tag accent">
-                                {format!("{} \u{00b7} {}", lang.name, lang.level)}
-                            </span>
-                        }
-                    })
-                    .collect_view()}
-            </div>
-        </section>
-    }
-}
-
-#[component]
-pub fn Activity() -> impl IntoView {
-    view! {
-        <section id="activity">
-            <h2>"Coding Activity"</h2>
-            <p class="lede">
-                "Live WakaTime telemetry, rendered to static SVG by the same Rust pipeline \
-                 that builds this page."
-            </p>
-            <div class="charts">
-                {data::CHARTS
-                    .iter()
-                    .map(|chart| {
-                        view! {
-                            <div class="chart">
-                                <h4>{chart.title}</h4>
-                                <div inner_html=chart.svg></div>
-                            </div>
-                        }
-                    })
-                    .collect_view()}
-            </div>
-        </section>
-    }
-}
-
-#[component]
-pub fn Footer() -> impl IntoView {
-    view! {
-        <footer>
-            <span>{data::MOTTO}</span>
-            <span>{format!("\u{00a9} {} \u{00b7} Built with Rust + Leptos", data::NAME)}</span>
-        </footer>
-    }
-}
-
-/// The complete page. Shared by the static generator and any future renderer.
-#[component]
-pub fn App() -> impl IntoView {
-    view! {
-        <div class="page">
-            <Masthead/>
-            <About/>
-            <ExperienceSection/>
-            <EducationSection/>
-            <Skills/>
-            <Certifications/>
-            <Languages/>
-            <Activity/>
-            <Footer/>
-        </div>
-    }
-}
-
-/// Emits the document shell and the Rust-authored stylesheet.
-pub fn document() -> String {
-    shell(crate::render(App))
-}
-
-/// Standalone page served by the host for unmatched routes.
-#[component]
-pub fn NotFound() -> impl IntoView {
-    view! {
-        <div class="page">
-            <header class="masthead">
-                <p class="eyebrow">"404"</p>
-                <h1>"Page not found"</h1>
-                <p class="role">"That route does not exist on this site."</p>
-            </header>
-            <section>
-                <a href="/">"\u{2190} Return to the portfolio"</a>
+            <section class="intro" aria-labelledby="name">
+                <h1 id="name">
+                    <span>{data::NAME_LINE_ONE}</span>
+                    <span class="name-last">{data::NAME_LINE_TWO}<span class="name-period">.</span></span>
+                </h1>
+                <p class="role">{data::TITLE}</p>
+                <nav class="contact" aria-label="Contact information">
+                    <a class="contact-link" href=format!("mailto:{}", data::EMAIL)>
+                        <span class="contact-label">"Email"</span>
+                        <span class="contact-value">{data::EMAIL}</span>
+                        <span class="contact-arrow" aria-hidden="true">"↗"</span>
+                    </a>
+                    <a class="contact-link" href=format!("tel:{}", data::PHONE_LINK)>
+                        <span class="contact-label">"Phone"</span>
+                        <span class="contact-value">{data::PHONE}</span>
+                        <span class="contact-arrow" aria-hidden="true">"↗"</span>
+                    </a>
+                    <a class="contact-link" href=data::GITHUB rel="noreferrer">
+                        <span class="contact-label">"GitHub"</span>
+                        <span class="contact-value">{data::GITHUB_LABEL}</span>
+                        <span class="contact-arrow" aria-hidden="true">"↗"</span>
+                    </a>
+                </nav>
             </section>
-        </div>
+        </main>
     }
 }
 
-pub fn not_found_document() -> String {
-    shell(crate::render(NotFound))
+/// Emits the complete single-page document and Rust-authored stylesheet.
+pub fn document() -> String {
+    shell(crate::render(Profile))
 }
 
-/// Wraps rendered body markup in the shared document shell.
 fn shell(body: String) -> String {
     format!(
         "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n\
 <meta charset=\"utf-8\">\n\
 <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\
-<title>{name} \u{2014} {title}</title>\n\
-<meta name=\"description\" content=\"{description}\">\n\
-<meta property=\"og:title\" content=\"{name} \u{2014} {title}\">\n\
-<meta property=\"og:description\" content=\"{description}\">\n\
-<meta property=\"og:type\" content=\"profile\">\n\
 <meta name=\"color-scheme\" content=\"dark\">\n\
 <meta name=\"theme-color\" content=\"{theme}\">\n\
+<meta name=\"description\" content=\"{description}\">\n\
+<meta property=\"og:type\" content=\"profile\">\n\
+<meta property=\"og:title\" content=\"{name} \u{2014} {title}\">\n\
+<meta property=\"og:description\" content=\"{description}\">\n\
+<title>{name} \u{2014} {title}</title>\n\
 <style>\n{style}\n</style>\n\
 </head>\n<body>\n{body}\n</body>\n</html>\n",
+        theme = styles::THEME_COLOR,
+        description = format!("{} \u{2014} {}", data::NAME, data::TITLE),
         name = data::NAME,
         title = data::TITLE,
-        description = data::SUMMARY,
-        theme = styles::THEME_COLOR,
         style = styles::stylesheet(),
         body = body,
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::document;
+    use crate::data;
+
+    #[test]
+    fn renders_one_profile_with_all_contact_methods() {
+        let html = document();
+
+        assert_eq!(html.matches("<main").count(), 1);
+        assert_eq!(html.matches("<h1").count(), 1);
+        assert!(html.contains(data::NAME));
+        assert!(html.contains(data::TITLE));
+        assert!(html.contains(data::EMAIL));
+        assert!(html.contains(&format!("mailto:{}", data::EMAIL)));
+        assert!(html.contains(data::PHONE));
+        assert!(html.contains(&format!("tel:{}", data::PHONE_LINK)));
+        assert!(html.contains(data::GITHUB));
+        assert!(html.contains(data::GITHUB_LABEL));
+        assert!(!html.contains("Experience"));
+        assert!(!html.contains("<script"));
+    }
 }

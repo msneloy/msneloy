@@ -2,7 +2,7 @@
 name = "portfolio"
 version = "0.1.0"
 edition = "2021"
-description = "Personal portfolio for Mahadi Sajjad Neloy, rendered from Rust with Leptos."
+description = "Single-page profile for Mahadi Sajjad Neloy, statically rendered with Rust and Leptos."
 publish = false
 
 [[bin]]
