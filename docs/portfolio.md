@@ -32,15 +32,29 @@ build command and output directory shown above. Cloudflare's build image does
 not include Rust, so `build.sh` installs the stable toolchain with rustup when
 Cargo is not already available.
 
+If using a custom build pipeline with a separate deploy command, configure
+these as two distinct commands:
+
+| Pipeline setting | Command |
+| --- | --- |
+| Build command | `bash build.sh` |
+| Deploy command | `npx wrangler pages deploy dist --project-name=msneloy` |
+
+Do not use `npx wrangler deploy`: that command deploys a Worker, not a Pages
+site, and does not build or upload this static output. For Pages Git
+integration, set the build command and output directory in the Pages project
+settings and let Pages publish the build output itself; do not configure a
+separate Worker deploy command.
+
 For **Vercel**, import the repository and leave the framework preset as
 **Other**. The root `vercel.json` configures the shared build command, `dist`
 output directory, and standard security and cache headers.
 
 The repository's `rust-toolchain.toml` selects stable; Leptos requires Rust
 1.88 or newer. The root `wrangler.toml` records the Cloudflare Pages output
-directory and build command for Wrangler-compatible workflows. Cloudflare's
-generated `_headers` file and Vercel's `vercel.json` apply equivalent security
-headers without adding a runtime or assets.
+directory for Wrangler-compatible workflows. Cloudflare's generated
+`_headers` file and Vercel's `vercel.json` apply equivalent security headers
+without adding a runtime or assets.
 
 ## Structure
 
