@@ -10,7 +10,7 @@ done
 
 if ! command -v cargo >/dev/null 2>&1; then
     if ! command -v curl >/dev/null 2>&1; then
-        echo "error: curl is required to install Rust in the Cloudflare Pages build environment" >&2
+        echo "error: curl is required to install Rust in the Cloudflare build environment" >&2
         exit 1
     fi
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \

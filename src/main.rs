@@ -19,11 +19,14 @@ fn main() {
 
     let html = components::document();
     fs::write(out_dir.join("index.html"), &html).expect("failed to write index.html");
-    fs::write(out_dir.join("_headers"), CLOUDFLARE_HEADERS)
-        .expect("failed to write Cloudflare Pages headers");
 
-    // Remove the old custom not-found page if this output directory predates
-    // the single-page build.
+    // Remove generated files from previous Pages builds; Workers assets only
+    // need the single profile page.
+    match fs::remove_file(out_dir.join("_headers")) {
+        Ok(()) => {}
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+        Err(error) => panic!("failed to remove legacy dist/_headers: {error}"),
+    }
     match fs::remove_file(out_dir.join("404.html")) {
         Ok(()) => {}
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
@@ -32,16 +35,6 @@ fn main() {
 
     println!("Rendered {} bytes to dist/index.html", html.len());
 }
-
-const CLOUDFLARE_HEADERS: &str = r#"/*
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
-  X-Frame-Options: DENY
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
-
-/index.html
-  Cache-Control: public, max-age=0, must-revalidate
-"#;
 
 /// Renders any Leptos view to an HTML string using server-side rendering.
 ///
