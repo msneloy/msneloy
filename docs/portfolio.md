@@ -52,9 +52,11 @@ output directory, and standard security and cache headers.
 
 The repository's `rust-toolchain.toml` selects stable; Leptos requires Rust
 1.88 or newer. The root `wrangler.toml` records the Cloudflare Pages output
-directory for Wrangler-compatible workflows. Cloudflare's generated
-`_headers` file and Vercel's `vercel.json` apply equivalent security headers
-without adding a runtime or assets.
+directory for Wrangler-compatible workflows. Keep the Cloudflare build
+command in the Pages project settings: Wrangler Pages configuration does not
+support a `[build]` table. Cloudflare's generated `_headers` file and Vercel's
+`vercel.json` apply equivalent security headers without adding a runtime or
+assets.
 
 ## Structure
 
