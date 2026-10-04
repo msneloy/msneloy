@@ -45,6 +45,10 @@ output, and security and cache headers.
 
 SvelteKit uses the static adapter; the site does not require a server runtime.
 The page metadata and Person structured data are rendered at build time.
+The WakaTime dashboard fetches the same public share JSON feeds as the README
+charts directly in the browser on page load, with manual refresh and a
+15-minute refresh interval. No WakaTime secret or GitHub Actions-generated
+site data is required.
 
 ## Structure
 
