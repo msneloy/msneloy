@@ -35,9 +35,10 @@ The static site is written to `dist/`.
 | Output directory | `dist` | Configured by `vercel.json` |
 
 For **Cloudflare Workers**, import the repository in Workers Builds and use
-`npm ci` as the install command and `npm run build` as the build command. Keep
-the deploy command as `npx wrangler deploy`. The root `wrangler.toml` publishes
-the SvelteKit static output from `dist/`.
+`npm ci` as the install command and `bash build.sh` (or `npm run build`) as the
+build command. Keep the deploy command as `npx wrangler deploy`. The root
+`build.sh` delegates to the npm build script, and `wrangler.toml` publishes the
+SvelteKit static output from `dist/`.
 
 For **Vercel**, import the repository and leave the framework preset as
 **Other**. The root `vercel.json` configures installation, the static build
