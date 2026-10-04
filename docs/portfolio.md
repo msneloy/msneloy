@@ -1,59 +1,68 @@
 # Portfolio
 
-One responsive profile page for **Mahadi Sajjad Neloy**, built entirely with
-Rust and [Leptos](https://leptos.dev). Rust renders the HTML and embeds the
-stylesheet at build time. The deployed site is static: it has no JavaScript,
-WASM, external assets, or server runtime.
+One responsive profile page for **Mahadi Sajjad Neloy**, built with
+[SvelteKit](https://kit.svelte.dev) and exported as static files.
 
-## Build
+## Develop
 
-Requires the stable Rust toolchain specified in `rust-toolchain.toml`.
+Requires Node.js 22 or newer and npm.
 
 ```sh
-bash build.sh
+npm ci
+npm run dev
 ```
 
-The build writes `dist/index.html`. `cargo run --release --locked` can also be
-used directly.
+Run the Svelte and TypeScript checks with:
 
-## Deploy to Cloudflare Workers or Vercel
+```sh
+npm run check
+```
 
-Both providers use the same Rust build command and static `dist` output:
+## Build and deploy
+
+```sh
+npm run build
+```
+
+The static site is written to `dist/`.
 
 | Setting | Cloudflare Workers | Vercel |
 | --- | --- | --- |
 | Framework preset | `None` / `Other` | `Other` |
-| Build command | `bash build.sh` | Configured by `vercel.json` |
+| Install command | `npm ci` | Configured by `vercel.json` |
+| Build command | `npm run build` | Configured by `vercel.json` |
 | Deploy command | `npx wrangler deploy` | Configured by `vercel.json` |
+| Output directory | `dist` | Configured by `vercel.json` |
 
-For **Cloudflare Workers**, connect this repository in **Workers & Pages →
-Create application → Workers → Import a repository** and set the build command
-to `bash build.sh`. Keep the deploy command as `npx wrangler deploy`. Cloudflare
-does not include Rust in its build image, so the build script installs stable
-when Cargo is unavailable. The root `wrangler.toml` configures Wrangler to
-publish `dist` as static assets, which matches the Git build's default Worker
-deploy command.
+For **Cloudflare Workers**, import the repository in Workers Builds and use
+`npm ci` as the install command and `npm run build` as the build command. Keep
+the deploy command as `npx wrangler deploy`. The root `wrangler.toml` publishes
+the SvelteKit static output from `dist/`.
 
 For **Vercel**, import the repository and leave the framework preset as
-**Other**. The root `vercel.json` configures the shared build command, `dist`
-output directory, and standard security and cache headers.
+**Other**. The root `vercel.json` configures installation, the static build
+output, and security and cache headers.
 
-The repository's `rust-toolchain.toml` selects stable; Leptos requires Rust
-1.88 or newer. Cloudflare serves the generated HTML directly from its static
-asset network; there is no custom Worker handler or client-side runtime.
-Vercel's `vercel.json` applies the security headers for that deployment.
+SvelteKit uses the static adapter; the site does not require a server runtime.
+The page metadata and Person structured data are rendered at build time.
 
 ## Structure
 
 ```
-├── build.sh          # Shared Rust build command
-├── vercel.json       # Vercel build, output, and headers
-├── wrangler.toml     # Cloudflare Worker static assets configuration
-├── Cargo.toml
-├── rust-toolchain.toml
+├── package.json
+├── package-lock.json
+├── svelte.config.js
+├── vite.config.ts
+├── tsconfig.json
+├── vercel.json
+├── wrangler.toml
 └── src/
-    ├── main.rs       # Static output generation
-    ├── components.rs # Single-page Leptos view and document shell
-    ├── data.rs       # Name, title, and contact information
-    └── styles.rs     # Rust-authored inline design system
+    ├── app.html
+    ├── app.css
+    ├── lib/
+    │   └── profile.ts
+    └── routes/
+        ├── +layout.svelte
+        ├── +layout.ts
+        └── +page.svelte
 ```
