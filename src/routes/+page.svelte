@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
-  import { description, profile } from '$lib/profile';
+  import { description, profile } from '../lib/profile';
 
   const shareBase = 'https://wakatime.com/share/@Sierra117/';
   const feeds = {

@@ -25,6 +25,8 @@
 /.svelte-kit
 /target
 /dist
+/build
 /.vercel
+/.netlify
 /coverage
 *.tsbuildinfo
