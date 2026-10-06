@@ -65,8 +65,10 @@
   const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Person',
+    '@id': profile.siteUrl,
     name: profile.name,
     jobTitle: profile.title,
+    url: profile.siteUrl,
     email: profile.email,
     telephone: profile.phone,
     sameAs: [profile.github]
@@ -115,6 +117,7 @@
         const percent = Number(item.percent);
         if (
           !name ||
+          (label === 'languages' && name === 'Unmapped Runtime') ||
           !Number.isFinite(totalSeconds) ||
           totalSeconds <= 0 ||
           (!keepShortEntries && totalSeconds < 60) ||
@@ -190,7 +193,7 @@
           end: rangeEnd.slice(0, 10),
           days
         },
-        languages: parseItems(languagePayload.data, 'languages', Infinity, true),
+        languages: parseItems(languagePayload.data, 'languages'),
         editors: parseItems(editorPayload.data, 'editors'),
         systems: parseItems(systemPayload.data, 'operating systems', Infinity, true),
         categories: parseItems(categoryPayload.data, 'categories', 8, true)
@@ -253,6 +256,22 @@
     return Math.max(2, (Math.log10(1 + hours) / Math.log10(1 + axis)) * 100);
   }
 
+  function linearAxis(items: WakaItem[]): { ceiling: number } {
+    const maxHours = Math.max(...items.map((item) => item.totalSeconds / 3600), 0);
+    if (maxHours <= 0) return { ceiling: 1 };
+
+    const roughStep = maxHours / 4;
+    const magnitude = 10 ** Math.floor(Math.log10(roughStep));
+    const normalizedStep = roughStep / magnitude;
+    const step = (normalizedStep <= 1 ? 1 : normalizedStep <= 2 ? 2 : normalizedStep <= 5 ? 5 : 10) * magnitude;
+    const ceiling = Math.ceil(maxHours / step) * step;
+    return { ceiling };
+  }
+
+  function linearBarWidth(item: WakaItem, maxHours: number): number {
+    return Math.max(1, ((item.totalSeconds / 3600) / maxHours) * 100);
+  }
+
   function verticalBarHeight(item: WakaItem, items: WakaItem[]): number {
     return logBarWidth(item, items);
   }
@@ -281,7 +300,7 @@
     return `conic-gradient(${stops.join(', ')})`;
   }
 
-  const languageAxis = $derived(dashboard ? logScaleTicks(dashboard.languages, 0.2) : []);
+  const languageAxis = $derived(dashboard ? linearAxis(dashboard.languages) : { ceiling: 1 });
   const editorAxis = $derived(dashboard ? logScaleTicks(dashboard.editors, 0.12) : []);
 
   onMount(() => {
@@ -294,6 +313,7 @@
 
 <svelte:head>
   <title>{profile.name} — {profile.title}</title>
+  <link rel="canonical" href={profile.siteUrl} />
   <meta name="description" content={description} />
   <meta name="author" content={profile.name} />
   <meta name="robots" content="index, follow" />
@@ -301,6 +321,7 @@
   <meta name="theme-color" content="#080b10" />
   <meta property="og:type" content="profile" />
   <meta property="og:site_name" content={profile.name} />
+  <meta property="og:url" content={profile.siteUrl} />
   <meta property="og:title" content={`${profile.name} — ${profile.title}`} />
   <meta property="og:description" content={description} />
   <meta property="og:locale" content="en_US" />
@@ -319,6 +340,11 @@
     </a>
     <p class="header-label">PERSONNEL FILE <span>/</span> SYSTEMS ENGINEERING</p>
     <div class="header-actions">
+      <nav class="header-contact" aria-label="Contact links">
+        <a class="header-link" href={`mailto:${profile.email}`} aria-label={`Email ${profile.email}`}>EMAIL</a>
+        <a class="header-link" href={`tel:${profile.phoneLink}`} aria-label={`Call ${profile.phone}`}>CALL</a>
+        <a class="header-link" href={profile.github} target="_blank" rel="noreferrer" aria-label="Open GitHub in a new tab">GITHUB <span aria-hidden="true">↗</span></a>
+      </nav>
       <span class:online={dashboard !== null && !error} class="connection-state">
         <span class="connection-dot"></span>
         {#if loading}CONNECTING{:else if error && dashboard}STALE FEED{:else if error}OFFLINE{:else}LIVE FEED{/if}
@@ -336,17 +362,30 @@
       <h1 id="name">{profile.name}<span>.</span></h1>
       <p class="role">{profile.title}</p>
     </div>
-    <nav class="contact" aria-label="Contact information">
-      <a class="contact-link" href={`mailto:${profile.email}`}>
-        <span class="contact-label">Email</span><span class="contact-value">{profile.email}</span><span class="contact-arrow" aria-hidden="true">↗</span>
-      </a>
-      <a class="contact-link" href={`tel:${profile.phoneLink}`}>
-        <span class="contact-label">Phone</span><span class="contact-value">{profile.phone}</span><span class="contact-arrow" aria-hidden="true">↗</span>
-      </a>
-      <a class="contact-link" href={profile.github} rel="noreferrer">
-        <span class="contact-label">GitHub</span><span class="contact-value">{profile.githubLabel}</span><span class="contact-arrow" aria-hidden="true">↗</span>
-      </a>
-    </nav>
+    {#if dashboard}
+      <section class="summary-grid" aria-label="WakaTime summary">
+        <article class="instrument-card">
+          <p class="card-label">TOTAL LOGGED</p>
+          <strong>{dashboard.summary.total}</strong>
+          <span class="card-index">CAREER HOURS</span>
+        </article>
+        <article class="instrument-card">
+          <p class="card-label">DAILY AVERAGE</p>
+          <strong>{dashboard.summary.dailyAverage}</strong>
+          <span class="card-index">ALL TRACKED DAYS</span>
+        </article>
+        <article class="instrument-card">
+          <p class="card-label">PEAK OUTPUT</p>
+          <strong>{dashboard.summary.bestDay.text}</strong>
+          <span class="card-index">{dashboard.summary.bestDay.date}</span>
+        </article>
+        <article class="instrument-card">
+          <p class="card-label">TRACKING WINDOW</p>
+          <strong>{dashboard.summary.days.toLocaleString()} <small>DAYS</small></strong>
+          <span class="card-index">{dashboard.summary.start} — {dashboard.summary.end}</span>
+        </article>
+      </section>
+    {/if}
   </section>
 
   {#if error}
@@ -362,29 +401,6 @@
       <p>ACQUIRING TELEMETRY FROM WAKATIME…</p>
     </section>
   {:else if dashboard}
-    <section class="summary-grid" aria-label="WakaTime summary">
-      <article class="instrument-card total-card">
-        <p class="card-label">TOTAL LOGGED</p>
-        <strong>{dashboard.summary.total}</strong>
-        <span class="card-index">01 / CAREER HOURS</span>
-      </article>
-      <article class="instrument-card">
-        <p class="card-label">DAILY AVERAGE</p>
-        <strong>{dashboard.summary.dailyAverage}</strong>
-        <span class="card-index">02 / ALL TRACKED DAYS</span>
-      </article>
-      <article class="instrument-card">
-        <p class="card-label">PEAK OUTPUT</p>
-        <strong>{dashboard.summary.bestDay.text}</strong>
-        <span class="card-index">{dashboard.summary.bestDay.date}</span>
-      </article>
-      <article class="instrument-card">
-        <p class="card-label">TRACKING WINDOW</p>
-        <strong>{dashboard.summary.days.toLocaleString()} <small>DAYS</small></strong>
-        <span class="card-index">{dashboard.summary.start} — {dashboard.summary.end}</span>
-      </article>
-    </section>
-
     <section class="dashboard-grid" aria-label="WakaTime breakdown">
       <article class="dashboard-panel language-panel">
         <header class="panel-heading">
@@ -392,21 +408,12 @@
           <span class="panel-meta">{dashboard.languages.length} TRACKED</span>
         </header>
         {#if dashboard.languages.length}
-          <div class="log-axis language-axis" aria-hidden="true">
-            <span class="axis-caption">HOURS / LOG</span>
-            <div class="axis-labels">
-              {#each languageAxis as tick (tick.value)}
-                <span style={`--tick-position: ${tick.position}%`}>{formatAxisTick(tick.value)}</span>
-              {/each}
-            </div>
-          </div>
           <ol class="data-list">
             {#each dashboard.languages as item (item.name)}
               <li class="data-row">
                 <div class="row-heading"><span>{item.name}</span><span class="row-value">{formatDuration(item.totalSeconds)}<b>{item.percent.toFixed(2)}%</b></span></div>
-                <div class="bar-track log-track" role="meter" aria-label={`${item.name}: ${formatDuration(item.totalSeconds)}`} aria-valuemin="0" aria-valuemax={logAxisCeiling(dashboard.languages)} aria-valuenow={item.totalSeconds / 3600}>
-                  {#each languageAxis as tick (tick.value)}<i class="scale-mark" style={`--tick-position: ${tick.position}%`}></i>{/each}
-                  <span class="bar-fill" style={`--bar-width: ${logBarWidth(item, dashboard.languages)}%`}></span>
+                <div class="bar-track linear-track" role="meter" aria-label={`${item.name}: ${formatDuration(item.totalSeconds)}`} aria-valuemin="0" aria-valuemax={languageAxis.ceiling} aria-valuenow={item.totalSeconds / 3600}>
+                  <span class="bar-fill" style={`--bar-width: ${linearBarWidth(item, languageAxis.ceiling)}%`}></span>
                 </div>
               </li>
             {/each}

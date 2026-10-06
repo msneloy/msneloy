@@ -26,13 +26,13 @@ npm run build
 
 The static site is written to `dist/`.
 
-| Setting | Cloudflare Workers | Vercel |
-| --- | --- | --- |
-| Framework preset | `None` / `Other` | `Other` |
-| Install command | `npm ci` | Configured by `vercel.json` |
-| Build command | `npm run build` | Configured by `vercel.json` |
-| Deploy command | `npx wrangler deploy` | Configured by `vercel.json` |
-| Output directory | `dist` | Configured by `vercel.json` |
+| Setting | Cloudflare Workers | Vercel | Netlify | Render |
+| --- | --- | --- | --- | --- |
+| Framework preset | `None` / `Other` | `Other` | SvelteKit / Other | Static Site |
+| Install command | `npm ci` | Configured by `vercel.json` | `npm install` | `npm ci` |
+| Build command | `npm run build` | Configured by `vercel.json` | Configured by `netlify.toml` | Configured by `render.yaml` |
+| Deploy command | `npx wrangler deploy` | Configured by `vercel.json` | Managed by Netlify | Managed by Render |
+| Output directory | `dist` | Configured by `vercel.json` | Configured by `netlify.toml` | Configured by `render.yaml` |
 
 For **Cloudflare Workers**, import the repository in Workers Builds and use
 `npm ci` as the install command and `bash build.sh` (or `npm run build`) as the
@@ -44,8 +44,25 @@ For **Vercel**, import the repository and leave the framework preset as
 **Other**. The root `vercel.json` configures installation, the static build
 output, and security and cache headers.
 
+For **Netlify**, import the repository and let `netlify.toml` configure the
+build command, `dist` publish directory, Node.js version, and security/cache
+headers.
+
+For **Render**, create a Blueprint from the repository using `render.yaml`.
+It defines a static site with `dist` as its publish directory and configures
+the build, Node.js version, and security/cache headers.
+
 SvelteKit uses the static adapter; the site does not require a server runtime.
 The page metadata and Person structured data are rendered at build time.
+The canonical URL and sitemap currently target `https://neloy.vercel.app/`;
+update `siteUrl` in `src/lib/profile.ts`, `static/sitemap.xml`, and
+`static/robots.txt` together if the primary domain changes. After deployment,
+verify `https://neloy.vercel.app/` as a URL-prefix property in Google Search
+Console, inspect the homepage, request indexing, and submit
+`https://neloy.vercel.app/sitemap.xml`. Search Console verification and
+indexing requests must be completed by the site owner, and indexing is not
+instant or guaranteed.
+
 The WakaTime dashboard fetches the same public share JSON feeds as the README
 charts directly in the browser on page load, with manual refresh and a
 15-minute refresh interval. No WakaTime secret or GitHub Actions-generated
