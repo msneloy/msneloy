@@ -1,0 +1,47 @@
+---
+import '../app.css';
+import { description, profile } from '../lib/profile';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': profile.siteUrl,
+  name: profile.name,
+  jobTitle: profile.title,
+  url: profile.siteUrl,
+  email: profile.email,
+  telephone: profile.phone,
+  sameAs: [profile.github]
+};
+const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{profile.name} — {profile.title}</title>
+    <link rel="canonical" href={profile.siteUrl} />
+    <meta name="description" content={description} />
+    <meta name="author" content={profile.name} />
+    <meta name="robots" content="index, follow" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#080b10" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:url" content={profile.siteUrl} />
+    <meta property="og:title" content={`${profile.name} — ${profile.title}`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="profile:first_name" content={profile.firstName} />
+    <meta property="profile:last_name" content={profile.lastName} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={`${profile.name} — ${profile.title}`} />
+    <meta name="twitter:description" content={description} />
+    <script type="application/ld+json" set:html={structuredDataJson}></script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
