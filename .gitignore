@@ -22,12 +22,10 @@
 
 # Node.js dependencies and generated framework output
 /node_modules
-/.svelte-kit
 /.astro
 /.wrangler
 /target
 /dist
-/build
 /.vercel
 /.netlify
 /coverage
