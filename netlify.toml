@@ -1,9 +1,9 @@
 [build]
 command = "npm run build:netlify"
-publish = "dist/client"
+publish = "dist"
 
 [build.environment]
-NODE_VERSION = "22.17"
+NODE_VERSION = "22.19"
 
 [[headers]]
 for = "/*"

@@ -5,7 +5,7 @@ One responsive profile page for **Mahadi Sajjad Neloy**, built with
 
 ## Develop
 
-Requires Node.js 22.17 or newer and npm.
+Requires Node.js 22.19 or newer and npm.
 
 ```sh
 npm ci
@@ -37,11 +37,12 @@ Astro Worker entrypoint, compatibility settings, and static asset directory.
 For **Vercel**, use the Astro framework preset. `vercel.json` selects the
 Vercel build and configures security and cache headers.
 
-For **Netlify**, `netlify.toml` selects the Netlify build, `dist/client`
+For **Netlify**, `netlify.toml` selects the Netlify build, `dist`
 publish directory, Node.js version, and security/cache headers.
 
 For **Render**, use a Blueprint from `render.yaml`. It builds an Astro
-standalone Node server and starts it with `npm start`. For a manual Web
+standalone Node server and starts it with `npm start`, which binds to
+`0.0.0.0` and uses Render's assigned `PORT`. For a manual Web
 Service, use `npm ci && npm run build:render` as the build command and
 `npm start` as the start command.
 

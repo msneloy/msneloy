@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "engines": {
-    "node": ">=22.17"
+    "node": ">=22.19"
   },
   "scripts": {
     "dev": "astro dev --host 0.0.0.0",
@@ -13,7 +13,7 @@
     "build:netlify": "cross-env DEPLOY_TARGET=netlify astro build",
     "build:render": "cross-env DEPLOY_TARGET=render astro build",
     "build:vercel": "cross-env DEPLOY_TARGET=vercel astro build",
-    "start": "node ./dist/server/entry.mjs",
+    "start": "cross-env HOST=0.0.0.0 node ./dist/server/entry.mjs",
     "preview": "astro preview --host 0.0.0.0",
     "check": "astro check"
   },

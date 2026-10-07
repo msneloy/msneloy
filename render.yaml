@@ -6,6 +6,6 @@ services:
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
-        value: "22.17"
+        value: "22.19"
       - key: HOST
         value: "0.0.0.0"
