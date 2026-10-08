@@ -7,6 +7,13 @@
   --signal-bright: #f04455;
   --line: #d82a4145;
   --line-soft: #d82a4122;
+  --panel-surface: #0d131ae8;
+  --panel-surface-strong: #0b1017d9;
+  --button-base: #c4474f12;
+  --button-hover: #c4474f24;
+  --alert-surface: #521f171c;
+  --alert-border: rgba(169, 88, 64, 0.3);
+  --warning: #e5a18a;
   --red-glow: #8f102629;
   --steel-glow: #2537472b;
   --bg: #080b10;
@@ -38,9 +45,8 @@ body {
   background:
     radial-gradient(ellipse at 78% 48%, var(--steel-glow), transparent 36rem),
     radial-gradient(ellipse at 12% 100%, var(--red-glow), transparent 42rem),
-    linear-gradient(145deg, #10171f, transparent 58%),
-    var(--bg);
-  font-family: Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    linear-gradient(145deg, #10171f, transparent 58%), var(--bg);
+  font-family: Inter, "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -53,8 +59,12 @@ body::before {
     linear-gradient(90deg, #b4c2cc08 1px, transparent 1px),
     linear-gradient(#c4474f06 1px, transparent 1px),
     linear-gradient(90deg, #c4474f06 1px, transparent 1px);
-  background-size: 96px 96px, 96px 96px, 16px 16px, 16px 16px;
-  content: '';
+  background-size:
+    96px 96px,
+    96px 96px,
+    16px 16px,
+    16px 16px;
+  content: "";
   pointer-events: none;
   mask-image: linear-gradient(to bottom, black, transparent 88%);
 }
@@ -69,7 +79,7 @@ body::after {
     transparent 3px,
     #0000001c 4px
   );
-  content: '';
+  content: "";
   pointer-events: none;
   opacity: 0.32;
 }
@@ -86,8 +96,10 @@ body::after {
   z-index: 3;
   inset: 12px;
   border: 1px solid #d82a4145;
-  box-shadow: inset 0 0 20px #d82a410d, 0 0 12px #d82a4118;
-  content: '';
+  box-shadow:
+    inset 0 0 20px #d82a410d,
+    0 0 12px #d82a4118;
+  content: "";
   pointer-events: none;
 }
 
@@ -95,7 +107,7 @@ body::after {
   display: flex;
   gap: 5px;
   color: var(--dim);
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -159,7 +171,7 @@ body::after {
   gap: 4px;
   padding: 9px 10px;
   border: 1px solid var(--line);
-  background: #0d131ae8;
+  background: var(--panel-surface);
   text-decoration: none;
 }
 
@@ -174,7 +186,7 @@ body::after {
 .retry-button,
 .loading-panel p,
 .dashboard-footer {
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   text-transform: uppercase;
 }
 
@@ -209,19 +221,22 @@ body::after {
   gap: 4px;
   padding: 0 8px;
   border: 1px solid var(--line);
-  background: #c4474f0d;
+  background: var(--button-base);
   color: var(--muted);
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 8px;
   letter-spacing: 0.08em;
   text-decoration: none;
+  transition: border-color 160ms ease, background-color 160ms ease,
+    color 160ms ease, box-shadow 160ms ease;
 }
 
 .header-link:hover,
 .header-link:focus-visible {
   border-color: var(--signal);
-  background: #c4474f24;
+  background: var(--button-hover);
   color: var(--signal-bright);
+  box-shadow: 0 0 0 1px rgba(240, 68, 85, 0.18);
 }
 
 .header-link:focus-visible {
@@ -264,17 +279,20 @@ body::after {
   gap: 7px;
   padding: 7px 10px;
   border: 1px solid var(--line);
-  background: #c4474f12;
+  background: var(--button-base);
   color: var(--signal-bright);
   font-size: 9px;
   letter-spacing: 0.09em;
   cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease,
+    transform 160ms ease, box-shadow 160ms ease;
 }
 
 .refresh-button:hover,
 .retry-button:hover {
   border-color: var(--signal);
-  background: #c4474f24;
+  background: var(--button-hover);
+  box-shadow: 0 0 0 1px rgba(240, 68, 85, 0.18);
 }
 
 .refresh-button:disabled {
@@ -352,10 +370,10 @@ body::after {
   position: relative;
   min-width: 0;
   border: 1px solid #c4474f38;
-  background:
-    linear-gradient(140deg, #111922e8, #0b1017ed 74%),
-    var(--bg);
-  box-shadow: inset 0 1px #eeeae10a, 0 12px 36px #0000001a;
+  background: linear-gradient(140deg, #111922e8, #0b1017ed 74%), var(--bg);
+  box-shadow:
+    inset 0 1px #eeeae10a,
+    0 12px 36px #0000001a;
 }
 
 .instrument-card {
@@ -376,7 +394,7 @@ body::after {
   height: 1px;
   background: var(--signal);
   box-shadow: 0 0 9px #c4474f99;
-  content: '';
+  content: "";
 }
 
 .card-label {
@@ -552,7 +570,7 @@ body::after {
   right: 0;
   bottom: var(--tick-position);
   color: var(--dim);
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 7px;
   font-variant-numeric: tabular-nums;
   transform: translateY(50%);
@@ -604,7 +622,11 @@ body::after {
   border: 1px solid var(--editor-color);
   border-bottom: 0;
   border-radius: 3px 3px 0 0;
-  background: linear-gradient(0deg, color-mix(in srgb, var(--editor-color), #080b10 55%), var(--editor-color));
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--editor-color), #080b10 55%),
+    var(--editor-color)
+  );
   box-shadow: 0 0 8px color-mix(in srgb, var(--editor-color), transparent 58%);
 }
 
@@ -650,7 +672,7 @@ body::after {
 .editor-legend strong {
   flex: 0 0 auto;
   color: var(--muted);
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 8px;
   font-weight: 400;
   white-space: nowrap;
@@ -719,7 +741,7 @@ body::after {
 .os-legend strong {
   grid-column: auto;
   color: var(--dim);
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 8px;
   font-weight: 400;
 }
@@ -753,7 +775,7 @@ body::after {
 
 .category-ring > div span {
   color: var(--muted);
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 8px;
   letter-spacing: 0.12em;
 }
@@ -804,7 +826,7 @@ body::after {
 
 .category-values > span {
   color: var(--muted);
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 7px;
   white-space: nowrap;
 }
@@ -830,16 +852,16 @@ body::after {
   gap: 16px;
   margin-top: 16px;
   padding: 12px 14px;
-  border: 1px solid #a958404d;
-  background: #521f171c;
-  color: #e5a18a;
+  border: 1px solid var(--alert-border);
+  background: var(--alert-surface);
+  color: var(--warning);
   font-size: 12px;
 }
 
 .retry-button {
   flex: 0 0 auto;
-  border-color: #a9584066;
-  color: #e5a18a;
+  border-color: rgba(169, 88, 64, 0.4);
+  color: var(--warning);
 }
 
 .loading-panel {
@@ -850,7 +872,7 @@ body::after {
   gap: 12px;
   margin-top: 16px;
   border: 1px solid var(--line);
-  background: #0b1017d9;
+  background: var(--panel-surface-strong);
 }
 
 .loading-indicator {
@@ -956,7 +978,9 @@ body::after {
   }
 
   .connection-state {
-    font-size: 0;
+    font-size: 7px;
+    line-height: 1.4;
+    white-space: nowrap;
   }
 
   .connection-dot {

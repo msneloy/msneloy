@@ -1,18 +1,21 @@
-import cloudflare from '@astrojs/cloudflare';
-import netlify from '@astrojs/netlify';
-import node from '@astrojs/node';
-import vercel from '@astrojs/vercel';
-import { defineConfig } from 'astro/config';
+import cloudflare from "@astrojs/cloudflare";
+import netlify from "@astrojs/netlify";
+import node from "@astrojs/node";
+import vercel from "@astrojs/vercel";
+import { defineConfig } from "astro/config";
 
 function getAdapter(target: string) {
   switch (target) {
-    case 'cloudflare':
-      return cloudflare({ imageService: 'passthrough', imagesBindingName: false });
-    case 'netlify':
+    case "cloudflare":
+      return cloudflare({
+        imageService: "passthrough",
+        imagesBindingName: false,
+      });
+    case "netlify":
       return netlify();
-    case 'render':
-      return node({ mode: 'standalone' });
-    case 'vercel':
+    case "render":
+      return node({ mode: "standalone" });
+    case "vercel":
       return vercel();
     default:
       throw new Error(`Unsupported DEPLOY_TARGET "${target}".`);
@@ -20,10 +23,10 @@ function getAdapter(target: string) {
 }
 
 export default defineConfig({
-  output: 'server',
+  output: "server",
   session: false,
   image: {
-    service: { entrypoint: 'astro/assets/services/noop' }
+    service: { entrypoint: "astro/assets/services/noop" },
   },
-  adapter: getAdapter(process.env.DEPLOY_TARGET ?? 'render')
+  adapter: getAdapter(process.env.DEPLOY_TARGET ?? "render"),
 });

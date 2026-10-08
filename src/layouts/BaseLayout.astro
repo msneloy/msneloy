@@ -1,19 +1,22 @@
 ---
-import '../app.css';
-import { description, profile } from '../lib/profile';
+import "../app.css";
+import { description, profile } from "../lib/profile";
 
 const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  '@id': profile.siteUrl,
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": profile.siteUrl,
   name: profile.name,
   jobTitle: profile.title,
   url: profile.siteUrl,
   email: profile.email,
   telephone: profile.phone,
-  sameAs: [profile.github]
+  sameAs: [profile.github],
 };
-const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c');
+const structuredDataJson = JSON.stringify(structuredData).replace(
+  /</g,
+  "\\u003c",
+);
 ---
 
 <!doctype html>
@@ -39,7 +42,7 @@ const structuredDataJson = JSON.stringify(structuredData).replace(/</g, '\\u003c
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={`${profile.name} — ${profile.title}`} />
     <meta name="twitter:description" content={description} />
-    <script type="application/ld+json" set:html={structuredDataJson}></script>
+    <script type="application/ld+json" set:html={structuredDataJson} />
   </head>
   <body>
     <slot />

@@ -15,9 +15,9 @@
 
 ![Operating Systems](./.github/wakatime/operating-systems.svg)
 
-### Languages
+### Languages & Frameworks
 
-![Languages](./.github/wakatime/languages.svg)
+![Languages & Frameworks](./.github/wakatime/languages.svg)
 
 ### Editors
 

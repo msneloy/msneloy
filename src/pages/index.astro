@@ -1,26 +1,52 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { profile } from '../lib/profile';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { profile } from "../lib/profile";
 ---
 
 <BaseLayout>
   <main class="profile dashboard-page">
     <header class="dashboard-header">
-      <a class="profile-mark" href="#overview" aria-label={`${profile.name} home`}>
+      <a
+        class="profile-mark"
+        href="#overview"
+        aria-label={`${profile.name} home`}
+      >
         <span>M</span><span>S</span><span>N</span>
       </a>
-      <p class="header-label">PERSONNEL FILE <span>/</span> SYSTEMS ENGINEERING</p>
+      <p class="header-label">
+        PERSONNEL FILE <span>/</span> SYSTEMS ENGINEERING
+      </p>
       <div class="header-actions">
         <nav class="header-contact" aria-label="Contact links">
-          <a class="header-link" href={`mailto:${profile.email}`} aria-label={`Email ${profile.email}`}>EMAIL</a>
-          <a class="header-link" href={`tel:${profile.phoneLink}`} aria-label={`Call ${profile.phone}`}>CALL</a>
-          <a class="header-link" href={profile.github} target="_blank" rel="noreferrer" aria-label="Open GitHub in a new tab">GITHUB <span aria-hidden="true">↗</span></a>
+          <a
+            class="header-link"
+            href={`mailto:${profile.email}`}
+            aria-label={`Email ${profile.email}`}>EMAIL</a
+          >
+          <a
+            class="header-link"
+            href={`tel:${profile.phoneLink}`}
+            aria-label={`Call ${profile.phone}`}>CALL</a
+          >
+          <a
+            class="header-link"
+            href={profile.github}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Open GitHub in a new tab"
+            >GITHUB <span aria-hidden="true">↗</span></a
+          >
         </nav>
         <span class="connection-state" id="connection-state">
           <span class="connection-dot"></span>
           <span id="connection-label">CONNECTING</span>
         </span>
-        <button class="refresh-button" id="refresh-button" type="button" aria-label="Refresh WakaTime data">
+        <button
+          class="refresh-button"
+          id="refresh-button"
+          type="button"
+          aria-label="Refresh WakaTime data"
+        >
           <span class="refresh-icon" aria-hidden="true">↻</span>
           <span class="refresh-label">SYNC</span>
         </button>
@@ -33,12 +59,20 @@ import { profile } from '../lib/profile';
         <h1 id="name">{profile.name}<span>.</span></h1>
         <p class="role">{profile.title}</p>
       </div>
-      <section class="summary-grid" id="summary-grid" aria-label="WakaTime summary" hidden></section>
+      <section
+        class="summary-grid"
+        id="summary-grid"
+        aria-label="WakaTime summary"
+        hidden
+      >
+      </section>
     </section>
 
     <div class="feed-message" id="feed-message" role="alert" hidden>
       <span id="feed-error"></span>
-      <button class="retry-button" id="retry-button" type="button">RETRY CONNECTION</button>
+      <button class="retry-button" id="retry-button" type="button"
+        >RETRY CONNECTION</button
+      >
     </div>
 
     <section class="loading-panel" id="loading-panel" aria-live="polite">
@@ -46,10 +80,16 @@ import { profile } from '../lib/profile';
       <p>ACQUIRING TELEMETRY FROM WAKATIME…</p>
     </section>
 
-    <section class="dashboard-grid" id="dashboard-grid" aria-label="WakaTime breakdown" hidden></section>
+    <section
+      class="dashboard-grid"
+      id="dashboard-grid"
+      aria-label="WakaTime breakdown"
+      hidden
+    >
+    </section>
     <footer class="dashboard-footer" id="dashboard-footer" hidden></footer>
   </main>
   <script>
-    import '../scripts/dashboard';
+    import "../scripts/dashboard";
   </script>
 </BaseLayout>
