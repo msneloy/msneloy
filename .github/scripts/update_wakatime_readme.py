@@ -165,7 +165,8 @@ def format_duration(total_seconds: float) -> str:
     total_seconds = max(0, int(total_seconds))
     hours = total_seconds // 3600
     minutes = (total_seconds % 3600) // 60
-    return f"{hours:04d}H {minutes:02d}M"
+    secs = total_seconds % 60
+    return f"{hours:02d}:{minutes:02d}:{secs:02d}"
 
 
 NICE_MULTIPLIERS = (1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 7.5)
