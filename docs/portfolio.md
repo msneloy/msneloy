@@ -1,87 +1,69 @@
 # Portfolio
 
-One responsive profile page for **Mahadi Sajjad Neloy**, built with
-[Astro](https://astro.build) and on-demand server rendering on all four hosts.
+High-reliability personal profile and live WakaTime telemetry system for **Mahadi Sajjad Neloy**, built with **Ada** and deployed with edge-first static assets across Cloudflare, Vercel, Netlify, and Render.
 
-## Develop
+## Architecture
 
-Requires Node.js 22.19 or newer and npm.
+The codebase is built with pure **Ada** (`src_ada/`), emitting optimized HTML, CSS, client scripts, and edge security headers:
+
+- **`Profile` (`src_ada/profile.ads`):** Strongly typed Ada package storing credentials, Crew ID, metadata, and contact endpoints.
+- **`Markup` (`src_ada/markup.ads`, `src_ada/markup.adb`):** Emits the semantic HTML document and Cloudflare/Netlify `_headers` security directives.
+- **`Styles` (`src_ada/styles.ads`, `src_ada/styles.adb`):** Pure Ada styling package defining theme variables, responsive grid systems, and animations.
+- **`Telemetry_Client` (`src_ada/telemetry_client.ads`, `src_ada/telemetry_client.adb`):** Browser-side telemetry engine managing live WakaTime feeds, alphabetical sorting, 0-min item filtering, and `hh:mm:ss` formatting.
+- **`Site_Builder` (`src_ada/site_builder.adb`):** Main build binary compiled via GNAT (`site_builder.gpr`).
+
+## Local Development & Build
+
+### Requirements
+- **Node.js** 22.x+ (for local preview/CI runner)
+- **GNAT** (optional for native Ada compilation, install via `sudo dnf install gcc-gnat` on Fedora or `sudo apt install gnat` on Ubuntu)
+
+### Commands
 
 ```sh
-npm ci
-npm run dev
+# Run build pipeline
+npm run build
+# or: ./build.sh
+
+# Preview production build locally
+npm run preview
+# or: npm start
 ```
 
-Run Astro and TypeScript checks with:
+## Multi-Cloud Deployment
 
-```sh
-npm run check
-```
+All providers deploy from the same unified pipeline, serving static edge assets from `dist/client/`:
 
-## Build and deploy
+| Provider | Build Command | Output / Directory | Config File |
+| :--- | :--- | :--- | :--- |
+| **Cloudflare Workers / Pages** | `npm run build:cloudflare` | `./dist/client` | `wrangler.toml` |
+| **Vercel** | `npm run build:vercel` | `dist/client` | `vercel.json` |
+| **Netlify** | `npm run build:netlify` | `dist/client` | `netlify.toml` |
+| **Render** | `npm run build:render` | `dist/client` (via `node server.mjs`) | `render.yaml` |
 
-Use the provider-specific build command:
-
-| Setting | Cloudflare Workers | Vercel | Netlify | Render |
-| --- | --- | --- | --- | --- |
-| Framework preset | Astro | Astro | Astro | Node |
-| Install command | `npm ci` | `npm ci` | `npm ci` | `npm ci` |
-| Build command | `npm run build:cloudflare` | `npm run build:vercel` | `npm run build:netlify` | `npm run build:render` |
-| Runtime command | `npx wrangler deploy` | Managed by Vercel | Managed by Netlify | `npm start` |
-| Adapter | `@astrojs/cloudflare` | `@astrojs/vercel` | `@astrojs/netlify` | `@astrojs/node` |
-
-For **Cloudflare Workers**, use `npm run build:cloudflare` as the build command
-and `npx wrangler deploy` as the deploy command. `wrangler.toml` defines the
-Astro Worker entrypoint, compatibility settings, and static asset directory.
-
-For **Vercel**, use the Astro framework preset. `vercel.json` selects the
-Vercel build and configures security and cache headers.
-
-For **Netlify**, `netlify.toml` selects the Netlify build, `dist`
-publish directory, Node.js version, and security/cache headers.
-
-For **Render**, use a Blueprint from `render.yaml`. It builds an Astro
-standalone Node server and starts it with `npm start`, which binds to
-`0.0.0.0` and uses Render's assigned `PORT`. For a manual Web
-Service, use `npm ci && npm run build:render` as the build command and
-`npm start` as the start command.
-
-All four deployments use on-demand server rendering through their native Astro
-adapter. `npm run build` is an alias for the Render Node build. Cloudflare
-Workers runs on the Workers runtime; future server code there must use
-supported Web APIs and Cloudflare bindings rather than assume Node.js APIs.
-The WakaTime dashboard data continues to load in the browser.
-
-The page metadata and Person structured data are rendered per request on each
-host. The canonical URL and sitemap currently target
-`https://neloy.vercel.app/`; update `siteUrl` in `src/lib/profile.ts`,
-`public/sitemap.xml`, and `public/robots.txt` together if the primary domain
-changes. After deployment, verify `https://neloy.vercel.app/` as a URL-prefix
-property in Google Search Console, inspect the homepage, request indexing, and
-submit `https://neloy.vercel.app/sitemap.xml`. Search Console verification and
-indexing requests must be completed by the site owner, and indexing is not
-instant or guaranteed.
-
-## Structure
+## Repository Structure
 
 ```text
-├── astro.config.ts
-├── package.json
-├── package-lock.json
-├── tsconfig.json
-├── vercel.json
-├── netlify.toml
-├── render.yaml
-├── wrangler.toml
-└── src/
-    ├── app.css
-    ├── layouts/
-    │   └── BaseLayout.astro
-    ├── lib/
-    │   └── profile.ts
-    ├── middleware.ts
-    ├── pages/
-    │   └── index.astro
-    └── scripts/
-        └── dashboard.ts
+├── build.sh                 # Unified build script
+├── site_builder.gpr         # GNAT project file for Ada
+├── server.mjs               # Minimal zero-dependency production server
+├── wrangler.toml            # Cloudflare edge assets configuration
+├── vercel.json              # Vercel deployment configuration
+├── netlify.toml             # Netlify deployment configuration
+├── render.yaml              # Render deployment configuration
+├── docs/
+│   └── portfolio.md         # Technical architecture documentation
+├── public/
+│   ├── favicon.svg          # Official Ada language favicon
+│   ├── robots.txt           # Search engine crawling rules
+│   └── sitemap.xml          # Sitemap specification
+└── src_ada/
+    ├── profile.ads          # Identity & profile spec
+    ├── markup.ads           # Markup generation spec
+    ├── markup.adb           # Markup generation body
+    ├── styles.ads           # Stylesheet spec
+    ├── styles.adb           # Stylesheet body
+    ├── telemetry_client.ads # Client telemetry spec
+    ├── telemetry_client.adb # Client telemetry body
+    └── site_builder.adb     # Main Ada build routine
 ```

@@ -3,30 +3,17 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "engines": {
-    "node": ">=22.19"
-  },
   "scripts": {
-    "dev": "astro dev --host 0.0.0.0",
-    "build": "npm run build:render",
-    "build:cloudflare": "cross-env DEPLOY_TARGET=cloudflare astro build",
-    "build:netlify": "cross-env DEPLOY_TARGET=netlify astro build",
-    "build:render": "cross-env DEPLOY_TARGET=render astro build",
-    "build:vercel": "cross-env DEPLOY_TARGET=vercel astro build",
-    "start": "cross-env HOST=0.0.0.0 node ./dist/server/entry.mjs",
-    "preview": "astro preview --host 0.0.0.0",
-    "check": "astro check"
+    "build": "./build.sh",
+    "build:ada": "./build.sh",
+    "build:cloudflare": "./build.sh",
+    "build:render": "./build.sh",
+    "build:netlify": "./build.sh",
+    "build:vercel": "./build.sh",
+    "start": "node server.mjs",
+    "preview": "node server.mjs"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
-    "@astrojs/cloudflare": "^14.3.4",
-    "@astrojs/netlify": "^8.2.7",
-    "@astrojs/node": "^11.1.7",
-    "@astrojs/vercel": "^11.0.12",
-    "@types/node": "^26.6.4",
-    "astro": "^7.3.6",
-    "cross-env": "^10.1.0",
-    "typescript": "^6.0.0",
     "wrangler": "^4.147.0"
   }
 }

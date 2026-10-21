@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="adaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#02f88c" />
+      <stop offset="50%" stop-color="#00d2a0" />
+      <stop offset="100%" stop-color="#008f88" />
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e1722" />
+      <stop offset="100%" stop-color="#06090e" />
+    </linearGradient>
+  </defs>
+
+  <!-- Container background with industrial/systems border -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bgGrad)" stroke="#00d2a0" stroke-opacity="0.3" stroke-width="2" />
+
+  <!-- Stylized Ada "A" Glyph -->
+  <g transform="translate(32, 33)">
+    <!-- Left leg -->
+    <path d="M -18 16 L -4 -18 L 4 -18 L 18 16 L 9 16 L 6 9 L -6 9 L -9 16 Z M -3.5 3 L 3.5 3 L 0 -7 Z" fill="url(#adaGrad)" />
+    <!-- Tech crosshair / accent pip -->
+    <circle cx="0" cy="-21" r="2" fill="#02f88c" />
+  </g>
+</svg>
