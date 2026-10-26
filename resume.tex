@@ -1,3 +1,4 @@
+% !TeX program = xelatex
 %-------------------------
 % Author : Mahadi Sajjad Neloy
 % License : MIT
@@ -5,17 +6,22 @@
 
 \documentclass[a4paper,11pt]{article}
 
+\usepackage{fontspec}
+\setmainfont{Carlito}
+\setsansfont{Carlito}
 \usepackage{latexsym}
 \usepackage[empty]{fullpage}
 \usepackage{titlesec}
 \usepackage{marvosym}
+\usepackage{graphicx}
 \usepackage[usenames,dvipsnames]{color}
 \usepackage{verbatim}
 \usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 \usepackage{fancyhdr}
 \usepackage{xcolor}
-\usepackage{pagecolor}
+\usepackage{array}
+\usepackage{needspace}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -23,13 +29,10 @@
 \renewcommand{\headrulewidth}{0pt}
 \renewcommand{\footrulewidth}{0pt}
 
-% Colors
-\definecolor{background}{HTML}{1E1E1E}
-\definecolor{textcolor}{HTML}{D4D4D4}
-\definecolor{accentcolor}{HTML}{C9A96E}
-\definecolor{rulecolor}{HTML}{C9A96E}
-
-\pagecolor{background}
+% Clean, high-contrast styling on a white page
+\definecolor{textcolor}{HTML}{24292F}
+\definecolor{accentcolor}{HTML}{8A3F46}
+\definecolor{rulecolor}{HTML}{B88E92}
 \color{textcolor}
 
 % Adjust margins
@@ -42,49 +45,38 @@
 \urlstyle{same}
 
 \raggedbottom
-\raggedright
 \setlength{\tabcolsep}{0in}
+\setlength{\parindent}{0pt}
 
 % Sections formatting
 \titleformat{\section}{
-  \vspace{-4pt}\scshape\raggedright\large\color{accentcolor}
-}{}{0em}{}[\color{rulecolor}\titlerule \vspace{-5pt}]
+  \vspace{-2pt}\bfseries\raggedright\large\color{accentcolor}
+}{}{0em}{}[\color{rulecolor}\titlerule \vspace{-3pt}]
 
 %-------------------------
 % Custom commands
 %-------------------------
 
 \newcommand{\resumeItem}[1]{
-  \item\small{#1 \vspace{-2pt}}
+  \item\small{#1}
 }
 
 \newcommand{\resumeSubheading}[4]{
   \vspace{-1pt}\item
-    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
-      \textbf{\color{textcolor}#1} & \color{textcolor}#2 \\
-      \textit{\small\color{accentcolor}#3} & \textit{\small\color{textcolor}#4} \\
-    \end{tabular*}\vspace{-5pt}
-}
-
-\newcommand{\resumeProjectHeading}[2]{
-  \vspace{-1pt}\item
-    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-      \textbf{\color{textcolor}#1} & \color{textcolor}#2 \\
-    \end{tabular*}\vspace{-5pt}
+    \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
+      \textbf{\color{textcolor}#1} & {\small #2} \\
+      {\small\color{accentcolor}\textit{#3}} & {\small #4}
+    \end{tabular*}\vspace{-3pt}
 }
 
 \newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
 
-\newcommand{\techBadge}[2]{%
-  \colorbox{#1!18}{\textcolor{#1}{\small\bfseries #2}}%
-}
-
 \renewcommand{\labelitemii}{$\circ$}
 
-\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*]}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*,itemsep=2pt,topsep=1pt,parsep=0pt]}
 \newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
-\newcommand{\resumeItemListStart}{\begin{itemize}}
-\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[itemsep=2pt,topsep=2pt,parsep=0pt]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-2pt}}
 
 %-------------------------------------------
 %%%%%%  CV STARTS HERE  %%%%%%%%%%%%%%%%%%%%
@@ -92,74 +84,89 @@
 \begin{document}
 
 %----------HEADING-----------
-\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
-  \textbf{\href{https://github.com/msneloy}{\Large\color{accentcolor} Mahadi Sajjad Neloy}} & 
-  {\small\color{accentcolor}\Email\ }\href{mailto:mahadi.s.neloy@gmail.com}{\color{accentcolor}mahadi.s.neloy@gmail.com}\\
-  {\small\color{textcolor}Systems Engineer} & 
-  {\small\color{accentcolor}\Telefon\ }\color{textcolor}+880~1945~521324 \\
-  & {\small\color{accentcolor}\ComputerMouse\ }\href{https://github.com/msneloy}{\color{accentcolor}github.com/msneloy} \\
-\end{tabular*}
+\noindent{\LARGE\textbf{\color{accentcolor}Mahadi Sajjad Neloy}}\\[-1pt]
+{\small Deployment Engineer -- Linux, Kubernetes, Edge Systems}\par
+\vspace{3pt}
+\noindent{\small\begin{tabular*}{\textwidth}{@{}l@{\extracolsep{\fill}}l@{\extracolsep{\fill}}l@{\extracolsep{\fill}}l@{}}
+  \mbox{\raisebox{-1.2pt}{\includegraphics[height=8pt]{assets/email.pdf}}\hspace{4pt}\href{mailto:mahadi.s.neloy@gmail.com}{mahadi.s.neloy@gmail.com}} &
+  \mbox{\raisebox{-1.2pt}{\includegraphics[height=8pt]{assets/phone.pdf}}\hspace{4pt}\href{https://wa.me/8801945521324}{+880 1945 521324}} &
+  \mbox{\raisebox{-1.2pt}{\includegraphics[height=8pt]{assets/github.pdf}}\hspace{4pt}\href{https://github.com/msneloy}{github.com/msneloy}} &
+  \mbox{\raisebox{-1.2pt}{\includegraphics[height=8pt]{assets/location.pdf}}\hspace{4pt}Noakhali, Bangladesh}
+\end{tabular*}}
 
-\vspace{4pt}
-\textit{\small\color{textcolor} Systems Engineer specialising in embedded systems, IoT architecture, and network infrastructure, with a track record of building operational technical environments from nothing and a simple policy — problems get solved, or I find somewhere that lets me solve them.}
-\vspace{4pt}
+\vspace{2pt}
+\noindent{\color{rulecolor}\rule{\textwidth}{0.8pt}}
+\vspace{3pt}
+\small Systems and deployment engineer with experience across Linux infrastructure, networking, and embedded edge systems. Deployed and maintained more than 30 Linux workstations and resolved network, routing, and hardware issues. Used Docker and Kubernetes to deploy workloads in laboratory environments, with hands-on C, Python, and microcontroller experience.
+\vspace{2pt}
 
 %-----------EXPERIENCE-----------
 \section{Experience}
   \resumeSubHeadingListStart
 
     \resumeSubheading
-      {Head of Engineering}{Noakhali, Bangladesh}
-      {Mentors' Noakhali Branch}{Jun 2025 -- August 2026}
+      {Director of Engineering}{Noakhali, Bangladesh}
+      {Youth Notion}{Sep 2026 -- Present}
       \resumeItemListStart
-        \resumeItem{Architected complete technical infrastructure for a two-floor facility from bare construction — three-phase electrical load distribution, structured Cat6 cabling with RJ45 ports in every room, custom network rack fabrication, UPS power segmentation across critical and non-critical systems, and dual-band access point placement.}
-        \resumeItem{Specified, procured, and deployed 30+ purpose-built Linux workstations across all departments, including a high-performance multimedia production station, eliminating Windows attack surface across the fleet.}
-        \resumeItem{Designed and hardened a multi-floor enterprise network via internal penetration assessment encompassing DDoS simulation and unauthorized access vector testing, resulting in full port closure and firewall hardening on branch routing infrastructure.}
-        \resumeItem{Diagnosed and resolved a Path MTU blackhole caused by PPPoE frame limitation silently dropping TLS handshake packets — independently, without ISP support following provider acquisition and engineering staff replacement.}
-        \resumeItem{Developed BIFROST, a proprietary screen broadcasting platform supporting multi-client connectivity, real-time audio transmission, and live connection monitoring — sole engineer from concept to deployment.}
-        \resumeItem{Designed and deployed Cerberus, a full-stack IELTS preparation platform with AI-assisted evaluation, real-time answer saving, and mock test infrastructure, developed iteratively against a structured feature request pipeline.}
-        \resumeItem{Built and maintained the branch website including data-driven architecture migration, SEO implementation across 1,000 keywords, and dynamic content systems.}
-        \resumeItem{Deployed iPBX call centre infrastructure with 10 extensions, call recording, and bulk SMS capability registered across all four national telecommunications providers via BTCL.}
-        \resumeItem{Established branch-wide cloud data infrastructure, access control, and documentation standards — migrating all operations from ad hoc file sharing to a structured, centralised repository.}
-        \resumeItem{Trained and mentored two junior technical staff in hardware assembly, Linux administration, networking fundamentals, and electrical systems.}
+        \resumeItem{Coordinate technical delivery across web, embedded, and information-systems teams; lead requirements discovery and MVP scoping for an investor-commissioned apartment operations platform.}
+        \resumeItem{Translated stakeholder requirements into role-based workflows for owners, tenants, caretakers, guards, and vendors, covering onboarding, maintenance, rent and billing, notices, vendor coordination, utility tracking, and planned building-system integration. Defined the access and trust model, ledger structure, data model, and phased MVP roadmap.}
+        \resumeItem{Authored developer-facing MVP requirements and led development of an interactive multi-role prototype; validated onboarding, invitation-code linking, maintenance, rent tracking, and bill workflows through automated walkthroughs. Evaluating per-property operating-environment options (FreeBSD or Linux) and scoping an AI assistant for residents and property owners.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {Head of Engineering}{Noakhali, Bangladesh}
+      {Mentors' Noakhali Branch}{Jun 2025 -- Aug 2026}
+      \resumeItemListStart
+        \resumeItem{Designed and commissioned IT infrastructure for a two-floor facility, including Category 6 (Cat 6) structured cabling, a network rack, segmented UPS, wireless access points, and 30+ Linux workstations.}
+        \resumeItem{Hardened routing and firewall configurations and resolved a Path MTU black hole caused by PPPoE frame limits dropping TLS handshakes.}
+        \resumeItem{Developed and deployed BIFROST, a real-time screen-broadcasting platform supporting multiple clients, live audio, and connection monitoring; delivered the system from concept to production as sole engineer.}
+        \resumeItem{Designed and deployed Cerberus, a full-stack IELTS preparation platform with AI-assisted evaluation, real-time answer saving, and mock-test infrastructure.}
+        \resumeItem{Deployed a 10-extension IP PBX and centralised cloud data infrastructure with access controls; trained two junior staff in hardware assembly, Linux administration, networking, and electrical systems.}
       \resumeItemListEnd
 
     \resumeSubheading
       {Embedded Systems Engineer}{Noakhali, Bangladesh}
       {Youth Notion}{Aug 2023 -- May 2025}
       \resumeItemListStart
-        \resumeItem{Lead Hardware \& Software Engineer on TERRA — real-time flood monitoring network featuring ESP8266 nodes, multi-sensor array (ultrasonic, DHT22, MQ135), tri-mode connectivity (WiFi/GSM/LoRaWAN), solar and battery power management, and a centralised geographic dashboard — prototype competition-validated and reviewed by Bangladesh ICT Ministry.}
-        \resumeItem{Embedded Systems Engineer on BLADE — IoT aquaculture management system featuring ESP32-based embedded hardware, REST API cloud infrastructure, real-time multi-sensor biofloc telemetry, and automated electromechanical control — validated against traditional recirculating systems with a 10\% improvement in survival rate and 3.2\% improvement in growth rate.}
-        \resumeItem{Embedded Systems Engineer on ARROW — smart pen system for Bengali handwriting education featuring STM32F4 firmware, 6-axis IMU stroke capture with Kalman filtering, BLE 5.0 data transmission, and TensorFlow Lite neural network inference — feasibility validated against Bengali script requirements with manufacturing pipeline established.}
+        \resumeItem{Led hardware prototyping for \href{https://youthnotion.github.io/TERRA/}{TERRA} (Tracking and Environmental Real-Time Response Apparatus), a flood-monitoring network designed for four years of field operation. Built ESP8266/ESP32 prototypes with DHT22, BMP180, HC-SR04 water-level, and MQ135 air-quality sensors; designed redundant Wi-Fi/GSM/LoRaWAN connectivity and solar, battery, and AC/DC power options. The prototype was reviewed by the Bangladesh ICT Ministry.}
+        \resumeItem{Assessed project feasibility with research teams and scoped proof-of-concept work in computer vision, machine learning, and software engineering; assigned engineers to build prototypes for external stakeholder pitches.}
+        \resumeItem{Designed low-cost, replaceable urban air-quality probes with MQ-series sensor arrays and ESP-01 (ESP8266) Wi-Fi modules. Implemented 220 V AC-to-low-voltage power conversion and Wi-Fi data transmission to research servers for real-time, multi-location monitoring.}
       \resumeItemListEnd
 
     \resumeSubheading
       {Systems Engineer}{Zhengzhou, Henan, China}
-      {Kuayue (Huzhou) Technology Co., Ltd.}{Dec 2022 -- Jul 2023}
+      {Huawei Huzhou Technologies}{Dec 2022 -- Jul 2023}
       \resumeItemListStart
-        \resumeItem{Recruited directly by CEO from university research laboratory to lead embedded systems prototyping for client-driven automation and AI projects — developed hardware and firmware prototypes through viability validation for handoff to mass production pipeline.}
-        \resumeItem{Principal engineer on autonomous vehicle and UAV development projects, working across embedded firmware, sensor integration, and system architecture.}
+        \resumeItem{Promoted and transferred from the regional office to the Zhengzhou main office to continue embedded-systems and autonomous-vehicle prototyping against client requirements.}
+        \resumeItem{Solely developed and validated a short-range vehicle-to-vehicle (V2V) communication proof of concept over IEEE 802.11. Built the test bench and hardware, measured latency, and wrote a reusable C library for exchanging vehicle speed and direction data across microcontrollers; handed the validated prototype to the product team for vehicle integration.}
       \resumeItemListEnd
 
     \resumeSubheading
       {Applications Engineer}{Huzhou, Zhejiang, China}
-      {Kuayue (Huzhou) Technology Co., Ltd.}{Jul 2021 -- Dec 2022}
+      {Huawei Huzhou Technologies}{Jul 2021 -- Dec 2022}
       \resumeItemListStart
-        \resumeItem{Developed embedded application prototypes against client specifications, collaborating with senior engineers on system architecture and viability assessment prior to production handoff.}
+        \resumeItem{Developed client-specific prototypes and proofs of concept with senior engineers, from requirements through evaluation and production handoff, primarily for embedded and autonomous-vehicle applications.}
+        \resumeItem{Implemented firmware and C/Python guidance and navigation functions for an agricultural vehicle on NVIDIA Jetson, integrating BeiDou receiver data with route planning and vehicle controls; tested the system with the vehicle team.}
+        \resumeItem{Developed multiple iterations of retrofit smart outlets and switches that connected directly to existing IEEE 802.11 Wi-Fi networks without a separate hub.}
       \resumeItemListEnd
 
+    \Needspace{12\baselineskip}
     \resumeSubheading
       {Research Analyst}{Huzhou, Zhejiang, China}
       {Cyberspace Security Laboratory -- HUTC}{Jan 2020 -- Jul 2021}
       \resumeItemListStart
-        \resumeItem{Conducted applied research in network security and embedded systems, contributing to laboratory publications and prototype development.}
+        \resumeItem{Deployed laboratory servers and computer systems and configured network and firewall infrastructure for cybersecurity and cryptography research; used Docker, Kubernetes, and Git in laboratory projects.}
+        \resumeItem{Introduced Raspberry Pi-based ARM platforms to an x86-only laboratory and evaluated ARM compatibility for TensorFlow workloads.}
+        \resumeItem{Contributed to a real-time face-mask detection system requested for potential public-space use by the faculty vice president. Prepared publicly available image data after privacy concerns halted campus-image collection, and built an Arch Linux/x86 embedded platform when TensorFlow compatibility limited the ARM port; the system processed multiple faces in 60-FPS footage.}
       \resumeItemListEnd
 
     \resumeSubheading
       {Research Assistant}{Huzhou, Zhejiang, China}
       {IoT Competition Laboratory -- HUTC}{Sep 2017 -- Dec 2019}
       \resumeItemListStart
-        \resumeItem{Designed and built IoT prototypes for national and university level competitions, placing 1st in the 3rd Huzhou University IoT Application Innovation Competition (2018).}
+        \resumeItem{Evaluated experimental platforms and unfamiliar technologies to support faculty and graduate researchers in electrical engineering and IoT projects.}
+        \resumeItem{Built embedded home-automation prototypes using PLCs, Zigbee, voice control, ESP8266 microcontrollers, and relay modules, contributing from soldering and microcontroller programming through system integration.}
+        \resumeItem{Reduced prototype costs by scaling PLC-based automation to ESP8266 microcontrollers and relay modules with Zigbee and voice control. Team projects won first prizes at Huzhou University IoT competitions (2018 and 2020), and the team was named the 2019 winner of the National College Student Innovation and Entrepreneurship Training Project. The 2020 award was received after the lab dissolved.}
       \resumeItemListEnd
 
   \resumeSubHeadingListEnd
@@ -168,60 +175,56 @@
 \section{Education}
   \resumeSubHeadingListStart
     \resumeSubheading
-      {Bachelor of Engineering -- Computer Science}{Huzhou, Zhejiang, China}
-      {School of Information Engineering, Huzhou University}{Sep 2017 -- Jul 2021}
-      \resumeItemListStart
-        \resumeItem{Thesis: Industrial Automation with ESP8266}
-        \resumeItem{Zhejiang Provincial Government Scholarship (Class B), 2021}
-        \resumeItem{National College Student Innovation and Entrepreneurship Training Project Winner, 2019}
-        \resumeItem{1st Prize, 5th Huzhou University IoT Application Innovation Competition, 2020}
-        \resumeItem{1st Prize, 3rd Huzhou University IoT Application Innovation Competition, 2018}
-        \resumeItem{University Scholarship for International Students (Type A), 2017}
-      \resumeItemListEnd
+      {Bachelor of Engineering in Computer Science and Technology}{Huzhou, Zhejiang, China}
+      {School of Information Engineering, Huzhou University}{Oct 2017 -- Jul 2021}
+      {\small\textbf{Thesis:} Industrial Automation with ESP8266}\par
+      \vspace{2pt}
+      {\small\textbf{Academic achievements:}}
+      \begin{itemize}[leftmargin=*,itemsep=1pt,topsep=1pt,parsep=0pt]
+        \item\small{\textbf{2021} -- Zhejiang Provincial Government Scholarship (Class B)}
+        \item\small{\textbf{2020} -- 1st Prize, 5th Huzhou University IoT Application Innovation Competition}
+        \item\small{\textbf{2019} -- Winner, 2019 National College Student Innovation and Entrepreneurship Training Project}
+        \item\small{\textbf{2018} -- 1st Prize, 3rd Huzhou University IoT Application Innovation Competition}
+        \item\small{\textbf{2017} -- University Scholarship for International Students (Type A)}
+      \end{itemize}
   \resumeSubHeadingListEnd
 
 %--------SKILLS--------
 \section{Skills}
 \begin{itemize}[leftmargin=*,label={}]
   \small{\item{
-    \textbf{Languages}{: }C, C++, Python, Java, Bash \\
-    \textbf{Embedded}{: }ESP32, ESP8266, STM32, Arduino, ARM \\
-    \textbf{Systems}{: }Linux, Git, MQTT, REST, TLS, LoRaWAN \\
-    \textbf{Networking}{: }Architecture, Penetration Testing, VoIP, Firewall \\
-    \textbf{Platforms}{: }TensorFlow Lite, OpenCV, Firebase, Kafka
+    \textbf{Systems \& Operations}: Linux installation and administration, workstation deployment, services, permissions, logs, hardware troubleshooting, Docker, Kubernetes (lab workload deployments), Git \\
+    \textbf{Networking \& IoT}: IP connectivity, structured cabling, firewall configuration, VoIP (iPBX), MQTT, REST, TLS, LoRaWAN \\
+    \textbf{Programming \& Embedded}: C, C++, Python, Java, Bash, ESP32, ESP8266, STM32, Arduino, ARM, sensor integration, PCB prototyping
   }}
 \end{itemize}
+
 %-----------CERTIFICATIONS-----------
 \section{Certifications}
-  \begin{itemize}[leftmargin=*,label={}]
-    \small{\item{
-      \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
-        \textbf{CNSS Certified Network Security Specialist} & \textit{ICSI, UK -- 20379392} \\
-        \textbf{OSS Development, Linux and Git Specialization} & \textit{Linux Foundation -- DXLZHCPYVALL} \\
-        \textbf{Google IT Automation Professional Certificate} & \textit{Google -- V2VN7MZRSB79} \\
-      \end{tabular*}
-    }}
-  \end{itemize}
+{\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{0.42\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}>{\raggedleft\arraybackslash}p{0.18\textwidth}@{}}
+\textbf{Certification} & \textbf{Issuer} & \textbf{Credential ID} \\
+Applied Cryptography Specialization & University of Colorado & 6CQCH48H23E8 \\
+CNSS Certified Network Security Specialist & ICSI, UK & 20379392 \\
+Deep Learning Specialization & deeplearning.ai & XHW5HLZ7888Z \\
+Google IT Automation Professional Certificate & Google & V2VN7MZRSB79 \\
+Google IT Support Professional Certificate & Google & D5KVGWZSP4UB \\
+Machine Learning Specialization & University of Washington & WUHVNWXQ97WS \\
+Open Source Software Development, Linux, and Git & Linux Foundation & DXLZHCPYVALL \\
+Reinforcement Learning Specialization & Alberta Machine Intelligence Institute (Amii) & ULGRB8J8DGHR \\
+SAS Programmer Professional Certificate & SAS & MDDULJL48MXE \\
+TensorFlow Developer Professional Certificate & deeplearning.ai & 8SUSDYK6JBN2 \\
+\end{tabular*}
+}
 
 %--------LANGUAGES--------
 \section{Languages}
-  \begin{itemize}[leftmargin=*,label={}]
-    \small{\item{
-     \textbf{Bengali}{: Native} \hfill
-     \textbf{Mandarin Chinese}{: HSK 2} \hfill
-     \textbf{English}{: IELTS Band 8}    }}
-  \end{itemize}
-
-%-----------REFERENCES-----------
-\section{References}
-  \begin{itemize}[leftmargin=*,label={}] 
-    \small{\item{
-      \textbf{Dr. Zheng Bo}, Professor, School of Information Engineering, HUTC \\
-      \href{mailto:zhengbo@zjhu.edu.cn}{\color{accentcolor}zhengbo@zjhu.edu.cn} \\[4pt]
-      \textbf{Dr. Chen Xiaohua}, Associate Professor, School of Information Engineering, HUTC \\
-      \href{mailto:97122046@zjhu.edu.cn}{\color{accentcolor}97122046@zjhu.edu.cn}
-    }}
-  \end{itemize}
+{\small
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\centering\arraybackslash}p{0.30\textwidth}>{\raggedleft\arraybackslash}p{0.30\textwidth}@{}}
+Bengali: Native & English: IELTS Band 8.0 & Mandarin Chinese: HSK 2
+\end{tabular*}
+}
 
 %-------------------------------------------
 \end{document}
