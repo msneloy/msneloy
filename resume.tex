@@ -43,6 +43,9 @@
 \addtolength{\textheight}{1.0in}
 
 \urlstyle{same}
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\emergencystretch=2em
 
 \raggedbottom
 \setlength{\tabcolsep}{0in}
@@ -64,8 +67,8 @@
 \newcommand{\resumeSubheading}[4]{
   \vspace{-1pt}\item
     \begin{tabular*}{\linewidth}{@{}l@{\extracolsep{\fill}}r@{}}
-      \textbf{\color{textcolor}#1} & {\small #2} \\
-      {\small\color{accentcolor}\textit{#3}} & {\small #4}
+      \textbf{\color{textcolor}#1} & {\small #4} \\
+      {\small\color{accentcolor}\textit{#3}} & {\small #2}
     \end{tabular*}\vspace{-3pt}
 }
 
@@ -97,7 +100,8 @@
 \vspace{2pt}
 \noindent{\color{rulecolor}\rule{\textwidth}{0.8pt}}
 \vspace{3pt}
-\small Systems and deployment engineer with experience across Linux infrastructure, networking, and embedded edge systems. Deployed and maintained more than 30 Linux workstations and resolved network, routing, and hardware issues. Used Docker and Kubernetes to deploy workloads in laboratory environments, with hands-on C, Python, and microcontroller experience.
+{\frenchspacing
+\small Systems engineer experienced in Linux deployment and troubleshooting across networks, hardware, and containerized workloads. Background includes Linux workstation deployment, routing and firewall configuration, Docker and Kubernetes, and embedded edge systems.\par}
 \vspace{2pt}
 
 %-----------EXPERIENCE-----------
@@ -109,8 +113,8 @@
       {Youth Notion}{Sep 2026 -- Present}
       \resumeItemListStart
         \resumeItem{Coordinate technical delivery across web, embedded, and information-systems teams; lead requirements discovery and MVP scoping for an investor-commissioned apartment operations platform.}
-        \resumeItem{Translated stakeholder requirements into role-based workflows for owners, tenants, caretakers, guards, and vendors, covering onboarding, maintenance, rent and billing, notices, vendor coordination, utility tracking, and planned building-system integration. Defined the access and trust model, ledger structure, data model, and phased MVP roadmap.}
-        \resumeItem{Authored developer-facing MVP requirements and led development of an interactive multi-role prototype; validated onboarding, invitation-code linking, maintenance, rent tracking, and bill workflows through automated walkthroughs. Evaluating per-property operating-environment options (FreeBSD or Linux) and scoping an AI assistant for residents and property owners.}
+        \resumeItem{Translate stakeholder requirements into role-based workflows for owners, tenants, caretakers, guards, and vendors, covering onboarding, maintenance, rent and billing, notices, vendor coordination, utility tracking, and planned building-system integration. Define the access and trust model, ledger structure, data model, and phased MVP roadmap.}
+        \resumeItem{Authored developer-facing MVP requirements and led development of an interactive multi-role prototype; validated onboarding, invitation-code linking, maintenance, rent tracking, and bill workflows through automated walkthroughs. Currently evaluating per-property operating-environment options (FreeBSD or Linux) and scoping an AI assistant for residents and property owners.}
       \resumeItemListEnd
 
     \resumeSubheading
@@ -121,7 +125,7 @@
         \resumeItem{Hardened routing and firewall configurations and resolved a Path MTU black hole caused by PPPoE frame limits dropping TLS handshakes.}
         \resumeItem{Developed and deployed BIFROST, a real-time screen-broadcasting platform supporting multiple clients, live audio, and connection monitoring; delivered the system from concept to production as sole engineer.}
         \resumeItem{Designed and deployed Cerberus, a full-stack IELTS preparation platform with AI-assisted evaluation, real-time answer saving, and mock-test infrastructure.}
-        \resumeItem{Deployed a 10-extension IP PBX and centralised cloud data infrastructure with access controls; trained two junior staff in hardware assembly, Linux administration, networking, and electrical systems.}
+        \resumeItem{Deployed a 10-extension IP PBX and centralized cloud data infrastructure with access controls; trained two junior staff in hardware assembly, Linux administration, networking, and electrical systems.}
       \resumeItemListEnd
 
     \resumeSubheading
@@ -135,7 +139,7 @@
 
     \resumeSubheading
       {Systems Engineer}{Zhengzhou, Henan, China}
-      {Huawei Huzhou Technologies}{Dec 2022 -- Jul 2023}
+      {Kuayue (Huzhou) Technology Co., Ltd.}{Dec 2022 -- Jul 2023}
       \resumeItemListStart
         \resumeItem{Promoted and transferred from the regional office to the Zhengzhou main office to continue embedded-systems and autonomous-vehicle prototyping against client requirements.}
         \resumeItem{Solely developed and validated a short-range vehicle-to-vehicle (V2V) communication proof of concept over IEEE 802.11. Built the test bench and hardware, measured latency, and wrote a reusable C library for exchanging vehicle speed and direction data across microcontrollers; handed the validated prototype to the product team for vehicle integration.}
@@ -143,7 +147,7 @@
 
     \resumeSubheading
       {Applications Engineer}{Huzhou, Zhejiang, China}
-      {Huawei Huzhou Technologies}{Jul 2021 -- Dec 2022}
+      {Kuayue (Huzhou) Technology Co., Ltd.}{Jul 2021 -- Dec 2022}
       \resumeItemListStart
         \resumeItem{Developed client-specific prototypes and proofs of concept with senior engineers, from requirements through evaluation and production handoff, primarily for embedded and autonomous-vehicle applications.}
         \resumeItem{Implemented firmware and C/Python guidance and navigation functions for an agricultural vehicle on NVIDIA Jetson, integrating BeiDou receiver data with route planning and vehicle controls; tested the system with the vehicle team.}
@@ -176,7 +180,7 @@
   \resumeSubHeadingListStart
     \resumeSubheading
       {Bachelor of Engineering in Computer Science and Technology}{Huzhou, Zhejiang, China}
-      {School of Information Engineering, Huzhou University}{Oct 2017 -- Jul 2021}
+      {School of Information Engineering, Huzhou University}{Sep 2017 -- Jul 2021}
       {\small\textbf{Thesis:} Industrial Automation with ESP8266}\par
       \vspace{2pt}
       {\small\textbf{Academic achievements:}}
@@ -193,16 +197,16 @@
 \section{Skills}
 \begin{itemize}[leftmargin=*,label={}]
   \small{\item{
-    \textbf{Systems \& Operations}: Linux installation and administration, workstation deployment, services, permissions, logs, hardware troubleshooting, Docker, Kubernetes (lab workload deployments), Git \\
-    \textbf{Networking \& IoT}: IP connectivity, structured cabling, firewall configuration, VoIP (iPBX), MQTT, REST, TLS, LoRaWAN \\
-    \textbf{Programming \& Embedded}: C, C++, Python, Java, Bash, ESP32, ESP8266, STM32, Arduino, ARM, sensor integration, PCB prototyping
+    \textbf{Systems \& Operations}: Linux installation and administration, OS/hardware bring-up, workstation deployment, services, permissions, logs, troubleshooting, Docker, Kubernetes (deployment and operation of containerized workloads), Git \\
+    \textbf{Networking \& Infrastructure}: IP addressing, DNS, DHCP, routing, structured cabling, firewall configuration, VoIP (iPBX), MQTT, REST, TLS, LoRaWAN \\
+    \textbf{Programming \& Embedded}: Bash, Python, C, C++, Java, ESP32, ESP8266, STM32, Arduino, ARM, sensor integration, PCB prototyping
   }}
 \end{itemize}
 
 %-----------CERTIFICATIONS-----------
 \section{Certifications}
 {\small
-\renewcommand{\arraystretch}{1.18}
+\renewcommand{\arraystretch}{1.05}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\raggedright\arraybackslash}p{0.42\textwidth}>{\raggedright\arraybackslash}p{0.36\textwidth}>{\raggedleft\arraybackslash}p{0.18\textwidth}@{}}
 \textbf{Certification} & \textbf{Issuer} & \textbf{Credential ID} \\
 Applied Cryptography Specialization & University of Colorado & 6CQCH48H23E8 \\
@@ -212,7 +216,7 @@ Google IT Automation Professional Certificate & Google & V2VN7MZRSB79 \\
 Google IT Support Professional Certificate & Google & D5KVGWZSP4UB \\
 Machine Learning Specialization & University of Washington & WUHVNWXQ97WS \\
 Open Source Software Development, Linux, and Git & Linux Foundation & DXLZHCPYVALL \\
-Reinforcement Learning Specialization & Alberta Machine Intelligence Institute (Amii) & ULGRB8J8DGHR \\
+Reinforcement Learning Specialization & Alberta Machine Intelligence Institute (AMII) & ULGRB8J8DGHR \\
 SAS Programmer Professional Certificate & SAS & MDDULJL48MXE \\
 TensorFlow Developer Professional Certificate & deeplearning.ai & 8SUSDYK6JBN2 \\
 \end{tabular*}
