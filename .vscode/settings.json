@@ -1,6 +1,16 @@
 {
     "latex-workshop.latex.tools": [
         {
+            "name": "xelatex",
+            "command": "xelatex",
+            "args": [
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOC%"
+            ]
+        },
+        {
             "name": "pdflatex",
             "command": "pdflatex",
             "args": [
@@ -12,9 +22,17 @@
     ],
     "latex-workshop.latex.recipes": [
         {
+            "name": "xelatex",
+            "tools": ["xelatex"]
+        },
+        {
             "name": "pdflatex",
             "tools": ["pdflatex"]
         }
     ],
-    "latex-workshop.latex.recipe.default": "pdflatex"
+    "latex-workshop.latex.recipe.default": "xelatex",
+    "latex-workshop.formatting.latex": "tex-fmt",
+    "[latex]": {
+        "editor.defaultFormatter": "James-Yu.latex-workshop"
+    }
 }
