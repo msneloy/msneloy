@@ -2,7 +2,7 @@ name: Update WakaTime Stats
 
 on:
   schedule:
-    - cron: "0 0 * * *" # Runs daily at midnight UTC
+    - cron: "30 7 * * 5" # Runs every Friday at 07:30 UTC (1:30 PM Dhaka, during Jumu'ah)
   workflow_dispatch: # Allow manual trigger
 
 permissions:
