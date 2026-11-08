@@ -23,6 +23,8 @@ ENDPOINTS = {
     "categories": "bdfc68ea-2e02-4fef-8870-5f648645152a.json",
 }
 IGNORED_ITEM_NAMES = {"Other", "Unknown"}
+# Languages and editors are only charted once they cross one hour of use.
+MIN_LISTED_SECONDS = 3600
 ALIASED_ITEM_NAMES = {
     "Browser": "Brave",
     "Unknown Editor": "Ghost Mode",
@@ -175,7 +177,7 @@ def log_scale_ticks(max_value: float, min_ratio_gap: float = 0.0) -> list[float]
     return filtered
 
 
-def clean_chart_items(items: list[dict[str, Any]], excluded_names: set[str] | None = None) -> list[dict[str, Any]]:
+def clean_chart_items(items: list[dict[str, Any]], excluded_names: set[str] | None = None, min_seconds: float = 60) -> list[dict[str, Any]]:
     cleaned: list[dict[str, Any]] = []
     excluded = excluded_names or set()
     for item in items or []:
@@ -191,8 +193,8 @@ def clean_chart_items(items: list[dict[str, Any]], excluded_names: set[str] | No
         if name.lower() == "unknown os":
             name = "Android"
         total_seconds = float(item.get("total_seconds", 0) or 0)
-        # Filter out any item where total time is 0 min (< 60s or 0 mins)
-        if total_seconds < 60 or int(total_seconds // 60) <= 0:
+        # Filter out any item below the minimum (by default 0 min, i.e. < 60s)
+        if total_seconds < min_seconds or int(total_seconds // 60) <= 0:
             continue
         cleaned.append({**item, "name": name, "total_seconds": total_seconds})
     return sorted(cleaned, key=lambda item: str(item.get("name", "")).lower())
@@ -299,8 +301,8 @@ def make_pie_chart(title: str, items: list[dict[str, Any]], width: int = 760, he
     return svg
 
 
-def make_bar_chart(title: str, items: list[dict[str, Any]], width: int = 900, height: int = 260, color: str = "#8ecae6", palette: dict[str, str] | None = None, excluded_names: set[str] | None = None) -> str:
-    data = clean_chart_items(items, excluded_names=excluded_names)
+def make_bar_chart(title: str, items: list[dict[str, Any]], width: int = 900, height: int = 260, color: str = "#8ecae6", palette: dict[str, str] | None = None, excluded_names: set[str] | None = None, min_seconds: float = 60) -> str:
+    data = clean_chart_items(items, excluded_names=excluded_names, min_seconds=min_seconds)
     if not data:
         return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="#0b1220" rx="12"/><text x="24" y="26" fill="#e5e7eb" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
 
@@ -356,8 +358,8 @@ def make_bar_chart(title: str, items: list[dict[str, Any]], width: int = 900, he
     return svg
 
 
-def make_vertical_bar_legend_chart(title: str, items: list[dict[str, Any]], width: int = 900, height: int = 300, palette: dict[str, str] | None = None, excluded_names: set[str] | None = None) -> str:
-    data = clean_chart_items(items, excluded_names=excluded_names)
+def make_vertical_bar_legend_chart(title: str, items: list[dict[str, Any]], width: int = 900, height: int = 300, palette: dict[str, str] | None = None, excluded_names: set[str] | None = None, min_seconds: float = 60) -> str:
+    data = clean_chart_items(items, excluded_names=excluded_names, min_seconds=min_seconds)
     if not data:
         return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="transparent"/><text x="24" y="26" fill="#e5e7eb" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
 
@@ -565,8 +567,8 @@ def build_markdown_block(summary: dict[str, Any], language_data: list[dict[str, 
     )
 
     summary_svg = save_svg("summary", build_summary_svg(summary))
-    language_svg = save_svg("languages", make_bar_chart("Languages & Frameworks", language_data, color="#8ecae6", palette=LANGUAGE_COLORS))
-    editor_svg = save_svg("editors", make_vertical_bar_legend_chart("Editors", editor_data, palette=EDITOR_COLORS))
+    language_svg = save_svg("languages", make_bar_chart("Languages & Frameworks", language_data, color="#8ecae6", palette=LANGUAGE_COLORS, min_seconds=MIN_LISTED_SECONDS))
+    editor_svg = save_svg("editors", make_vertical_bar_legend_chart("Editors", editor_data, palette=EDITOR_COLORS, min_seconds=MIN_LISTED_SECONDS))
     os_svg = save_svg("operating-systems", make_os_bar_chart("Operating Systems", os_data))
     category_svg = save_svg("categories", make_pie_chart("Categories", category_data, width=760, height=220))
 

@@ -12,6 +12,6 @@ package Profile is
    Crew_ID      : constant String := "CREW ID / MS-NL-01";
    Header_Label : constant String := "PERSONNEL FILE / SYSTEMS ENGINEERING";
    Description  : constant String :=
-     "Mahadi Sajjad Neloy is a Systems Engineer. " &
-     "Explore his professional profile, engineering work, and contact details.";
+     "Mahadi Sajjad Neloy is a Systems Engineer. "
+     & "Explore his professional profile, engineering work, and contact details.";
 end Profile;

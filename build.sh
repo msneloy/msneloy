@@ -22,17 +22,15 @@ else
     const fs = require("fs");
     const path = require("path");
 
-    // Helper to extract Put_Line contents from an Ada package body
+    // Helper to extract Put_Line contents from an Ada package body.
+    // Matches whole statements, so calls wrapped across lines by an Ada
+    // formatter (Put_Line\n  (F,\n   "...");) are extracted too.
     function extractPutLines(filePath) {
       const content = fs.readFileSync(filePath, "utf8");
-      const lines = content.split("\n");
       const output = [];
-      const regex = /^\s*Put_Line\s*\(\s*F\s*,\s*"([\s\S]*)"\s*\);\s*$/;
-      for (const line of lines) {
-        const m = line.match(regex);
-        if (m) {
-          output.push(m[1].replace(/""/g, "\""));
-        }
+      const regex = /Put_Line\s*\(\s*F\s*,\s*"((?:[^"\n]|"")*)"\s*\)\s*;/g;
+      for (const m of content.matchAll(regex)) {
+        output.push(m[1].replace(/""/g, "\""));
       }
       return output.join("\n");
     }

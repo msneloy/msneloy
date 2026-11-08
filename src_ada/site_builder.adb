@@ -52,7 +52,8 @@ begin
    Put_Line ("[ADA-SYS-BUILD] Emitting DOM from Markup: dist/index.html...");
    Write_File ("dist/index.html", HTML_Content);
 
-   Put_Line ("[ADA-SYS-BUILD] Emitting DOM from Markup: dist/client/index.html...");
+   Put_Line
+     ("[ADA-SYS-BUILD] Emitting DOM from Markup: dist/client/index.html...");
    Write_File ("dist/client/index.html", HTML_Content);
 
    -- 3. Emit security headers (_headers for Cloudflare)
@@ -61,12 +62,14 @@ begin
    Write_File ("dist/client/_headers", Headers_Content);
 
    -- 4. Emit stylesheets from pure Ada Styles package
-   Put_Line ("[ADA-SYS-BUILD] Emitting Stylesheet from Styles package: dist/app.css...");
+   Put_Line
+     ("[ADA-SYS-BUILD] Emitting Stylesheet from Styles package: dist/app.css...");
    Styles.Emit_CSS ("dist/app.css");
    Styles.Emit_CSS ("dist/client/app.css");
 
    -- 5. Emit telemetry client engine from pure Ada Telemetry_Client package
-   Put_Line ("[ADA-SYS-BUILD] Emitting Telemetry Engine from Telemetry_Client package: dist/scripts/dashboard.js...");
+   Put_Line
+     ("[ADA-SYS-BUILD] Emitting Telemetry Engine from Telemetry_Client package: dist/scripts/dashboard.js...");
    Telemetry_Client.Emit_JS ("dist/scripts/dashboard.js");
    Telemetry_Client.Emit_JS ("dist/client/scripts/dashboard.js");
 

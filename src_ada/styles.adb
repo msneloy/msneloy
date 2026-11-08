@@ -51,10 +51,18 @@ package body Styles is
       Put_Line (F, "  overflow-x: hidden;");
       Put_Line (F, "  color: var(--ink);");
       Put_Line (F, "  background:");
-      Put_Line (F, "    radial-gradient(ellipse at 78% 48%, var(--steel-glow), transparent 36rem),");
-      Put_Line (F, "    radial-gradient(ellipse at 12% 100%, var(--red-glow), transparent 42rem),");
-      Put_Line (F, "    linear-gradient(145deg, #10171f, transparent 58%), var(--bg);");
-      Put_Line (F, "  font-family: Inter, ""Helvetica Neue"", Helvetica, Arial, sans-serif;");
+      Put_Line
+        (F,
+         "    radial-gradient(ellipse at 78% 48%, var(--steel-glow), transparent 36rem),");
+      Put_Line
+        (F,
+         "    radial-gradient(ellipse at 12% 100%, var(--red-glow), transparent 42rem),");
+      Put_Line
+        (F,
+         "    linear-gradient(145deg, #10171f, transparent 58%), var(--bg);");
+      Put_Line
+        (F,
+         "  font-family: Inter, ""Helvetica Neue"", Helvetica, Arial, sans-serif;");
       Put_Line (F, "  -webkit-font-smoothing: antialiased;");
       Put_Line (F, "}");
       Put_Line (F, "");
@@ -64,9 +72,11 @@ package body Styles is
       Put_Line (F, "  inset: 0;");
       Put_Line (F, "  background-image:");
       Put_Line (F, "    linear-gradient(#b4c2cc08 1px, transparent 1px),");
-      Put_Line (F, "    linear-gradient(90deg, #b4c2cc08 1px, transparent 1px),");
+      Put_Line
+        (F, "    linear-gradient(90deg, #b4c2cc08 1px, transparent 1px),");
       Put_Line (F, "    linear-gradient(#c4474f06 1px, transparent 1px),");
-      Put_Line (F, "    linear-gradient(90deg, #c4474f06 1px, transparent 1px);");
+      Put_Line
+        (F, "    linear-gradient(90deg, #c4474f06 1px, transparent 1px);");
       Put_Line (F, "  background-size:");
       Put_Line (F, "    96px 96px,");
       Put_Line (F, "    96px 96px,");
@@ -74,7 +84,9 @@ package body Styles is
       Put_Line (F, "    16px 16px;");
       Put_Line (F, "  content: """";");
       Put_Line (F, "  pointer-events: none;");
-      Put_Line (F, "  mask-image: linear-gradient(to bottom, black, transparent 88%);");
+      Put_Line
+        (F,
+         "  mask-image: linear-gradient(to bottom, black, transparent 88%);");
       Put_Line (F, "}");
       Put_Line (F, "");
       Put_Line (F, "body::after {");
@@ -115,7 +127,9 @@ package body Styles is
       Put_Line (F, "  display: flex;");
       Put_Line (F, "  gap: 5px;");
       Put_Line (F, "  color: var(--dim);");
-      Put_Line (F, "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
+      Put_Line
+        (F,
+         "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
       Put_Line (F, "  font-size: 11px;");
       Put_Line (F, "  font-weight: 600;");
       Put_Line (F, "  letter-spacing: 0.16em;");
@@ -193,7 +207,9 @@ package body Styles is
       Put_Line (F, ".retry-button,");
       Put_Line (F, ".loading-panel p,");
       Put_Line (F, ".dashboard-footer {");
-      Put_Line (F, "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
+      Put_Line
+        (F,
+         "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
       Put_Line (F, "  text-transform: uppercase;");
       Put_Line (F, "}");
       Put_Line (F, "");
@@ -230,11 +246,15 @@ package body Styles is
       Put_Line (F, "  border: 1px solid var(--line);");
       Put_Line (F, "  background: var(--button-base);");
       Put_Line (F, "  color: var(--muted);");
-      Put_Line (F, "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
+      Put_Line
+        (F,
+         "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
       Put_Line (F, "  font-size: 8px;");
       Put_Line (F, "  letter-spacing: 0.08em;");
       Put_Line (F, "  text-decoration: none;");
-      Put_Line (F, "  transition: border-color 160ms ease, background-color 160ms ease,");
+      Put_Line
+        (F,
+         "  transition: border-color 160ms ease, background-color 160ms ease,");
       Put_Line (F, "    color 160ms ease, box-shadow 160ms ease;");
       Put_Line (F, "}");
       Put_Line (F, "");
@@ -291,7 +311,9 @@ package body Styles is
       Put_Line (F, "  font-size: 9px;");
       Put_Line (F, "  letter-spacing: 0.09em;");
       Put_Line (F, "  cursor: pointer;");
-      Put_Line (F, "  transition: border-color 160ms ease, background-color 160ms ease,");
+      Put_Line
+        (F,
+         "  transition: border-color 160ms ease, background-color 160ms ease,");
       Put_Line (F, "    transform 160ms ease, box-shadow 160ms ease;");
       Put_Line (F, "}");
       Put_Line (F, "");
@@ -324,7 +346,8 @@ package body Styles is
       Put_Line (F, "");
       Put_Line (F, ".identity-panel {");
       Put_Line (F, "  display: grid;");
-      Put_Line (F, "  grid-template-columns: minmax(250px, 0.8fr) minmax(0, 1.7fr);");
+      Put_Line
+        (F, "  grid-template-columns: minmax(250px, 0.8fr) minmax(0, 1.7fr);");
       Put_Line (F, "  align-items: center;");
       Put_Line (F, "  gap: 18px;");
       Put_Line (F, "  padding: 13px 0 12px;");
@@ -377,7 +400,9 @@ package body Styles is
       Put_Line (F, "  position: relative;");
       Put_Line (F, "  min-width: 0;");
       Put_Line (F, "  border: 1px solid #c4474f38;");
-      Put_Line (F, "  background: linear-gradient(140deg, #111922e8, #0b1017ed 74%), var(--bg);");
+      Put_Line
+        (F,
+         "  background: linear-gradient(140deg, #111922e8, #0b1017ed 74%), var(--bg);");
       Put_Line (F, "  box-shadow:");
       Put_Line (F, "    inset 0 1px #eeeae10a,");
       Put_Line (F, "    0 12px 36px #0000001a;");
@@ -434,7 +459,8 @@ package body Styles is
       Put_Line (F, "");
       Put_Line (F, ".dashboard-grid {");
       Put_Line (F, "  display: grid;");
-      Put_Line (F, "  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);");
+      Put_Line
+        (F, "  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);");
       Put_Line (F, "  gap: 8px;");
       Put_Line (F, "  margin-top: 8px;");
       Put_Line (F, "}");
@@ -594,7 +620,9 @@ package body Styles is
       Put_Line (F, "  display: block;");
       Put_Line (F, "  width: var(--bar-width);");
       Put_Line (F, "  height: 100%;");
-      Put_Line (F, "  background: linear-gradient(90deg, #771526, var(--signal-bright));");
+      Put_Line
+        (F,
+         "  background: linear-gradient(90deg, #771526, var(--signal-bright));");
       Put_Line (F, "  box-shadow: 0 0 10px #c4474f80;");
       Put_Line (F, "}");
       Put_Line (F, "");
@@ -616,7 +644,9 @@ package body Styles is
       Put_Line (F, "  right: 0;");
       Put_Line (F, "  bottom: var(--tick-position);");
       Put_Line (F, "  color: var(--dim);");
-      Put_Line (F, "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
+      Put_Line
+        (F,
+         "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
       Put_Line (F, "  font-size: 7px;");
       Put_Line (F, "  font-variant-numeric: tabular-nums;");
       Put_Line (F, "  transform: translateY(50%);");
@@ -670,10 +700,13 @@ package body Styles is
       Put_Line (F, "  border-radius: 3px 3px 0 0;");
       Put_Line (F, "  background: linear-gradient(");
       Put_Line (F, "    0deg,");
-      Put_Line (F, "    color-mix(in srgb, var(--editor-color), #080b10 55%),");
+      Put_Line
+        (F, "    color-mix(in srgb, var(--editor-color), #080b10 55%),");
       Put_Line (F, "    var(--editor-color)");
       Put_Line (F, "  );");
-      Put_Line (F, "  box-shadow: 0 0 8px color-mix(in srgb, var(--editor-color), transparent 58%);");
+      Put_Line
+        (F,
+         "  box-shadow: 0 0 8px color-mix(in srgb, var(--editor-color), transparent 58%);");
       Put_Line (F, "}");
       Put_Line (F, "");
       Put_Line (F, ".editor-legend {");
@@ -713,7 +746,9 @@ package body Styles is
       Put_Line (F, "  flex: 0 0 auto;");
       Put_Line (F, "  border-radius: 1px;");
       Put_Line (F, "  background: var(--editor-color);");
-      Put_Line (F, "  box-shadow: 0 0 6px color-mix(in srgb, var(--editor-color), transparent 45%);");
+      Put_Line
+        (F,
+         "  box-shadow: 0 0 6px color-mix(in srgb, var(--editor-color), transparent 45%);");
       Put_Line (F, "}");
       Put_Line (F, "");
       Put_Line (F, ".editor-legend li > span:nth-child(2) {");
@@ -729,7 +764,9 @@ package body Styles is
       Put_Line (F, ".editor-legend strong {");
       Put_Line (F, "  flex: 0 0 auto;");
       Put_Line (F, "  color: var(--muted);");
-      Put_Line (F, "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
+      Put_Line
+        (F,
+         "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
       Put_Line (F, "  font-size: 9.5px;");
       Put_Line (F, "  font-weight: 400;");
       Put_Line (F, "  font-variant-numeric: tabular-nums;");
@@ -782,9 +819,12 @@ package body Styles is
       Put_Line (F, "  width: 16px;");
       Put_Line (F, "  height: 16px;");
       Put_Line (F, "  overflow: visible;");
-      Put_Line (F, "  animation: brand-icon-enter 560ms cubic-bezier(0.34, 1.56, 0.64, 1) both;");
+      Put_Line
+        (F,
+         "  animation: brand-icon-enter 560ms cubic-bezier(0.34, 1.56, 0.64, 1) both;");
       Put_Line (F, "  flex: 0 0 auto;");
-      Put_Line (F, "  animation-delay: calc(var(--icon-index, 0) * 90ms + 120ms);");
+      Put_Line
+        (F, "  animation-delay: calc(var(--icon-index, 0) * 90ms + 120ms);");
       Put_Line (F, "}");
       Put_Line (F, "");
       Put_Line (F, ".brand-icon-art {");
@@ -865,7 +905,9 @@ package body Styles is
       Put_Line (F, "  min-width: 68px;");
       Put_Line (F, "  grid-column: auto;");
       Put_Line (F, "  color: var(--dim);");
-      Put_Line (F, "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
+      Put_Line
+        (F,
+         "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
       Put_Line (F, "  font-size: 10px;");
       Put_Line (F, "  font-weight: 400;");
       Put_Line (F, "  font-variant-numeric: tabular-nums;");
@@ -905,7 +947,9 @@ package body Styles is
       Put_Line (F, "");
       Put_Line (F, ".category-ring > div span {");
       Put_Line (F, "  color: var(--muted);");
-      Put_Line (F, "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
+      Put_Line
+        (F,
+         "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
       Put_Line (F, "  font-size: 9.5px;");
       Put_Line (F, "  letter-spacing: 0.12em;");
       Put_Line (F, "}");
@@ -968,7 +1012,9 @@ package body Styles is
       Put_Line (F, ".category-time {");
       Put_Line (F, "  min-width: 68px;");
       Put_Line (F, "  color: var(--muted);");
-      Put_Line (F, "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
+      Put_Line
+        (F,
+         "  font-family: ""SFMono-Regular"", Consolas, ""Liberation Mono"", monospace;");
       Put_Line (F, "  font-size: 10px;");
       Put_Line (F, "  font-weight: 400;");
       Put_Line (F, "  font-variant-numeric: tabular-nums;");
