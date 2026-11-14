@@ -20,8 +20,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install Pillow
+        run: pip install pillow
+
       - name: Refresh WakaTime README
         run: python3 .github/scripts/update_wakatime_readme.py
+
+      - name: Render social preview card
+        run: python3 .github/scripts/render_social_card.py
 
       - name: Commit and push changes
         run: |

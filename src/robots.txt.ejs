@@ -1,0 +1,5 @@
+<% const site = JSON.parse(include("profile")); -%>
+User-agent: *
+Allow: /
+
+Sitemap: <%= site.siteUrl %>sitemap.xml

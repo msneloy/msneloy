@@ -1,0 +1,26 @@
+<%
+  // The Content-Security-Policy allows the page's inline script by its SHA-256.
+  // Render the page here and hash the exact script text that ships, so the
+  // policy can never drift from the code. Needs Node 22.3+ (getBuiltinModule).
+  const page = include("index.html.ejs");
+  const inlineScript = page.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+  const scriptHash = process.getBuiltinModule("node:crypto").createHash("sha256").update(inlineScript, "utf8").digest("base64");
+  const csp = [
+    "default-src 'self'",
+    `script-src 'sha256-${scriptHash}' https://static.cloudflareinsights.com`,
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data:",
+    "connect-src 'self' https://wakatime.com https://cloudflareinsights.com",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+  ].join("; ");
+-%>
+/*
+  Content-Security-Policy: <%- csp %>
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=()

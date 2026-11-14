@@ -1,7 +1,5 @@
 name = "dashboard"
 compatibility_date = "2026-10-07"
-compatibility_flags = ["nodejs_compat"]
 
 [assets]
-directory = "./dist/client"
-not_found_handling = "404-page"
+directory = "./dist"

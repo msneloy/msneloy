@@ -1,69 +1,64 @@
 # Portfolio
 
-High-reliability personal profile and live WakaTime telemetry system for **Mahadi Sajjad Neloy**, built with **Ada** and deployed with edge-first static assets across Cloudflare, Vercel, Netlify, and Render.
+Personal profile and live WakaTime telemetry dashboard for **Mahadi Sajjad Neloy**. The whole site is one EJS file, served as static assets from Cloudflare Workers, with Vercel as a mirror.
 
 ## Architecture
 
-The codebase is built with pure **Ada** (`src_ada/`), emitting optimized HTML, CSS, client scripts, and edge security headers:
+Every source file is an EJS template. The build renders each one to the file a browser needs: `src/X.ejs` becomes `dist/X`. There are no `.html`, `.css` or `.js` files in the repository.
 
-- **`Profile` (`src_ada/profile.ads`):** Strongly typed Ada package storing credentials, Crew ID, metadata, and contact endpoints.
-- **`Markup` (`src_ada/markup.ads`, `src_ada/markup.adb`):** Emits the semantic HTML document and Cloudflare/Netlify `_headers` security directives.
-- **`Styles` (`src_ada/styles.ads`, `src_ada/styles.adb`):** Pure Ada styling package defining theme variables, responsive grid systems, and animations.
-- **`Telemetry_Client` (`src_ada/telemetry_client.ads`, `src_ada/telemetry_client.adb`):** Browser-side telemetry engine managing live WakaTime feeds, alphabetical sorting, 0-min item filtering, and `hh:mm:ss` formatting.
-- **`Site_Builder` (`src_ada/site_builder.adb`):** Main build binary compiled via GNAT (`site_builder.gpr`).
+- **`src/index.html.ejs`:** The entire website. In order: the site data load and favicon definition, the `<head>` (SEO, Open Graph, JSON-LD), the stylesheet inline in `<style>`, the page body (top bar, identity panel, loading/error states, dashboard grid, footer), and the telemetry client inline in `<script type="module">`. The client fetches the WakaTime share feeds, merges languages with frameworks, applies the one-hour listing cutoff, renders the summary cards and the panels (languages, editors, operating systems, categories) with brand icons and log-scale bars, and drives the SYNC / RETRY controls. The favicon (Tux on the dark tile) is inlined as a data URI, so the page makes no requests of its own beyond the WakaTime feeds and the analytics beacon.
+- **`src/profile.ejs`:** Site data as JSON: name, title, contact details, URLs, WakaTime feed IDs and the Cloudflare Web Analytics token. Templates load it with `JSON.parse(include("profile"))`, so there is one place to change any of it.
+- **`src/robots.txt.ejs`, `src/sitemap.xml.ejs`:** Crawler rules and sitemap, with URLs from the profile.
+- **`src/_headers.ejs`:** The edge security headers Cloudflare applies to every response, including HSTS and a Content-Security-Policy. The CSP allows the page's inline script by SHA-256; the template renders `index.html.ejs` itself and hashes the exact script text that ships, so the policy can never drift from the code. (This is why `_headers` renders last and why the build needs Node 22.3+.)
+- **Social preview card:** `.github/scripts/render_social_card.py` draws a 1200×630 PNG from the live WakaTime summary and top languages, in the weekly workflow, and commits it to `.github/wakatime/social-card.png`. The build copies it to `dist/social-card.png`, which `og:image` and `twitter:image` point at. It reads name, title and crew ID from `src/profile.ejs`.
+
+The build is the `ejs` CLI, driven from `package.json`. Each render gets `</dev/null`: the CLI otherwise reads JSON data from stdin whenever stdin is not a terminal, which would hang a CI build. Note that `include()` only appends `.ejs` to a path with no extension, so a template that includes `index.html.ejs` must name it in full.
 
 ## Local Development & Build
 
 ### Requirements
-- **Node.js** 22.x+ (for local preview/CI runner)
-- **GNAT** (optional for native Ada compilation, install via `sudo dnf install gcc-gnat` on Fedora or `sudo apt install gnat` on Ubuntu)
+
+- **Node.js** 22.x+
 
 ### Commands
 
 ```sh
-# Run build pipeline
-npm run build
-# or: ./build.sh
-
-# Preview production build locally
-npm run preview
-# or: npm start
+npm ci            # install ejs and wrangler
+npm run build     # render src/ into dist/
+npm start         # preview dist/ with wrangler dev (http://localhost:8787)
+npm run deploy    # build and deploy to Cloudflare Workers
 ```
 
-## Multi-Cloud Deployment
+## Deployment
 
-All providers deploy from the same unified pipeline, serving static edge assets from `dist/client/`:
-
-| Provider | Build Command | Output / Directory | Config File |
+| Provider | Build command | Output | Config |
 | :--- | :--- | :--- | :--- |
-| **Cloudflare Workers / Pages** | `npm run build:cloudflare` | `./dist/client` | `wrangler.toml` |
-| **Vercel** | `npm run build:vercel` | `dist/client` | `vercel.json` |
-| **Netlify** | `npm run build:netlify` | `dist/client` | `netlify.toml` |
-| **Render** | `npm run build:render` | `dist/client` (via `node server.mjs`) | `render.yaml` |
+| **Cloudflare Workers** (canonical) | `npm run build` | `./dist` via Workers Static Assets | `wrangler.toml` |
+| **Vercel** (mirror) | `npm run build` | `dist` | `vercel.json` |
+
+Security headers come from `dist/_headers` on Cloudflare and from `vercel.json` on Vercel.
 
 ## Repository Structure
 
 ```text
-├── build.sh                 # Unified build script
-├── site_builder.gpr         # GNAT project file for Ada
-├── server.mjs               # Minimal zero-dependency production server
-├── wrangler.toml            # Cloudflare edge assets configuration
-├── vercel.json              # Vercel deployment configuration
-├── netlify.toml             # Netlify deployment configuration
-├── render.yaml              # Render deployment configuration
+├── package.json             # build (ejs CLI), preview and deploy scripts
+├── wrangler.toml            # Cloudflare Workers static assets
+├── vercel.json              # Vercel mirror
 ├── docs/
-│   └── portfolio.md         # Technical architecture documentation
-├── public/
-│   ├── favicon.svg          # Official Ada language favicon
-│   ├── robots.txt           # Search engine crawling rules
-│   └── sitemap.xml          # Sitemap specification
-└── src_ada/
-    ├── profile.ads          # Identity & profile spec
-    ├── markup.ads           # Markup generation spec
-    ├── markup.adb           # Markup generation body
-    ├── styles.ads           # Stylesheet spec
-    ├── styles.adb           # Stylesheet body
-    ├── telemetry_client.ads # Client telemetry spec
-    ├── telemetry_client.adb # Client telemetry body
-    └── site_builder.adb     # Main Ada build routine
+│   └── portfolio.md         # This document
+├── src/
+│   ├── index.html.ejs       # The site: head, inline CSS, body, inline JS
+│   ├── profile.ejs          # Site data (JSON)
+│   ├── robots.txt.ejs       # Crawler rules
+│   ├── sitemap.xml.ejs      # Sitemap
+│   └── _headers.ejs         # Edge security headers
+└── .github/
+    ├── scripts/update_wakatime_readme.py   # README chart generator
+    ├── scripts/render_social_card.py       # og:image card generator
+    ├── wakatime/social-card.png            # Generated weekly; copied to dist/
+    └── workflows/wakatime.yml              # Weekly README + card refresh (Fridays)
 ```
+
+## Adding a D1 Worker later
+
+Workers block `new Function()`, so EJS cannot render at request time. Any future Worker is authored as `src/worker.js.ejs`, rendered to `dist/worker.js` by the same build, and pointed to from `wrangler.toml` with `main = "dist/worker.js"` and a `[[d1_databases]]` binding. Templates it needs at runtime are precompiled at build time with `ejs.compile(..., { client: true })`.

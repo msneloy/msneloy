@@ -496,34 +496,6 @@ def make_os_bar_chart(title: str, items: list[dict[str, Any]], width: int = 900,
     return svg
 
 
-def make_horizontal_bar_chart(title: str, items: list[dict[str, Any]], width: int = 760, height: int = 240) -> str:
-    filtered = items[:8]
-    max_value = max((float(item.get("total_seconds", 0) or 0) for item in filtered), default=1)
-    rows = []
-    for idx, item in enumerate(filtered):
-        value = float(item.get("total_seconds", 0) or 0)
-        ratio = value / max_value if max_value else 0
-        row_y = 40 + idx * 30
-        bar_w = 350 * ratio
-        rows.append(
-            f'<g font-family="sans-serif">'
-            f'<text x="20" y="{row_y + 18}" fill="#e5e7eb" font-size="16">{item.get("name", "Unknown")}</text>'
-            f'<rect x="160" y="{row_y}" width="350" height="12" rx="6" fill="#1f2937" />'
-            f'<rect x="160" y="{row_y}" width="{bar_w}" height="12" rx="6" fill="#34d399" />'
-            f'<text x="525" y="{row_y + 18}" fill="#cbd5e1" font-size="16">{item.get("text", "")}</text>'
-            f'</g>'
-        )
-
-    height = max(height, 40 + len(filtered) * 30 + 12)
-
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
-      <rect width="100%" height="100%" fill="#111827" rx="12"/>
-      <text x="24" y="26" fill="#f8fafc" font-size="16" font-family="sans-serif" font-weight="700">{title}</text>
-      {''.join(rows)}
-    </svg>'''
-    return svg
-
-
 def build_summary_svg(summary: dict[str, Any]) -> str:
     gt = summary.get("grand_total", {})
     av = gt.get("human_readable_daily_average_including_other_language", "—")

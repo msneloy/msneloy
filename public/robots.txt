@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://neloy.vercel.app/sitemap.xml

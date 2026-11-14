@@ -1,19 +1,17 @@
 {
   "name": "msneloy-portfolio",
   "private": true,
-  "version": "1.0.0",
-  "type": "module",
+  "version": "2.0.0",
+  "engines": {
+    "node": ">=22.3"
+  },
   "scripts": {
-    "build": "./build.sh",
-    "build:ada": "./build.sh",
-    "build:cloudflare": "./build.sh",
-    "build:render": "./build.sh",
-    "build:netlify": "./build.sh",
-    "build:vercel": "./build.sh",
-    "start": "node server.mjs",
-    "preview": "node server.mjs"
+    "build": "mkdir -p dist && rm -rf dist/* && for f in index.html robots.txt sitemap.xml _headers; do ejs src/$f.ejs -o dist/$f </dev/null || exit 1; done && cp .github/wakatime/social-card.png dist/social-card.png",
+    "start": "wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   },
   "devDependencies": {
+    "ejs": "^7.0.2",
     "wrangler": "^4.147.0"
   }
 }
