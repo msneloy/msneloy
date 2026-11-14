@@ -31,16 +31,19 @@ npm run deploy    # build and deploy to Cloudflare Workers
 
 ## Deployment
 
+Both hosts run `bash build.sh`. That script is the stable entry point: the host-side build command never changes when the site's technology does, and whatever the current stack needs to produce `dist/` lives in `build.sh` (today, `npm run build`).
+
 | Provider | Build command | Output | Config |
 | :--- | :--- | :--- | :--- |
-| **Cloudflare Workers** (canonical) | `npm run build` | `./dist` via Workers Static Assets | `wrangler.toml` |
-| **Vercel** (mirror) | `npm run build` | `dist` | `vercel.json` |
+| **Cloudflare Workers** (canonical) | `bash build.sh` | `./dist` via Workers Static Assets | `wrangler.toml` |
+| **Vercel** (mirror) | `bash build.sh` | `dist` | `vercel.json` |
 
 Security headers come from `dist/_headers` on Cloudflare and from `vercel.json` on Vercel.
 
 ## Repository Structure
 
 ```text
+├── build.sh                 # Host build entry point; runs the current stack's build
 ├── package.json             # build (ejs CLI), preview and deploy scripts
 ├── wrangler.toml            # Cloudflare Workers static assets
 ├── vercel.json              # Vercel mirror
