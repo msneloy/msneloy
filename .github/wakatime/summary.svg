@@ -1,20 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="760" height="200" viewBox="0 0 760 200">
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="200" viewBox="0 0 900 200">
   <rect width="100%" height="100%" fill="transparent"/>
   <g font-family="sans-serif" fill="#e5e7eb">
-    <rect x="20" y="20" width="330" height="70" rx="10" fill="#1f2937"/>
-    <text x="40" y="45" font-size="16" font-weight="600" fill="#cbd5e1">Total</text>
-    <text x="40" y="72" font-size="20" font-weight="700">3,918 hrs 52 mins</text>
+    <rect x="20" y="55" width="276" height="90" rx="10" fill="#1f2937"/>
+    <text x="40" y="83" font-size="16" font-weight="600" fill="#cbd5e1">Total</text>
+    <text x="40" y="119" font-size="18" font-weight="700">3,983 hrs 8 mins</text>
 
-    <rect x="390" y="20" width="330" height="70" rx="10" fill="#1f2937"/>
-    <text x="410" y="45" font-size="16" font-weight="600" fill="#cbd5e1">Daily Average</text>
-    <text x="410" y="72" font-size="20" font-weight="700">4 hrs 23 mins</text>
+    <rect x="312" y="55" width="276" height="90" rx="10" fill="#1f2937"/>
+    <text x="332" y="83" font-size="16" font-weight="600" fill="#cbd5e1">Daily Average</text>
+    <text x="332" y="119" font-size="18" font-weight="700">4 hrs 25 mins</text>
 
-    <rect x="20" y="110" width="330" height="70" rx="10" fill="#1f2937"/>
-    <text x="40" y="135" font-size="16" font-weight="600" fill="#cbd5e1">Best Day</text>
-    <text x="40" y="161" font-size="20" font-weight="700">2021-03-26 — 23 hrs 59 mins</text>
-
-    <rect x="390" y="110" width="330" height="70" rx="10" fill="#1f2937"/>
-    <text x="410" y="135" font-size="16" font-weight="600" fill="#cbd5e1">Since</text>
-    <text x="410" y="161" font-size="20" font-weight="700">2020-11-17 (2184 days)</text>
+    <rect x="604" y="55" width="276" height="90" rx="10" fill="#1f2937"/>
+    <text x="624" y="83" font-size="16" font-weight="600" fill="#cbd5e1">Since</text>
+    <text x="624" y="115" font-size="18" font-weight="700">2020-11-17</text>
+    <text x="624" y="135" font-size="13" fill="#94a3b8">2191 days tracked</text>
   </g>
 </svg>

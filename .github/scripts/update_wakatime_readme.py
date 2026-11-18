@@ -220,16 +220,6 @@ def fetch_json(url: str) -> dict[str, Any] | None:
     return data
 
 
-def format_metric(total: Any, average: Any, best_day: dict[str, Any], range_data: dict[str, Any]) -> tuple[str, str, str, str, str]:
-    total_text = total.get("human_readable_total_including_other_language", "—") if isinstance(total, dict) else str(total)
-    avg_text = average.get("human_readable_daily_average_including_other_language", "—") if isinstance(average, dict) else str(average)
-    best_date = best_day.get("date", "—") if isinstance(best_day, dict) else "—"
-    best_text = best_day.get("text", "—") if isinstance(best_day, dict) else "—"
-    start_date = range_data.get("start", "—").split("T")[0] if isinstance(range_data, dict) else "—"
-    days_count = range_data.get("days_including_holidays", "—") if isinstance(range_data, dict) else "—"
-    return total_text, avg_text, f"{best_date} — {best_text}", start_date, str(days_count)
-
-
 def save_svg(name: str, content: str) -> str:
     target = CHART_DIR / f"{name}.svg"
     target.write_text(content, encoding="utf-8")
@@ -260,42 +250,49 @@ def create_pie_slice(cx: float, cy: float, outer_r: float, inner_r: float, start
     )
 
 
-def make_pie_chart(title: str, items: list[dict[str, Any]], width: int = 760, height: int = 260) -> str:
+def make_os_donut_chart(title: str, items: list[dict[str, Any]], width: int = 900, height: int = 220) -> str:
     data = clean_chart_items(items)
-    filtered = data[:8]
-    total = sum(float(item.get("total_seconds", 0) or 0) for item in filtered)
-    colors = ["#38bdf8", "#a78bfa", "#f59e0b", "#34d399", "#f472b6", "#f87171", "#60a5fa", "#c084fc"]
-    cx, cy, r, inner_r = 160, 125, 86, 42
+    if not data:
+        return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="#0b1220" rx="12"/><text x="24" y="26" fill="#f8fafc" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
+
+    total = sum(float(item.get("total_seconds", 0) or 0) for item in data)
+
+    def os_color(name: str) -> str:
+        normalized_name = name.lower()
+        if "unix" in normalized_name:
+            return "#aab8c5"
+        if "android" in normalized_name:
+            return "#3DDC84"
+        if "linux" in normalized_name:
+            return "#FCC624"
+        if "mac" in normalized_name or "apple" in normalized_name:
+            return "#e5e7eb"
+        if "windows" in normalized_name:
+            return "#00adef"
+        return "#8ecae6"
+
+    cx, cy, outer_r, inner_r = 112, 110, 82, 44
     start = 0.0
     slices = []
     legend = []
 
-    for idx, item in enumerate(filtered):
+    for idx, item in enumerate(data):
+        name = str(item.get("name", "Unknown"))
         value = float(item.get("total_seconds", 0) or 0)
-        ratio = value / total if total else 0
-        end = start + ratio * 360
-        slices.append(create_pie_slice(cx, cy, r, inner_r, start, end, colors[idx % len(colors)]))
-
-        row = idx
-        item_x = 300
-        time_x = 625
-        y = 30 + row * 28
-        legend.append(
-            f'<g font-family="sans-serif">'
-            f'<rect x="{item_x}" y="{y}" width="16" height="16" rx="3" fill="{colors[idx % len(colors)]}" />'
-            f'<text x="{item_x + 24}" y="{y + 15}" fill="#e5e7eb" font-size="20">{item.get("name", "Unknown")}</text>'
-            f'<text x="{time_x}" y="{y + 15}" fill="#cbd5e1" font-size="20" text-anchor="end">{format_duration(value)}</text>'
-            f'</g>'
-        )
+        end = start + (value / total if total else 0) * 360
+        slices.append(create_pie_slice(cx, cy, outer_r, inner_r, start, end, os_color(name)))
+        y = 34 + idx * 36
+        legend.append(make_os_icon(name, 226, y - 2))
+        legend.append(f'<text x="258" y="{y + 17}" fill="#e5e7eb" font-size="19" font-family="sans-serif">{name}</text>')
+        legend.append(f'<text x="{width - 24}" y="{y + 17}" fill="#cbd5e1" font-size="18" font-family="sans-serif" text-anchor="end">{format_duration(value)}</text>')
         start = end
 
-    height = max(height, 46 + len(filtered) * 28)
-
+    height = max(height, 48 + len(data) * 36)
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
       <rect width="100%" height="100%" fill="transparent"/>
-      <circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="#1f2937" stroke-width="28"/>
+      <circle cx="{cx}" cy="{cy}" r="{outer_r}" fill="none" stroke="#1f2937" stroke-width="26"/>
       {''.join(slices)}
-      <circle cx="{cx}" cy="{cy}" r="42" fill="transparent"/>
+      <circle cx="{cx}" cy="{cy}" r="{inner_r}" fill="#0b1220"/>
       {''.join(legend)}
     </svg>'''
     return svg
@@ -428,6 +425,8 @@ def make_os_icon(name: str, x: float, y: float) -> str:
         artwork = '<path d="M18.4395 5.5586c-.675 1.1664-1.352 2.3318-2.0274 3.498-.0366-.0155-.0742-.0286-.1113-.043-1.8249-.6957-3.484-.8-4.42-.787-1.8551.0185-3.3544.4643-4.2597.8203-.084-.1494-1.7526-3.021-2.0215-3.4864a1.1451 1.1451 0 0 0-.1406-.1914c-.3312-.364-.9054-.4859-1.379-.203-.475.282-.7136.9361-.3886 1.5019 1.9466 3.3696-.0966-.2158 1.9473 3.3593.0172.031-.4946.2642-1.3926 1.0177C2.8987 12.176.452 14.772 0 18.9902h24c-.119-1.1108-.3686-2.099-.7461-3.0683-.7438-1.9118-1.8435-3.2928-2.7402-4.1836a12.1048 12.1048 0 0 0-2.1309-1.6875c.6594-1.122 1.312-2.2559 1.9649-3.3848.2077-.3615.1886-.7956-.0079-1.1191a1.1001 1.1001 0 0 0-.8515-.5332c-.5225-.0536-.9392.3128-1.0488.5449zm-.0391 8.461c.3944.5926.324 1.3306-.1563 1.6503-.4799.3197-1.188.0985-1.582-.4941-.394-.5927-.324-1.3307.1563-1.6504.4727-.315 1.1812-.1086 1.582.4941zM7.207 13.5273c.4803.3197.5503 1.0577.1563 1.6504-.394.5926-1.1038.8138-1.584.4941-.48-.3197-.5503-1.0577-.1563-1.6504.4008-.6021 1.1087-.8106 1.584-.4941z" fill="#3DDC84"/>'
     elif "linux" in normalized_name:
         artwork = '<path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489a.424.424 0 0 0-.11.135c-.26.268-.45.6-.663.839-.199.199-.485.267-.797.4-.313.136-.658.269-.864.68-.09.189-.136.394-.132.602 0 .199.027.4.055.536.058.399.116.728.04.97-.249.68-.28 1.145-.106 1.484.174.334.535.47.94.601.81.2 1.91.135 2.774.6.926.466 1.866.67 2.616.47.526-.116.97-.464 1.208-.946.587-.003 1.23-.269 2.26-.334.699-.058 1.574.267 2.577.2.025.134.063.198.114.333l.003.003c.391.778 1.113 1.132 1.884 1.071.771-.06 1.592-.536 2.257-1.306.631-.765 1.683-1.084 2.378-1.503.348-.199.629-.469.649-.853.023-.4-.2-.811-.714-1.376v-.097l-.003-.003c-.17-.2-.25-.535-.338-.926-.085-.401-.182-.786-.492-1.046h-.003c-.059-.054-.123-.067-.188-.135a.357.357 0 0 0-.19-.064c.431-1.278.264-2.55-.173-3.694-.533-1.41-1.465-2.638-2.175-3.483-.796-1.005-1.576-1.957-1.56-3.368.026-2.152.236-6.133-3.544-6.139zm.529 3.405h.013c.213 0 .396.062.584.198.19.135.33.332.438.533.105.259.158.459.166.724 0-.02.006-.04.006-.06v.105a.086.086 0 0 1-.004-.021l-.004-.024a1.807 1.807 0 0 1-.15.706.953.953 0 0 1-.213.335.71.71 0 0 0-.088-.042c-.104-.045-.198-.064-.284-.133a1.312 1.312 0 0 0-.22-.066c.05-.06.146-.133.183-.198.053-.128.082-.264.088-.402v-.02a1.21 1.21 0 0 0-.061-.4c-.045-.134-.101-.2-.183-.333-.084-.066-.167-.132-.267-.132h-.016c-.093 0-.176.03-.262.132a.8.8 0 0 0-.205.334 1.18 1.18 0 0 0-.09.4v.019c.002.089.008.179.02.267-.193-.067-.438-.135-.607-.202a1.635 1.635 0 0 1-.018-.2v-.02a1.772 1.772 0 0 1 .15-.768c.082-.22.232-.406.43-.533a.985.985 0 0 1 .594-.2zm-2.962.059h.036c.142 0 .27.048.399.135.146.129.264.288.344.465.09.199.14.4.153.667v.004c.007.134.006.2-.002.266v.08c-.03.007-.056.018-.083.024-.152.055-.274.135-.393.2.012-.09.013-.18.003-.267v-.015c-.012-.133-.04-.2-.082-.333a.613.613 0 0 0-.166-.267.248.248 0 0 0-.183-.064h-.021c-.071.006-.13.04-.186.132a.552.552 0 0 0-.12.27.944.944 0 0 0-.023.33v.015c.012.135.037.2.08.334.046.134.098.2.166.268.01.009.02.018.034.024-.07.057-.117.07-.176.136a.304.304 0 0 1-.131.068 2.62 2.62 0 0 1-.275-.402 1.772 1.772 0 0 1-.155-.667 1.759 1.759 0 0 1 .08-.668 1.43 1.43 0 0 1 .283-.535c.128-.133.26-.2.418-.2zm1.37 1.706c.332 0 .733.065 1.216.399.293.2.523.269 1.052.468h.003c.255.136.405.266.478.399v-.131a.571.571 0 0 1 .016.47c-.123.31-.516.643-1.063.842v.002c-.268.135-.501.333-.775.465-.276.135-.588.292-1.012.267a1.139 1.139 0 0 1-.448-.067 3.566 3.566 0 0 1-.322-.198c-.195-.135-.363-.332-.612-.465v-.005h-.005c-.4-.246-.616-.512-.686-.71-.07-.268-.005-.47.193-.6.224-.135.38-.271.483-.336.104-.074.143-.102.176-.131h.002v-.003c.169-.202.436-.47.839-.601.139-.036.294-.065.466-.065zm2.8 2.142c.358 1.417 1.196 3.475 1.735 4.473.286.534.855 1.659 1.102 3.024.156-.005.33.018.513.064.646-1.671-.546-3.467-1.089-3.966-.22-.2-.232-.335-.123-.335.59.534 1.365 1.572 1.646 2.757.13.535.16 1.104.021 1.67.067.028.135.06.205.067 1.032.534 1.413.938 1.23 1.537v-.043c-.06-.003-.12 0-.18 0h-.016c.151-.467-.182-.825-1.065-1.224-.915-.4-1.646-.336-1.77.465-.008.043-.013.066-.018.135-.068.023-.139.053-.209.064-.43.268-.662.669-.793 1.187-.13.533-.17 1.156-.205 1.869v.003c-.02.334-.17.838-.319 1.35-1.5 1.072-3.58 1.538-5.348.334a2.645 2.645 0 0 0-.402-.533 1.45 1.45 0 0 0-.275-.333c.182 0 .338-.03.465-.067a.615.615 0 0 0 .314-.334c.108-.267 0-.697-.345-1.163-.345-.467-.931-.995-1.788-1.521-.63-.4-.986-.87-1.15-1.396-.165-.534-.143-1.085-.015-1.645.245-1.07.873-2.11 1.274-2.763.107-.065.037.135-.408.974-.396.751-1.14 2.497-.122 3.854a8.123 8.123 0 0 1 .647-2.876c.564-1.278 1.743-3.504 1.836-5.268.048.036.217.135.289.202.218.133.38.333.59.465.21.201.477.335.876.335.039.003.075.006.11.006.412 0 .73-.134.997-.268.29-.134.52-.334.74-.4h.005c.467-.135.835-.402 1.044-.7zm2.185 8.958c.037.6.343 1.245.882 1.377.588.134 1.434-.333 1.791-.765l.211-.01c.315-.007.577.01.847.268l.003.003c.208.199.305.53.391.876.085.4.154.78.409 1.066.486.527.645.906.636 1.14l.003-.007v.018l-.003-.012c-.015.262-.185.396-.498.595-.63.401-1.746.712-2.457 1.57-.618.737-1.37 1.14-2.036 1.191-.664.053-1.237-.2-1.574-.898l-.005-.003c-.21-.4-.12-1.025.056-1.69.176-.668.428-1.344.463-1.897.037-.714.076-1.335.195-1.814.12-.465.308-.797.641-.984l.045-.022zm-10.814.049h.01c.053 0 .105.005.157.014.376.055.706.333 1.023.752l.91 1.664.003.003c.243.533.754 1.064 1.189 1.637.434.598.77 1.131.729 1.57v.006c-.057.744-.48 1.148-1.125 1.294-.645.135-1.52.002-2.395-.464-.968-.536-2.118-.469-2.857-.602-.369-.066-.61-.2-.723-.4-.11-.2-.113-.602.123-1.23v-.004l.002-.003c.117-.334.03-.752-.027-1.118-.055-.401-.083-.71.043-.94.16-.334.396-.4.69-.533.294-.135.64-.202.915-.47h.002v-.002c.256-.268.445-.601.668-.838.19-.201.38-.336.663-.336zm7.159-9.074c-.435.201-.945.535-1.488.535-.542 0-.97-.267-1.28-.466-.154-.134-.28-.268-.373-.335-.164-.134-.144-.333-.074-.333.109.016.129.134.199.2.096.066.215.2.36.333.292.2.68.467 1.167.467.485 0 1.053-.267 1.398-.466.195-.135.445-.334.648-.467.156-.136.149-.267.279-.267.128.016.034.134-.147.332a8.097 8.097 0 0 1-.69.468zm-1.082-1.583V5.64c-.006-.02.013-.042.029-.05.074-.043.18-.027.26.004.063 0 .16.067.15.135-.006.049-.085.066-.135.066-.055 0-.092-.043-.141-.068-.052-.018-.146-.008-.163-.065zm-.551 0c-.02.058-.113.049-.166.066-.047.025-.086.068-.14.068-.05 0-.13-.02-.136-.068-.01-.066.088-.133.15-.133.08-.031.184-.047.259-.005.019.009.036.03.03.05v.02h.003z" fill="#FCC624"/>'
+    elif "unix" in normalized_name:
+        artwork = '<rect x="3" y="4" width="18" height="16" rx="2" fill="#111922" stroke="#aab8c5" stroke-width="1.5"/><path d="m7 9 3 3-3 3m6 0h4" fill="none" stroke="#eeeae1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
     elif "mac" in normalized_name or "apple" in normalized_name:
         artwork = '<path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701" fill="#e5e7eb"/>'
     elif "windows" in normalized_name:
@@ -441,36 +440,24 @@ def make_os_icon(name: str, x: float, y: float) -> str:
     return f'<g transform="translate({x} {y}) {scale}">{artwork}</g>'
 
 
-def make_os_bar_chart(title: str, items: list[dict[str, Any]], width: int = 900, height: int = 220) -> str:
-    data = clean_chart_items(items)
+def make_category_bar_chart(title: str, items: list[dict[str, Any]], width: int = 900, height: int = 220, excluded_names: set[str] | None = None) -> str:
+    data = clean_chart_items(items, excluded_names=excluded_names)[:8]
     if not data:
         return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}"><rect width="100%" height="100%" fill="#0b1220" rx="12"/><text x="24" y="26" fill="#f8fafc" font-size="16" font-family="sans-serif" font-weight="700">{title}</text></svg>'''
 
     total = sum(float(item.get("total_seconds", 0) or 0) for item in data)
-
-    def os_color(name: str) -> str:
-        normalized_name = name.lower()
-        if "android" in normalized_name:
-            return "#3DDC84"
-        if "linux" in normalized_name:
-            return "#FCC624"
-        if "mac" in normalized_name or "apple" in normalized_name:
-            return "#e5e7eb"
-        if "windows" in normalized_name:
-            return "#00adef"
-        return "#8ecae6"
-
+    colors = ["#f04455", "#42b9c8", "#f0b64a", "#9584ef", "#71c98d", "#ed7f55", "#58a4e0", "#e879b0"]
     start_x = 25
-    start_y = 80
+    start_y = 46
     bar_width = width - 50
-    bar_height = 28
+    bar_height = 18
     segments = []
     current_x = start_x
 
     for idx, item in enumerate(data):
         ratio = (float(item.get("total_seconds", 0) or 0) / total) if total else 0
         segment_width = ratio * bar_width
-        segments.append(f'<rect x="{current_x}" y="{start_y}" width="{segment_width}" height="{bar_height}" fill="{os_color(str(item.get("name", "")))}" rx="6" />')
+        segments.append(f'<rect x="{current_x}" y="{start_y}" width="{segment_width}" height="{bar_height}" fill="{colors[idx % len(colors)]}" rx="4" />')
         current_x += segment_width
 
     legend = []
@@ -479,17 +466,16 @@ def make_os_bar_chart(title: str, items: list[dict[str, Any]], width: int = 900,
         column = idx % 2
         row = idx // 2
         x = 25 + column * 430
-        y = 130 + row * 34
-        legend.append(make_os_icon(str(item.get("name", "")), x, y - 2))
-        legend.append(f'<text x="{x + 30}" y="{y + 18}" fill="#e2e8f0" font-size="20" font-family="sans-serif">{item.get("name", "")}</text>')
-        time_x = x + 405
-        legend.append(f'<text x="{time_x}" y="{y + 18}" fill="#cbd5e1" font-size="20" font-family="sans-serif" text-anchor="end">{format_duration(total_seconds)}</text>')
+        y = 92 + row * 30
+        legend.append(f'<rect x="{x}" y="{y}" width="12" height="12" rx="3" fill="{colors[idx % len(colors)]}"/>')
+        legend.append(f'<text x="{x + 21}" y="{y + 12}" fill="#e2e8f0" font-size="16" font-family="sans-serif">{item.get("name", "")}</text>')
+        legend.append(f'<text x="{x + 420}" y="{y + 12}" fill="#cbd5e1" font-size="15" font-family="sans-serif" text-anchor="end">{format_duration(total_seconds)}</text>')
 
-    height = max(height, 130 + math.ceil(len(data) / 2) * 34 + 16)
+    height = max(height, 92 + math.ceil(len(data) / 2) * 30 + 12)
 
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">
       <rect width="100%" height="100%" fill="transparent"/>
-      <rect x="{start_x}" y="{start_y}" width="{bar_width}" height="{bar_height}" fill="#1e293b" rx="6" />
+    <rect x="{start_x}" y="{start_y}" width="{bar_width}" height="{bar_height}" fill="#1e293b" rx="4" />
       {''.join(segments)}
       {''.join(legend)}
     </svg>'''
@@ -500,49 +486,36 @@ def build_summary_svg(summary: dict[str, Any]) -> str:
     gt = summary.get("grand_total", {})
     av = gt.get("human_readable_daily_average_including_other_language", "—")
     total = gt.get("human_readable_total_including_other_language", "—")
-    best = summary.get("best_day", {})
     range_data = summary.get("range", {})
-    best_date = best.get("date", "—")
-    best_text = best.get("text", "—")
     since = range_data.get("start", "—").split("T")[0]
     days = range_data.get("days_including_holidays", "—")
 
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="760" height="200" viewBox="0 0 760 200">
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="900" height="200" viewBox="0 0 900 200">
   <rect width="100%" height="100%" fill="transparent"/>
   <g font-family="sans-serif" fill="#e5e7eb">
-    <rect x="20" y="20" width="330" height="70" rx="10" fill="#1f2937"/>
-    <text x="40" y="45" font-size="16" font-weight="600" fill="#cbd5e1">Total</text>
-    <text x="40" y="72" font-size="20" font-weight="700">{total}</text>
+    <rect x="20" y="55" width="276" height="90" rx="10" fill="#1f2937"/>
+    <text x="40" y="83" font-size="16" font-weight="600" fill="#cbd5e1">Total</text>
+    <text x="40" y="119" font-size="18" font-weight="700">{total}</text>
 
-    <rect x="390" y="20" width="330" height="70" rx="10" fill="#1f2937"/>
-    <text x="410" y="45" font-size="16" font-weight="600" fill="#cbd5e1">Daily Average</text>
-    <text x="410" y="72" font-size="20" font-weight="700">{av}</text>
+    <rect x="312" y="55" width="276" height="90" rx="10" fill="#1f2937"/>
+    <text x="332" y="83" font-size="16" font-weight="600" fill="#cbd5e1">Daily Average</text>
+    <text x="332" y="119" font-size="18" font-weight="700">{av}</text>
 
-    <rect x="20" y="110" width="330" height="70" rx="10" fill="#1f2937"/>
-    <text x="40" y="135" font-size="16" font-weight="600" fill="#cbd5e1">Best Day</text>
-    <text x="40" y="161" font-size="20" font-weight="700">{best_date} — {best_text}</text>
-
-    <rect x="390" y="110" width="330" height="70" rx="10" fill="#1f2937"/>
-    <text x="410" y="135" font-size="16" font-weight="600" fill="#cbd5e1">Since</text>
-    <text x="410" y="161" font-size="20" font-weight="700">{since} ({days} days)</text>
+    <rect x="604" y="55" width="276" height="90" rx="10" fill="#1f2937"/>
+    <text x="624" y="83" font-size="16" font-weight="600" fill="#cbd5e1">Since</text>
+    <text x="624" y="115" font-size="18" font-weight="700">{since}</text>
+    <text x="624" y="135" font-size="13" fill="#94a3b8">{days} days tracked</text>
   </g>
 </svg>'''
     return svg
 
 
 def build_markdown_block(summary: dict[str, Any], language_data: list[dict[str, Any]], editor_data: list[dict[str, Any]], os_data: list[dict[str, Any]], category_data: list[dict[str, Any]]) -> str:
-    total_text, avg_text, best_line, since_date, days_count = format_metric(
-        summary.get("grand_total", {}),
-        summary.get("grand_total", {}),
-        summary.get("best_day", {}),
-        summary.get("range", {}),
-    )
-
     summary_svg = save_svg("summary", build_summary_svg(summary))
-    language_svg = save_svg("languages", make_bar_chart("Languages & Frameworks", language_data, color="#8ecae6", palette=LANGUAGE_COLORS, min_seconds=MIN_LISTED_SECONDS))
+    language_svg = save_svg("languages", make_bar_chart("Languages & Frameworks", language_data, color="#8ecae6", palette=LANGUAGE_COLORS, excluded_names={"Other", "Unknown", "Unknown Language", "Unmapped Runtime"}, min_seconds=MIN_LISTED_SECONDS))
     editor_svg = save_svg("editors", make_vertical_bar_legend_chart("Editors", editor_data, palette=EDITOR_COLORS, min_seconds=MIN_LISTED_SECONDS))
-    os_svg = save_svg("operating-systems", make_os_bar_chart("Operating Systems", os_data))
-    category_svg = save_svg("categories", make_pie_chart("Categories", category_data, width=760, height=220))
+    os_svg = save_svg("operating-systems", make_os_donut_chart("Operating Systems", os_data))
+    category_svg = save_svg("categories", make_category_bar_chart("Categories", category_data))
 
     block = f'''<!-- WAKATIME:START -->
 

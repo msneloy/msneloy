@@ -107,13 +107,11 @@ def draw_card(profile: dict[str, Any], summary: dict[str, Any], languages: list[
 
     # Stat tiles.
     grand_total = summary.get("grand_total", {})
-    best_day = summary.get("best_day", {})
     date_range = summary.get("range", {})
     days = date_range.get("days_including_holidays")
     tiles = [
         ("TOTAL LOGGED", grand_total.get("human_readable_total_including_other_language", "—"), "CAREER HOURS"),
         ("DAILY AVERAGE", grand_total.get("human_readable_daily_average_including_other_language", "—"), "ALL TRACKED DAYS"),
-        ("PEAK OUTPUT", best_day.get("text", "—"), best_day.get("date", "—")),
         ("TRACKING WINDOW", f"{days:,} DAYS" if isinstance(days, int) else "—", f"SINCE {str(date_range.get('start', '—'))[:10]}"),
     ]
     gap = 16

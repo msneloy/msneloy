@@ -196,6 +196,12 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .donut-chart,
+  .donut-chart > div,
+  .distribution-track {
+    animation: none !important;
+  }
+
   *,
   *::before,
   *::after {
@@ -222,7 +228,7 @@ body::after {
 .panel-heading,
 .row-heading,
 .row-value,
-.category-layout,
+.donut-layout,
 .dashboard-footer {
   display: flex;
   align-items: center;
@@ -387,9 +393,9 @@ body::after {
 
 .identity-panel {
   display: grid;
-  grid-template-columns: minmax(250px, 0.8fr) minmax(0, 1.7fr);
+  grid-template-columns: max-content minmax(0, 1fr);
   align-items: center;
-  gap: 18px;
+  gap: 1%;
   padding: 13px 0 12px;
   border-bottom: 1px solid var(--line);
 }
@@ -430,8 +436,8 @@ body::after {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1.25fr 1fr;
-  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75%;
   min-width: 0;
 }
 
@@ -452,7 +458,16 @@ body::after {
   flex-direction: column;
   justify-content: space-between;
   gap: 5px;
-  padding: 9px 10px 8px;
+  padding: 9px 5% 8px;
+}
+
+.instrument-card .card-label,
+.instrument-card .card-index {
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .instrument-card::before,
@@ -587,7 +602,7 @@ body::after {
   gap: 12px;
   margin-bottom: 3px;
   color: var(--ink);
-  font-size: 10.5px;
+  font-size: 12px;
 }
 
 .row-heading > span:first-child {
@@ -633,15 +648,9 @@ body::after {
   justify-content: flex-end;
   gap: 6px;
   color: var(--muted);
-  font-size: 9.5px;
+  font-size: 11px;
   font-variant-numeric: tabular-nums;
   text-align: right;
-}
-
-.row-value b {
-  min-width: 42px;
-  color: var(--signal-bright);
-  font-weight: 600;
 }
 
 .bar-track {
@@ -788,7 +797,7 @@ body::after {
   padding: 5px 0;
   border-top: 1px solid var(--line-soft);
   color: var(--ink);
-  font-size: 10.5px;
+  font-size: 12px;
 }
 
 .editor-swatch {
@@ -807,7 +816,7 @@ body::after {
   margin-right: auto;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -815,18 +824,18 @@ body::after {
   flex: 0 0 auto;
   color: var(--muted);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 400;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-.os-chart {
+.distribution-chart {
   padding-top: 5px;
 }
 
-.os-stacked-bar {
-  display: flex;
+.distribution-bar {
+  position: relative;
   width: 100%;
   height: 12px;
   overflow: hidden;
@@ -835,30 +844,50 @@ body::after {
   background: #1e293b;
 }
 
-.os-segment {
+.distribution-track {
+  display: flex;
+  width: 200%;
+  height: 100%;
+  animation: distribution-loop 60s linear infinite;
+}
+
+.distribution-sequence {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex: 0 0 50%;
+}
+
+.distribution-segment {
   display: block;
   width: var(--segment-width);
+  flex: 0 0 var(--segment-width);
   height: 100%;
   background: var(--segment-color);
-  animation: segment-grow 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 120ms;
 }
 
-@keyframes segment-grow {
+@keyframes distribution-loop {
   from {
-    width: 0;
+    transform: translateX(0);
   }
   to {
-    width: var(--segment-width);
+    transform: translateX(-50%);
   }
 }
 
-.os-segment + .os-segment {
+.distribution-segment + .distribution-segment {
   box-shadow: inset 1px 0 #090d12a6;
 }
 
 .os-legend {
   margin-top: 5px;
+}
+
+.systems-panel .os-legend {
+  flex: 1 1 0;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: 0;
 }
 
 .os-legend li {
@@ -870,7 +899,7 @@ body::after {
   padding: 4px 0;
   border-top: 1px solid var(--line-soft);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12.5px;
 }
 
 .brand-icon {
@@ -941,18 +970,21 @@ body::after {
 
 .os-name {
   overflow: hidden;
+  justify-self: start;
   color: var(--ink);
   text-overflow: ellipsis;
+  text-align: left;
   white-space: nowrap;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 500;
 }
 
 .os-percent {
   min-width: 48px;
+  justify-self: end;
   color: var(--signal-bright);
   font-variant-numeric: tabular-nums;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 600;
   text-align: right;
 }
@@ -960,32 +992,40 @@ body::after {
 .os-legend strong {
   min-width: 68px;
   grid-column: auto;
+  justify-self: end;
   color: var(--dim);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 10px;
+  font-size: 11.5px;
   font-weight: 400;
   font-variant-numeric: tabular-nums;
   text-align: right;
   white-space: nowrap;
 }
 
-.category-layout {
+.donut-layout {
   display: flex;
   flex: 1 1 auto;
   align-items: center;
   gap: 14px;
 }
 
-.category-ring {
+.donut-chart {
   position: relative;
   display: grid;
-  width: clamp(120px, 11vw, 156px);
+  width: clamp(108px, 9vw, 132px);
   flex: 0 0 auto;
   aspect-ratio: 1;
   place-items: center;
   border-radius: 50%;
-  background: var(--category-gradient);
+  background: var(--donut-gradient);
   box-shadow: 0 0 26px #c4474f2e;
+  animation: donut-spin 60s linear infinite;
+}
+
+@keyframes donut-spin {
+  to {
+    transform: rotate(1turn);
+  }
 }
 
 /* Sweeps the ring in clockwise on load: an overlay that uncovers the gradient. */
@@ -995,7 +1035,7 @@ body::after {
   initial-value: 0%;
 }
 
-.category-ring::after {
+.donut-chart::after {
   content: "";
   position: absolute;
   z-index: 0;
@@ -1020,7 +1060,7 @@ body::after {
   }
 }
 
-.category-ring > div {
+.donut-chart > div {
   position: relative;
   z-index: 1;
   display: flex;
@@ -1032,16 +1072,17 @@ body::after {
   border: 1px solid var(--line-soft);
   border-radius: 50%;
   background: #0b1017;
+  animation: donut-spin 60s linear infinite reverse;
 }
 
-.category-ring > div span {
+.donut-chart > div span {
   color: var(--muted);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 9.5px;
   letter-spacing: 0.12em;
 }
 
-.category-ring > div strong {
+.donut-chart > div strong {
   color: var(--ink);
   font-size: 13px;
   font-weight: 500;
@@ -1050,9 +1091,10 @@ body::after {
 
 .category-list {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   flex: 1 1 auto;
   min-width: 0;
-  gap: 3px;
+  gap: 3px 16px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1061,13 +1103,13 @@ body::after {
 .category-list li {
   display: grid;
   min-width: 0;
-  grid-template-columns: 8px minmax(0, 1fr) auto auto;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px 12px;
   padding: 3.5px 0;
   border-top: 1px solid var(--line-soft);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12.5px;
 }
 
 .category-swatch {
@@ -1082,25 +1124,17 @@ body::after {
   overflow: hidden;
   color: var(--ink);
   text-overflow: ellipsis;
+  text-align: left;
   white-space: nowrap;
-  font-size: 11px;
+  font-size: 12.5px;
   font-weight: 500;
-}
-
-.category-percent {
-  min-width: 48px;
-  color: var(--signal-bright);
-  font-variant-numeric: tabular-nums;
-  font-size: 10.5px;
-  font-weight: 600;
-  text-align: right;
 }
 
 .category-time {
   min-width: 68px;
   color: var(--muted);
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  font-size: 10px;
+  font-size: 11.5px;
   font-weight: 400;
   font-variant-numeric: tabular-nums;
   text-align: right;
@@ -1118,9 +1152,9 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
   margin-top: 16px;
-  padding: 12px 14px;
+  gap: 8px 10px;
   border: 1px solid var(--alert-border);
   background: var(--alert-surface);
   color: var(--warning);
@@ -1178,7 +1212,7 @@ body::after {
   font-variant-numeric: tabular-nums;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .identity-panel {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -1187,7 +1221,9 @@ body::after {
   .summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
+@media (max-width: 900px) {
   .dashboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1281,7 +1317,7 @@ body::after {
   .instrument-card {
     min-height: 68px;
     gap: 4px;
-    padding: 8px 9px 7px;
+    padding: 8px 5% 7px;
   }
 
   .instrument-card strong {
@@ -1294,6 +1330,10 @@ body::after {
 
   .card-index {
     font-size: 7px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .dashboard-grid {
@@ -1312,33 +1352,41 @@ body::after {
 
   .row-heading {
     gap: 4px;
-    font-size: 8px;
+    font-size: 9.5px;
   }
 
   .row-value {
     gap: 3px;
-    font-size: 6px;
+    font-size: 7.5px;
   }
 
-  .row-value b {
-    min-width: 34px;
-  }
-
-  .category-layout {
+  .donut-layout {
     gap: 10px;
   }
 
-  .category-ring {
-    width: 104px;
+  .systems-panel .donut-layout {
+    flex-direction: column;
+  }
+
+  .donut-chart {
+    width: 96px;
+  }
+
+  .systems-panel .os-legend {
+    flex: 0 1 auto;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 5px;
   }
 
   .category-list {
+    grid-template-columns: minmax(0, 1fr);
     gap: 4px;
   }
 
   .category-list li {
     gap: 6px;
-    font-size: 8px;
+    font-size: 9.5px;
   }
 
   .dashboard-footer {
@@ -1504,7 +1552,13 @@ const operatingSystemBrands = [
         markup: "<path d='M12 1.5c-2.6 0-4.3 2.1-4.3 4.9 0 1.3.3 2.2-.6 3.6C5.6 12.2 4.5 14.3 4.5 16.6c0 3.3 3.2 5.4 7.5 5.4s7.5-2.1 7.5-5.4c0-2.3-1.1-4.4-2.6-6.6-.9-1.4-.6-2.3-.6-3.6 0-2.8-1.7-4.9-4.3-4.9z' fill='#1f1f1f' stroke='#5b6472' stroke-width='.5'/><path d='M12 8.4c-2.1 0-3.7 2.7-3.7 6.3 0 3.1 1.6 5.2 3.7 5.2s3.7-2.1 3.7-5.2c0-3.6-1.6-6.3-3.7-6.3z' fill='#f5f5f5'/><ellipse cx='10.5' cy='5.4' rx='1' ry='1.3' fill='#fff'/><ellipse cx='13.5' cy='5.4' rx='1' ry='1.3' fill='#fff'/><circle cx='10.8' cy='5.7' r='.5' fill='#111'/><circle cx='13.2' cy='5.7' r='.5' fill='#111'/><path d='M9.6 7.7c0-.8 1.1-1.3 2.4-1.3s2.4.5 2.4 1.3c0 .7-1.2 1.6-2.4 1.6s-2.4-.9-2.4-1.6z' fill='#f6b40e'/><path d='M4.6 19.4c.7-1.3 2.9-1.5 4.2-.6 1.1.8 1.5 2.2.6 3-.9.9-3.2.9-4.3.2-.8-.6-.9-1.7-.5-2.6z' fill='#f6b40e'/><path d='M19.4 19.4c-.7-1.3-2.9-1.5-4.2-.6-1.1.8-1.5 2.2-.6 3 .9.9 3.2.9 4.3.2.8-.6.9-1.7.5-2.6z' fill='#f6b40e'/>",
     },
     {
-        match: ["mac", "apple", "darwin"],
+      match: ["unix"],
+      color: "#aab8c5",
+      viewBox: "0 0 24 24",
+      markup: "<rect x='3' y='4' width='18' height='16' rx='2' fill='#111922' stroke='#aab8c5' stroke-width='1.5'/><path d='m7 9 3 3-3 3m6 0h4' fill='none' stroke='#eeeae1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/>",
+    },
+    {
+      match: ["mac", "apple", "darwin"],
         color: "#e5e7eb",
         viewBox: "0 0 24 24",
         path: "M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701",
@@ -1882,14 +1936,12 @@ async function loadDashboard() {
     const summary = record(summaryPayload.data, "summary data");
     const grandTotal = record(summary.grand_total, "summary totals");
     const range = record(summary.range, "summary date range");
-    const bestDay = record(summary.best_day, "best-day");
     const totalSeconds = Number(grandTotal.total_seconds_including_other_language ??
         grandTotal.total_seconds ??
         0);
     const dailyAverageSeconds = Number(grandTotal.daily_average_including_other_language ??
         grandTotal.daily_average ??
         0);
-    const bestDaySeconds = Number(bestDay.total_seconds ?? 0);
     const languagePayload = record(languagesResponse, "language");
     const editorPayload = record(editorsResponse, "editor");
     const systemPayload = record(systemsResponse, "operating-system");
@@ -1926,12 +1978,6 @@ async function loadDashboard() {
             dailyAverage: Number.isFinite(dailyAverageSeconds)
                 ? formatSummaryDuration(dailyAverageSeconds)
                 : requiredText(grandTotal, "human_readable_daily_average", "the daily average"),
-            bestDay: {
-                date: requiredText(bestDay, "date", "the best-day date"),
-                text: Number.isFinite(bestDaySeconds)
-                    ? formatSummaryDuration(bestDaySeconds)
-                    : requiredText(bestDay, "text", "the best-day duration"),
-            },
             start: rangeStart.slice(0, 10),
             end: rangeEnd.slice(0, 10),
             days,
@@ -2009,17 +2055,17 @@ function linearAxis(items) {
                 : 10) * magnitude;
     return Math.ceil(maxHours / step) * step;
 }
-function categoryGradient(items) {
-    let cursor = 0;
-    const stops = items.map((item, index) => {
+    function operatingSystemGradient(items) {
+      let cursor = 0;
+      const stops = items.map((item, index) => {
         const start = cursor;
-        cursor += item.percent;
-        return `${categoryColors[index % categoryColors.length]} ${start}% ${cursor}%`;
-    });
-    if (cursor < 100)
+        cursor += osShare(item, items);
+        return `${operatingSystemBrand(item.name, index).color} ${start}% ${cursor}%`;
+      });
+      if (cursor < 100)
         stops.push(`#293746 ${cursor}% 100%`);
-    return `conic-gradient(${stops.join(", ")})`;
-}
+      return `conic-gradient(${stops.join(", ")})`;
+    }
 function summaryMarkup(summary) {
     return `
     <article class="instrument-card">
@@ -2033,14 +2079,9 @@ function summaryMarkup(summary) {
       <span class="card-index">ALL TRACKED DAYS</span>
     </article>
     <article class="instrument-card">
-      <p class="card-label">PEAK OUTPUT</p>
-      <strong>${escapeHtml(summary.bestDay.text)}</strong>
-      <span class="card-index">${escapeHtml(summary.bestDay.date)}</span>
-    </article>
-    <article class="instrument-card">
       <p class="card-label">TRACKING WINDOW</p>
       <strong>${summary.days.toLocaleString()} <small>DAYS</small></strong>
-      <span class="card-index">${escapeHtml(summary.start)} — ${escapeHtml(summary.end)}</span>
+      <span class="card-index" title="${escapeHtml(summary.start)} — ${escapeHtml(summary.end)}">${escapeHtml(summary.start)} — ${escapeHtml(summary.end)}</span>
     </article>`;
 }
 function languageMarkup(items) {
@@ -2048,7 +2089,7 @@ function languageMarkup(items) {
     const rows = items
         .map((item, index) => `
     <li class="data-row" style="--row-index: ${index}">
-      <div class="row-heading"><span class="row-label">${brandIcon(languageBrand(item.name), Math.min(index, 15)) || '<span class="language-swatch" aria-hidden="true"></span>'}<span>${escapeHtml(item.name)}</span></span><span class="row-value">${formatDuration(item.totalSeconds)}<b>${item.percent.toFixed(2)}%</b></span></div>
+      <div class="row-heading"><span class="row-label">${brandIcon(languageBrand(item.name), Math.min(index, 15)) || '<span class="language-swatch" aria-hidden="true"></span>'}<span>${escapeHtml(item.name)}</span></span><span class="row-value">${formatDuration(item.totalSeconds)}</span></div>
       <div class="bar-track linear-track" role="meter" aria-label="${escapeHtml(`${item.name}: ${formatDuration(item.totalSeconds)}`)}" aria-valuemin="0" aria-valuemax="${ceiling}" aria-valuenow="${item.totalSeconds / 3600}">
         <span class="bar-fill" style="--bar-width: ${Math.max(1, (item.totalSeconds / 3600 / ceiling) * 100)}%"></span>
       </div>
@@ -2110,10 +2151,6 @@ function editorMarkup(items) {
     </article>`;
 }
 function systemsMarkup(items) {
-    const segments = items
-        .map((item, index) => `
-    <span class="os-segment" style="--segment-width: ${osShare(item, items)}%; --segment-color: ${operatingSystemBrand(item.name, index).color}"></span>`)
-        .join("");
     const legend = items
         .map((item, index) => `
     <li>
@@ -2135,8 +2172,10 @@ function systemsMarkup(items) {
       </header>
       ${items.length
         ? `
-        <div class="os-chart" role="group" aria-label="Operating system distribution">
-          <div class="os-stacked-bar" role="img" aria-label="${chartLabel}">${segments}</div>
+        <div class="donut-layout" role="group" aria-label="Operating system distribution">
+          <div class="donut-chart" style="--donut-gradient: ${operatingSystemGradient(items)}" role="img" aria-label="${chartLabel}">
+            <div><span>OS</span><strong>SHARE</strong></div>
+          </div>
           <ol class="os-legend">${legend}</ol>
         </div>`
         : '<p class="empty-data">No operating-system activity was reported for this range.</p>'}
@@ -2147,15 +2186,26 @@ function osShare(item, items) {
     return total ? (item.totalSeconds / total) * 100 : 0;
 }
 function categoriesMarkup(items) {
+    const totalSeconds = items.reduce((total, item) => total + item.totalSeconds, 0);
+    const segments = items
+        .map((item, index) => {
+        const share = totalSeconds ? (item.totalSeconds / totalSeconds) * 100 : 0;
+        return `
+    <span class="distribution-segment" style="--segment-width: ${share}%; --segment-color: ${categoryColors[index % categoryColors.length]}"></span>`;
+    })
+        .join("");
     const legend = items
         .map((item, index) => `
     <li>
       <span class="category-swatch" style="--swatch: ${categoryColors[index % categoryColors.length]}"></span>
       <span class="category-name">${escapeHtml(item.name)}</span>
-      <b class="category-percent">${item.percent.toFixed(2)}%</b>
       <strong class="category-time">${formatDuration(item.totalSeconds)}</strong>
     </li>`)
         .join("");
+    const chartLabel = items
+      .map((item) => `${item.name} ${formatDuration(item.totalSeconds)}`)
+      .map(escapeHtml)
+      .join(", ");
     return `
     <article class="dashboard-panel category-panel">
       <header class="panel-heading">
@@ -2164,9 +2214,12 @@ function categoriesMarkup(items) {
       </header>
       ${items.length
         ? `
-        <div class="category-layout">
-          <div class="category-ring" style="--category-gradient: ${categoryGradient(items)}" role="img" aria-label="Category distribution ring">
-            <div><span>TIME</span><strong>LOG</strong></div>
+        <div class="distribution-chart" role="group" aria-label="Category distribution">
+          <div class="distribution-bar" role="img" aria-label="${chartLabel}">
+            <div class="distribution-track">
+              <div class="distribution-sequence">${segments}</div>
+              <div class="distribution-sequence" aria-hidden="true">${segments}</div>
+            </div>
           </div>
           <ol class="category-list">${legend}</ol>
         </div>`
