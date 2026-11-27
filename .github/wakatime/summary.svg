@@ -3,15 +3,15 @@
   <g font-family="sans-serif" fill="#e5e7eb">
     <rect x="20" y="55" width="276" height="90" rx="10" fill="#1f2937"/>
     <text x="40" y="83" font-size="16" font-weight="600" fill="#cbd5e1">Total</text>
-    <text x="40" y="119" font-size="18" font-weight="700">4,008 hrs 34 mins</text>
+    <text x="40" y="119" font-size="18" font-weight="700">4,080 hrs 22 mins</text>
 
     <rect x="312" y="55" width="276" height="90" rx="10" fill="#1f2937"/>
     <text x="332" y="83" font-size="16" font-weight="600" fill="#cbd5e1">Daily Average</text>
-    <text x="332" y="119" font-size="18" font-weight="700">4 hrs 26 mins</text>
+    <text x="332" y="119" font-size="18" font-weight="700">4 hrs 29 mins</text>
 
     <rect x="604" y="55" width="276" height="90" rx="10" fill="#1f2937"/>
     <text x="624" y="83" font-size="16" font-weight="600" fill="#cbd5e1">Since</text>
     <text x="624" y="115" font-size="18" font-weight="700">2020-11-17</text>
-    <text x="624" y="135" font-size="13" fill="#94a3b8">2193 days tracked</text>
+    <text x="624" y="135" font-size="13" fill="#94a3b8">2200 days tracked</text>
   </g>
 </svg>
